@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a1a">
+  <title>🏆 Winner Announcement</title>
+  <link rel="icon" href="../icons/logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css?v=2.0.1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../lib/confetti.js"></script>
+  <script src="../lib/supabase.js"></script>
+</head>
+<body>
+
+  <!-- Idle / Waiting State -->
+  <div id="idle-screen" class="idle-screen">
+    <div class="idle-content">
+      <div class="pulse-ring"></div>
+      <img src="../icons/logo.png" alt="Logo" class="idle-logo" id="idle-logo">
+      <h1 class="idle-title" id="idle-title">Al Hassad TedTalk</h1>
+      <p class="idle-subtitle">Waiting for announcement...</p>
+      <div class="idle-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Audio Unlock Overlay -->
+    <div id="audio-unlock" class="audio-unlock">
+      <button id="unlock-btn" class="unlock-btn">
+        🔊 Tap to Enable Sound
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Winner Reveal State -->
+  <div id="winner-screen" class="winner-screen" hidden>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="winner-content" id="winner-content">
+      <!-- Spotlight rays -->
+      <div class="spotlight"></div>
+
+      <!-- Trophy icon -->
+      <div class="trophy-icon" id="trophy-icon">🏆</div>
+
+      <!-- Winner Photo -->
+      <div class="photo-frame" id="photo-frame">
+        <img id="winner-photo" src="" alt="Winner" class="winner-photo">
+        <div class="photo-glow"></div>
+      </div>
+
+      <!-- Winner Name -->
+      <h1 class="winner-name" id="winner-name"></h1>
+
+      <!-- Winner Details -->
+      <p class="winner-details" id="winner-details"></p>
+
+      <!-- Congratulations Banner -->
+      <div class="congrats-banner" id="congrats-banner">
+        <span class="star">✦</span>
+        <span>CONGRATULATIONS</span>
+        <span class="star">✦</span>
+      </div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <!-- Hidden audio elements (Local Files) -->
+  <audio id="idle-audio" preload="auto" loop>
+    <source src="../audio/idle.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="celebration-audio" preload="auto">
+    <source src="../audio/cheer.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="drumroll-audio" preload="auto">
+    <source src="../audio/drumroll.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="app.js?v=2.0.1"></script>
+</body>
+</html>
