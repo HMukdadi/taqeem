@@ -83,29 +83,29 @@ ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
 -- Competitions
 DROP POLICY IF EXISTS "Public access" ON competitions;
-CREATE POLICY "Public select" ON competitions FOR SELECT TO public USING (true);
+CREATE POLICY "Public select" ON competitions FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin manage" ON competitions FOR ALL TO anon 
 USING (current_setting('role') = 'anon') 
 WITH CHECK (current_setting('role') = 'anon');
 
 -- Site Settings
 DROP POLICY IF EXISTS "Public access" ON site_settings;
-CREATE POLICY "Public select" ON site_settings FOR SELECT TO public USING (true);
+CREATE POLICY "Public select" ON site_settings FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon 
 USING (current_setting('role') = 'anon') 
 WITH CHECK (current_setting('role') = 'anon');
 
 -- Students
 DROP POLICY IF EXISTS "Public access" ON students;
-CREATE POLICY "Public select" ON students FOR SELECT TO public USING (true);
+CREATE POLICY "Public select" ON students FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin manage" ON students FOR ALL TO anon 
 USING (current_setting('role') = 'anon') 
 WITH CHECK (current_setting('role') = 'anon');
 
 -- Evaluations
 DROP POLICY IF EXISTS "Public access" ON evaluations;
-CREATE POLICY "Public select" ON evaluations FOR SELECT TO public USING (true);
-CREATE POLICY "Public insert" ON evaluations FOR INSERT TO public WITH CHECK (true);
+CREATE POLICY "Public select" ON evaluations FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Public insert" ON evaluations FOR INSERT TO anon, authenticated WITH CHECK (true);
 CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon 
 USING (current_setting('role') = 'anon');
 
@@ -114,14 +114,14 @@ DROP POLICY IF EXISTS "Public access" ON custom_users;
 DROP POLICY IF EXISTS "Admin insert" ON custom_users;
 DROP POLICY IF EXISTS "Admin update" ON custom_users;
 DROP POLICY IF EXISTS "Admin delete" ON custom_users;
-CREATE POLICY "Login access" ON custom_users FOR SELECT TO public USING (true);
+CREATE POLICY "Login access" ON custom_users FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
 CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (current_setting('role') = 'anon');
 CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (current_setting('role') = 'anon');
 
 -- Winners Display
 DROP POLICY IF EXISTS "Public access" ON winners_display;
-CREATE POLICY "Public select" ON winners_display FOR SELECT TO public USING (true);
+CREATE POLICY "Public select" ON winners_display FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon 
 USING (current_setting('role') = 'anon') 
 WITH CHECK (current_setting('role') = 'anon');
@@ -130,11 +130,11 @@ WITH CHECK (current_setting('role') = 'anon');
 -- Note: Create Bucket named 'winner-photos' via Supabase UI first.
 
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
-CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING ( bucket_id = 'winner-photos' );
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT TO anon, authenticated USING ( bucket_id = 'winner-photos' );
 DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
-CREATE POLICY "Public Insert" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'winner-photos' );
+CREATE POLICY "Public Insert" ON storage.objects FOR INSERT TO anon, authenticated WITH CHECK ( bucket_id = 'winner-photos' );
 DROP POLICY IF EXISTS "Public Update" ON storage.objects;
-CREATE POLICY "Public Update" ON storage.objects FOR UPDATE USING ( bucket_id = 'winner-photos' );
+CREATE POLICY "Public Update" ON storage.objects FOR UPDATE TO anon, authenticated USING ( bucket_id = 'winner-photos' );
 
 -- 5. REALTIME REPLICATION
 DROP PUBLICATION IF EXISTS supabase_realtime;
