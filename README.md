@@ -2,16 +2,16 @@
 
 **The Premium Open Source Evaluation System for Schools.**
 
-Taqeem is a mobile-first, high-performance platform designed for student competitions, TedTalk style presentations, and judging events. It streamlines the judging process with real-time scoring, live timers, and automated result calculation.
+Taqeem is a mobile-first, high-performance platform designed for student competitions, TED Talk-style presentations, and judging events. It streamlines the judging process with real-time scoring, live timers, and automated result calculation.
 
 ## 🚀 Getting Started
 
 ### 1. Try the Demo
-Visit our [Live Demo](https://competitons.example.com/demo.html) (replace with your subdomain) to see the system in action.
+Visit our [Live Demo](https://taqeem.appwand.net/demo.html) (replace with your subdomain) to see the system in action.
 
 ### 2. Launch Your Own School's Version
 The easiest way to get started is using our **integrated generator** on the home page:
-1. Go to the [Home Page](https://competitons.example.com/).
+1. Go to the [Home Page](https://taqeem.appwand.net/).
 2. Create a free project at [Supabase.com](https://supabase.com/).
 3. Run the `client_setup.sql` script in your Supabase SQL editor.
 4. Enter your Supabase URL and Anon Key into the Taqeem generator.
