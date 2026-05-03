@@ -489,6 +489,60 @@
       color: #10b981;
       background: rgba(16, 185, 129, 0.1);
     }
+  .contribute-section {
+    background: var(--slate-900);
+    padding: 100px 0;
+    text-align: center;
+  }
+  .contribute-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 24px;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+  }
+  .contribute-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+  }
+  .contribute-icon {
+    color: var(--primary);
+    background: rgba(16, 185, 129, 0.1);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .btn-github {
+    background: #24292e;
+    color: white;
+    padding: 16px 32px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .btn-github:hover {
+    background: #000;
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+  @media (max-width: 768px) {
+    .contribute-card { padding: 40px 20px; }
+  }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -666,6 +720,23 @@
   </div>
 </section>
 
+<section id="contribute" class="section contribute-section">
+  <div class="container">
+    <div class="contribute-card">
+      <div class="contribute-icon">
+        <svg viewBox="0 0 24 24" width="60" height="60" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </div>
+      <div class="contribute-content">
+        <h2 data-i18n="contribute-title">Architect the Future</h2>
+        <p data-i18n="contribute-p">Taqeem is a community-driven initiative. Help us build more precise tools for educators by contributing to our open-source codebase.</p>
+        <a href="https://github.com/HMukdadi/taqeem" target="_blank" class="btn btn-github">
+          <span data-i18n="btn-github">Contribute on GitHub</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
     <div class="container">
       <p data-i18n="footer-text">© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.</p>
@@ -719,7 +790,10 @@
       'status-ready': '> BUILD SUCCESSFUL. PACKAGE TRANSMITTED.',
       'stats-deployed': 'Schools Deployed',
       'stats-evals': 'Evaluations Processed',
-      'stats-ownership': 'Data Ownership'
+      'stats-ownership': 'Data Ownership',
+      'contribute-title': 'Architect the Future',
+      'contribute-p': 'Taqeem is a community-driven initiative. Help us build more precise tools for educators by contributing to our open-source codebase.',
+      'btn-github': 'Contribute on GitHub'
     },
     ar: {
       'page-title': 'تقييم | منظومة التميز',
@@ -762,7 +836,10 @@
       'status-ready': '> اكتمل البناء بنجاح. تم إرسال الحزمة.',
       'stats-deployed': 'مدرسة مفعّلة',
       'stats-evals': 'عملية تقييم',
-      'stats-ownership': 'ملكية البيانات'
+      'stats-ownership': 'ملكية البيانات',
+      'contribute-title': 'ساهم في بناء المستقبل',
+      'contribute-p': 'تقييم مبادرة مدفوعة بالمجتمع. ساعدنا في بناء أدوات أكثر دقة للمعلمين من خلال المساهمة في الكود البرمجي مفتوح المصدر.',
+      'btn-github': 'المساهمة عبر GitHub'
     }
   };
 
