@@ -633,11 +633,7 @@
           <p class="description" data-i18n="step1-p">Initialize your school's private database on the Supabase platform.</p>
           <div class="direct-links">
             <a href="https://supabase.com/dashboard/projects" target="_blank" class="direct-link"><span>+ Create Project</span></a>
-            <div class="tutorial-link" onclick="toggleTutorial(1)" data-i18n="tut-link">How do I find this? →</div>
-          </div>
-          <div id="tut-1" class="tutorial-panel">
-            <p data-i18n="tut1-p">Go to Settings → API in your Supabase dashboard. You will see your Project URL and Anon Key there.</p>
-            <img src="icons/tut_keys.png" alt="Keys Tutorial">
+            <a href="wiki.html" class="tutorial-link" data-i18n="tut-link">How do I find this? →</a>
           </div>
         </div>
         <div class="step-check" id="check-1">✓</div>
@@ -650,11 +646,7 @@
           <p class="description" data-i18n="step2-p">Configure your archive tables by pasting our setup blueprint into your SQL console.</p>
           <div class="direct-links">
             <a href="#sql" class="direct-link"><span>Go to Script ↓</span></a>
-            <div class="tutorial-link" onclick="toggleTutorial(2)" data-i18n="tut-link">How do I find this? →</div>
-          </div>
-          <div id="tut-2" class="tutorial-panel">
-            <p data-i18n="tut2-p">Click SQL Editor in the left sidebar, create a New Query, and paste the code below.</p>
-            <img src="icons/tut_sql.png" alt="SQL Tutorial">
+            <a href="wiki.html" class="tutorial-link" data-i18n="tut-link">How do I find this? →</a>
           </div>
         </div>
         <div class="step-check" id="check-2">✓</div>
@@ -932,11 +924,7 @@
 
   setTheme(currentTheme);
 
-  function toggleTutorial(id) {
-    const panel = document.getElementById(`tut-${id}`);
-    const isVisible = panel.style.display === 'block';
-    panel.style.display = isVisible ? 'none' : 'block';
-  }
+
 
   function validateInput() {
     const url = document.getElementById('sb-url').value.trim();
