@@ -26,7 +26,8 @@ BEGIN
         updated_at = timezone('utc'::text, now())
     WHERE metric_name = m_name;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = public;
 
 -- 4. Set Permissions (Row Level Security)
 -- Allow anyone to read the metrics
