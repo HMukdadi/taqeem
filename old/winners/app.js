@@ -1,68 +1,20 @@
 // ===== WINNERS DISPLAY — Supabase Realtime Listener =====
 // This page is DISPLAY ONLY. All control happens from the admin panel.
 
+const SUPABASE_URL = 'https://mdzsxzrisfxgebtgetxp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kenN4enJpc2Z4Z2VidGdldHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTA5MTEsImV4cCI6MjA5MTIyNjkxMX0.6r1IZJo28dEv7dnfppkwNwATIMt9ahRhLYCxSPAKRXw';
+
 let supabaseClient = null;
 let audioUnlocked = false;
 let currentWinnerId = null;
-let currentCompetitionId = new URLSearchParams(window.location.search).get('comp');
-
-const translations = {
-    en: {
-        'app-name': 'Taqeem',
-        'waiting': 'Waiting for announcement...',
-        'unlock-audio': 'Enable Sound for Reveal',
-        'congrats': 'CONGRATULATIONS',
-        'grade': 'Grade',
-        'section': 'Section'
-    },
-    ar: {
-        'app-name': 'تقييم',
-        'waiting': 'بانتظار الإعلان عن الفائز...',
-        'unlock-audio': 'تفعيل الصوت للعرض',
-        'congrats': 'ألف مبروك',
-        'grade': 'الصف',
-        'section': 'الشعبة'
-    }
-};
-
-let currentLang = localStorage.getItem('taqeem_lang') || 'en';
-
-function translate(key) {
-    return translations[currentLang][key] || key;
-}
-
-function setLanguage(lang) {
-    currentLang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang;
-    
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        el.textContent = translate(key);
-    });
-
-    const pageTitle = document.getElementById('page-title');
-    if (pageTitle) pageTitle.textContent = (lang === 'ar' ? '🏆 إعلان الفائز' : '🏆 Winner Announcement');
-
-    const idleTitle = document.getElementById('idle-title');
-    if (idleTitle) idleTitle.textContent = translate('app-name');
-}
-
-// Sync language from main app
-window.addEventListener('storage', (e) => {
-    if (e.key === 'taqeem_lang' && e.newValue) {
-        setLanguage(e.newValue);
-    }
-});
-
 
 // ===== INITIALIZATION =====
 
 
 function initSupabase() {
   try {
-    if (window.supabaseClient) {
-      supabaseClient = window.supabaseClient;
+    if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       console.log('✅ Supabase initialized for Winners Display');
       return true;
     }
@@ -82,8 +34,6 @@ async function init() {
     return;
   }
 
-  setLanguage(currentLang);
-
   // Load branding safely
   try {
     applyBranding();
@@ -99,39 +49,17 @@ async function init() {
 
   // Load current winner
   await checkCurrentWinner();
-
-  // Load competition name
-  await fetchCompetitionName();
-}
-
-async function fetchCompetitionName() {
-  if (!currentCompetitionId || !supabaseClient) return;
-  try {
-    const { data, error } = await supabaseClient
-      .from('competitions')
-      .select('name')
-      .eq('id', currentCompetitionId)
-      .single();
-    
-    if (data && data.name) {
-      const titleEl = document.getElementById('idle-title');
-      if (titleEl) titleEl.textContent = data.name;
-      document.title = '🏆 ' + data.name + ' — Winner';
-    }
-  } catch (err) {
-    console.warn('Failed to fetch competition name:', err);
-  }
 }
 
 // ===== BRANDING =====
 
 function applyBranding() {
   try {
-    const stored = localStorage.getItem('taqeem_settings');
+    const stored = localStorage.getItem('tedtalk_settings');
     if (!stored) return;
     
     const settings = JSON.parse(stored);
-    const appName = settings.appName || 'Taqeem';
+    const appName = settings.appName || 'Al Hassad TedTalk';
     const logoSrc = settings.logoDataUrl || null;
 
     const titleEl = document.getElementById('idle-title');
@@ -262,18 +190,14 @@ function playDrumroll() {
 function subscribeToWinners() {
   if (!supabaseClient) return;
 
-  const channelName = currentCompetitionId ? `winners-display-${currentCompetitionId}` : 'winners-display-channel';
-  const filterString = currentCompetitionId ? `competition_id=eq.${currentCompetitionId}` : undefined;
-
   const channel = supabaseClient
-    .channel(channelName)
+    .channel('winners-display-channel')
     .on(
       'postgres_changes',
       {
         event: 'INSERT',
         schema: 'public',
-        table: 'winners_display',
-        filter: filterString
+        table: 'winners_display'
       },
       (payload) => {
         console.log('🏆 Realtime: New winner received!', payload.new);
@@ -285,8 +209,7 @@ function subscribeToWinners() {
       {
         event: 'UPDATE',
         schema: 'public',
-        table: 'winners_display',
-        filter: filterString
+        table: 'winners_display'
       },
       (payload) => {
         console.log('🔄 Realtime: Winner updated!', payload.new);
@@ -302,8 +225,7 @@ function subscribeToWinners() {
       {
         event: 'DELETE',
         schema: 'public',
-        table: 'winners_display',
-        filter: filterString
+        table: 'winners_display'
       },
       () => {
         console.log('🗑️ Realtime: Winner removed');
@@ -340,16 +262,10 @@ async function checkCurrentWinner(isPolling = false) {
   if (!supabaseClient) return;
 
   try {
-    let query = supabaseClient
+    const { data, error } = await supabaseClient
       .from('winners_display')
       .select('*')
-      .eq('is_active', true);
-      
-    if (currentCompetitionId) {
-      query = query.eq('competition_id', currentCompetitionId);
-    }
-    
-    const { data, error } = await query
+      .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -404,8 +320,8 @@ function revealWinner(winner) {
   winnerName.textContent = winner.student_name || 'Winner';
   
   const details = [];
-  if (winner.class_name) details.push(translate('grade') + ': ' + winner.class_name);
-  if (winner.section) details.push(translate('section') + ': ' + winner.section);
+  if (winner.class_name) details.push('Grade: ' + winner.class_name);
+  if (winner.section) details.push('Section: ' + winner.section);
   winnerDetails.textContent = details.join(' • ') || '';
 
   // Handle photo

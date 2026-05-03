@@ -1,8 +1,7 @@
-const CACHE_NAME = 'taqeem-v1.0';
+const CACHE_NAME = 'tedtalk-v3.4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/demo.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
@@ -65,7 +64,7 @@ self.addEventListener('fetch', event => {
             }
             // Fallback for navigation requests
             if (event.request.mode === 'navigate') {
-              return caches.match('/demo.html') || caches.match('/index.html');
+              return caches.match('/index.html');
             }
             return null;
           });

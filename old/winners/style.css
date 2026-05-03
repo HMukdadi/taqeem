@@ -440,16 +440,3 @@ html, body {
   .photo-frame.no-photo::after { font-size: 3rem; }
 }
 
-
-
-/* RTL Support */
-[dir="rtl"] {
-  --font-display: 'Cairo', sans-serif;
-  --font-body: 'Cairo', sans-serif;
-}
-
-[dir="rtl"] .idle-subtitle,
-[dir="rtl"] .winner-details,
-[dir="rtl"] .congrats-banner {
-  letter-spacing: 0;
-}

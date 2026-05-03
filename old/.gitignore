@@ -1,0 +1,17 @@
+# Operating System Files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+.gemini/
+node_modules/
+dist/
+build/
+.env

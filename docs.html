@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation | TedTalk Installation Guide</title>
+    <title id="page-title">Documentation | Taqeem Installation Guide</title>
     <!-- Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -16,62 +16,85 @@
 
     <style>
         :root {
+            /* Base Indigo Palette */
             --primary: #4f46e5;
-            --primary-soft: #eef2ff;
-            --secondary: #10b981;
-            --bg: #fafafa;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius-lg: 24px;
-            --radius-md: 12px;
-            --max-width: 800px;
-        }
-
-        [data-theme="dark"] {
+            --primary-hover: #4338ca;
+            --navy: #0f172a;
+            
+            /* Dark Theme (Default) */
             --bg: #0f172a;
             --surface: #1e293b;
-            --text: #f1f5f9;
+            --text: #f8fafc;
             --text-muted: #94a3b8;
-            --border: #334155;
-            --primary-soft: rgba(79, 70, 229, 0.1);
+            --border: rgba(148, 163, 184, 0.2);
+            --grid-opacity: 0.3;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            
+            /* Typography & Misc */
+            --radius: 4px;
+            --font-main: 'Public Sans', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --font-arabic: 'Cairo', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: rgba(15, 23, 42, 0.1);
+            --grid-opacity: 0.1;
+            --glass-bg: rgba(248, 250, 252, 0.8);
         }
+
+        [dir="rtl"] {
+            --font-main: var(--font-arabic);
+            --font-heading: var(--font-arabic);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: var(--font-main);
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
+            transition: var(--transition);
         }
 
-        /* Documentation Layout */
-        .page-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 50%, transparent 0%, var(--bg) 100%),
+                url('icons/grid.png');
+            background-size: cover;
+            opacity: var(--grid-opacity);
+            z-index: -1;
+            pointer-events: none;
+            transition: var(--transition);
         }
 
         header {
             position: sticky;
             top: 0;
-            background: rgba(var(--surface-rgb, 255, 255, 255), 0.8);
+            background: var(--glass-bg);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             z-index: 100;
             padding: 16px 0;
+            transition: var(--transition);
         }
 
         .container {
             width: 100%;
-            max-width: var(--max-width);
+            max-width: 900px;
             margin: 0 auto;
             padding: 0 24px;
         }
@@ -88,204 +111,173 @@
             gap: 12px;
             text-decoration: none;
             color: var(--text);
+            font-family: var(--font-heading);
             font-weight: 800;
             font-size: 1.25rem;
             letter-spacing: -0.02em;
         }
 
-        .logo-wrap img {
-            width: 32px;
-            height: 32px;
+        .logo-wrap img { 
+            width: 28px; 
+            height: 28px; 
+            filter: brightness(0) invert(1); 
+            transition: var(--transition);
         }
+        [data-theme="light"] .logo-wrap img { filter: none; }
 
         .theme-toggle {
-            background: var(--primary-soft);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            transition: transform 0.2s;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
         }
-
         .theme-toggle:hover {
-            transform: scale(1.1);
+            border-color: var(--primary);
+            transform: rotate(15deg);
         }
 
-        main {
-            padding: 60px 0;
-            flex-grow: 1;
-        }
+        .header-actions { display: flex; align-items: center; gap: 16px; }
 
-        /* Typography & Content Styling (Prose) */
+        .lang-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0 16px;
+            height: 32px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lang-toggle:hover { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        main { padding: 80px 0; }
+
         #doc-content {
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition: all 0.6s ease-out, background 0.4s ease, border 0.4s ease;
+            background: var(--surface);
+            padding: 60px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
-        #doc-content.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        #doc-content.loaded { opacity: 1; transform: translateY(0); }
 
         .prose h1 {
+            font-family: var(--font-heading);
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 2rem;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.03em;
             line-height: 1.1;
-            background: linear-gradient(135deg, var(--primary), #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text);
         }
 
         .prose h2 {
+            font-family: var(--font-heading);
             font-size: 1.75rem;
-            font-weight: 700;
-            margin-top: 3rem;
+            font-weight: 800;
+            margin-top: 3.5rem;
             margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
-
-        .prose h2::before {
+        .prose h2::after {
             content: '';
-            display: inline-block;
-            width: 4px;
-            height: 24px;
-            background: var(--primary);
-            border-radius: 4px;
+            flex: 1;
+            height: 1px;
+            background: var(--border);
         }
 
         .prose h3 {
+            font-family: var(--font-heading);
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 2rem;
             margin-bottom: 1rem;
             color: var(--primary);
         }
 
-        .prose p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            color: var(--text-muted);
-        }
+        .prose p { margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-muted); }
 
-        .prose ul, .prose ol {
-            margin-bottom: 1.5rem;
-            padding-left: 20px;
-        }
+        .prose ul, .prose ol { margin-bottom: 1.5rem; padding-inline-start: 24px; }
+        .prose li { margin-bottom: 0.75rem; color: var(--text-muted); font-size: 1.05rem; }
 
-        .prose li {
-            margin-bottom: 0.75rem;
-            color: var(--text-muted);
-            font-size: 1.05rem;
-        }
-
-        .prose strong {
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .prose a {
-            color: var(--primary);
-            text-decoration: none;
-            border-bottom: 2px solid var(--primary-soft);
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-
-        .prose a:hover {
-            background: var(--primary-soft);
-            border-bottom-color: var(--primary);
-        }
-
-        .prose hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 4rem 0;
-        }
-
-        /* Code Blocks */
         .prose code {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--primary-soft);
+            font-family: var(--font-mono);
+            background: rgba(79, 70, 229, 0.1);
             color: var(--primary);
             padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         .prose pre {
-            background: #1e293b !important;
-            padding: 24px !important;
-            border-radius: var(--radius-md) !important;
-            margin: 2rem 0 !important;
-            overflow-x: auto;
+            background: #000 !important;
+            padding: 32px !important;
+            border: 1px solid var(--slate-700) !important;
+            margin: 2.5rem 0 !important;
+            position: relative;
+        }
+        .prose pre::before {
+            content: 'CODE_BLOCK';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--slate-400);
         }
 
-        .prose pre code {
-            background: transparent;
-            color: #e2e8f0;
-            padding: 0;
-        }
+        .prose pre code { color: #10b981; }
 
-        /* Alert / Info Boxes */
         .prose blockquote {
-            border-left: 4px solid var(--primary);
-            background: var(--primary-soft);
-            padding: 20px 24px;
-            margin: 2rem 0;
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
-        }
-
-        .prose blockquote p {
-            margin-bottom: 0;
-            color: var(--text);
-            font-weight: 500;
+            border-inline-start: 4px solid var(--primary);
+            background: rgba(30, 41, 59, 0.6);
+            padding: 24px;
+            margin: 2.5rem 0;
         }
 
         footer {
-            padding: 40px 0;
+            padding: 60px 0;
             border-top: 1px solid var(--border);
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
         }
 
-        /* Floating action button */
-        .fab {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            background: var(--primary);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 100px;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .fab:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
-        }
-
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
+            .prose { padding: 30px; }
             .prose h1 { font-size: 2.25rem; }
-            main { padding: 40px 0; }
         }
     </style>
 </head>
@@ -294,13 +286,15 @@
 <div class="page-wrapper">
     <header>
         <div class="container">
-            <a href="#" class="logo-wrap">
+            <a href="index.html" class="logo-wrap">
                 <img src="icons/logo.png" alt="Logo">
-                <span>TedTalk</span>
+                <span data-i18n="app-name">Taqeem</span>
             </a>
-            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
-                🌙
-            </button>
+            <div class="header-actions">
+                <button onclick="toggleTheme()" class="theme-toggle" id="theme-btn">🌙</button>
+                <button onclick="toggleLang()" class="lang-toggle" id="lang-btn" data-i18n="lang-btn">ARABIC</button>
+                <a href="index.html" class="back-link" data-i18n="nav-back">← Back to Console</a>
+            </div>
         </div>
     </header>
 
@@ -314,20 +308,18 @@
 
     <footer>
         <div class="container">
-            &copy; 2026 TedTalk System. Premium Evaluation Platform.
+            <p data-i18n="footer-text">&copy; 2026 TAQEEM PROJECT. Built for schools, engineered for excellence.</p>
+            <p style="margin-top: 12px; font-size: 0.8rem; opacity: 0.7;">
+                Powered by <a href="https://appwand.net" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700;">AppWand</a>
+            </p>
         </div>
     </footer>
-
-    <a href="config_builder.html" class="fab">
-        <span>🛠️</span> Open Builder
-    </a>
 </div>
 
-<!-- Embedded Markdown Content for absolute local compatibility -->
-<script type="text/markdown" id="markdown-source">
-# 🚀 TedTalk Installation Guide
+<script type="text/markdown" id="markdown-en">
+# 🚀 Taqeem Installation Guide
 
-Follow these simple steps to set up the TedTalk evaluation system for your new client.
+Follow these simple steps to set up the Taqeem evaluation system for your school.
 
 ## 1. Supabase Backend Setup (5 mins)
 
@@ -337,7 +329,7 @@ The app needs a database to store students and scores.
 2.  **Run Setup Script**: 
     - Open the **SQL Editor** in your Supabase dashboard.
     - Click **New Query**.
-    - Open the `client_setup.sql` file (included in your package) and copy its entire content.
+    - Copy the SQL script provided on the Taqeem home page.
     - Paste it into the SQL Editor and click **Run**.
 3.  **Storage Setup**:
     - Go to the **Storage** tab in Supabase.
@@ -351,12 +343,12 @@ The app needs a database to store students and scores.
 
 ## 2. Generate Client Package (2 mins)
 
-Instead of editing code manually, use our builder tool:
+Instead of editing code manually, use our builder tool on the home page:
 
-1.  Open `config_builder.html` in your browser.
+1.  Go to the **Generator** section on the home page.
 2.  Paste the **Project URL** and **Anon Key** you copied from Supabase.
-3.  Click **Generate Client ZIP**.
-4.  A ZIP file will download containing the *entire* customized application for your client.
+3.  Click **Generate My School's ZIP**.
+4.  A ZIP file will download containing the *entire* customized application for your school.
 
 ---
 
@@ -387,40 +379,135 @@ You can host the files anywhere (GitHub Pages, Netlify, Vercel, or even a basic 
 Check the documentation in the original project or reach out for support.
 </script>
 
+<script type="text/markdown" id="markdown-ar">
+# 🚀 دليل تثبيت Taqeem
+
+اتبع هذه الخطوات البسيطة لإعداد نظام تقييم Taqeem لمدرستك.
+
+## 1. إعداد Supabase (5 دقائق)
+
+يحتاج التطبيق إلى قاعدة بيانات لتخزين الطلاب والنتائج.
+
+1.  **إنشاء مشروع**: انتقل إلى [Supabase](https://supabase.com/) وأنشئ مشروعًا جديدًا.
+2.  **تشغيل نص الإعداد**: 
+    - افتح **محرر SQL** في لوحة تحكم Supabase الخاصة بك.
+    - انقر على **استعلام جديد**.
+    - انسخ نص SQL المقدم في الصفحة الرئيسية لـ Taqeem.
+    - الصقه في محرر SQL وانقر على **تشغيل**.
+3.  **إعداد التخزين**:
+    - انتقل إلى علامة التبويب **التخزين (Storage)** في Supabase.
+    - أنشئ حاوية (bucket) جديدة باسم `winner-photos`.
+    - تأكد من تعيين الحاوية كـ **عامة (Public)**.
+4.  **الحصول على بيانات الاعتماد**:
+    - انتقل إلى **إعدادات المشروع** > **واجهة برمجة التطبيقات (API)**.
+    - انسخ **رابط المشروع (Project URL)** ومفتاح **anon** العام.
+
+---
+
+## 2. إنشاء حزمة العميل (دقيقتان)
+
+بدلاً من تحرير الكود يدويًا، استخدم أداة المولد الخاصة بنا في الصفحة الرئيسية:
+
+1.  انتقل إلى قسم **المولد** في الصفحة الرئيسية.
+2.  الصق **رابط المشروع** ومفتاح **Anon** اللذين نسختهما من Supabase.
+3.  انقر فوق **إنشاء ملف ZIP لمدرستي**.
+4.  سيتم تنزيل ملف ZIP يحتوي على التطبيق المخصص *بالكامل* لمدرستك.
+
+---
+
+## 3. إطلاق التطبيق (3 دقائق)
+
+يمكنك استضافة الملفات في أي مكان (GitHub Pages، Netlify، Vercel، أو حتى خادم أساسي).
+
+### الخيار أ: Netlify Drop (الأسرع)
+1.  انتقل إلى [Netlify Drop](https://app.netlify.com/drop).
+2.  قم بسحب وإفلات **ملف ZIP** الذي قمت بإنشائه للتو.
+3.  تطبيقك الآن مباشر!
+
+### الخيار ب: GitHub Pages
+1.  قم بفك ضغط ملف ZIP وادفع الملفات إلى مستودع GitHub جديد.
+2.  قم بتمكين **GitHub Pages** في إعدادات المستودع.
+
+---
+
+## 4. نصائح الاستخدام
+
+*   **تسجيل دخول المسؤول**: تسجيل الدخول الافتراضي هو `admin` بكلمة مرور `admin123`. قم بتغيير ذلك في علامة التبويب "الإعداد > المستخدمون" بمجرد تسجيل الدخول.
+*   **التثبيت كتطبيق ويب (PWA)**: افتح رابط التطبيق على جهاز محمول (Chrome على Android أو Safari على iOS) واختر "إضافة إلى الشاشة الرئيسية" للحصول على تجربة تطبيق سلسة وأصلية.
+*   **عرض الفائز**: افتح رابط العرض المباشر في علامة تبويب النتائج. سيتم تحديثه تلقائيًا عند "دفع" فائز من علامة تبويب النتائج.
+
+---
+
+### هل تحتاج مساعدة؟
+تحقق من الوثائق في المشروع الأصلي أو تواصل للحصول على الدعم.
+</script>
+
 <script>
-    // Theme Logic
-    const themeToggle = document.getElementById('theme-toggle');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    function setTheme(isDark) {
-        document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        themeToggle.textContent = isDark ? '☀️' : '🌙';
-        if (window.localStorage) {
-            localStorage.setItem('tedtalk_docs_theme', isDark ? 'dark' : 'light');
+    const translations = {
+        en: {
+            'app-name': 'Taqeem',
+            'page-title': 'Documentation | Taqeem Installation Guide',
+            'nav-back': '← Back to App Builder',
+            'lang-btn': 'ARABIC',
+            'footer-text': '© 2026 TAQEEM PROJECT. Built for schools, engineered for excellence.'
+        },
+        ar: {
+            'app-name': 'تقييم',
+            'page-title': 'الوثائق الفنية | دليل التثبيت',
+            'nav-back': '← العودة لمنشئ التطبيق',
+            'lang-btn': 'ENGLISH',
+            'footer-text': '© 2026 مشروع تقييم. بني للمدارس، وهُندس للتميز.'
         }
-    }
-
-    const savedTheme = window.localStorage ? localStorage.getItem('tedtalk_docs_theme') : null;
-    if (savedTheme) {
-        setTheme(savedTheme === 'dark');
-    } else {
-        setTheme(prefersDark.matches);
-    }
-
-    themeToggle.onclick = () => {
-        const isDark = document.body.getAttribute('data-theme') === 'dark';
-        setTheme(!isDark);
     };
+
+    let currentLang = localStorage.getItem('taqeem_lang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('taqeem_lang', lang);
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                el.textContent = translations[lang][key];
+            }
+        });
+
+        document.getElementById('page-title').textContent = translations[lang]['page-title'];
+        document.getElementById('lang-btn').textContent = translations[lang]['lang-btn'];
+        renderDocs();
+    }
+
+    function toggleLang() {
+        setLanguage(currentLang === 'en' ? 'ar' : 'en');
+    }
+
+    // Theme Logic
+    let currentTheme = localStorage.getItem('taqeem_theme') || 'dark';
+    
+    function setTheme(theme) {
+        currentTheme = theme;
+        localStorage.setItem('taqeem_theme', theme);
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('theme-btn').textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+
+    function toggleTheme() {
+        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    setTheme(currentTheme);
 
     // Markdown Render
     function renderDocs() {
         const container = document.getElementById('doc-content');
-        const source = document.getElementById('markdown-source');
+        const source = document.getElementById('markdown-' + currentLang);
         
         try {
             const markdown = source.innerHTML.trim();
             
-            // Configure marked
             marked.setOptions({
                 breaks: true,
                 gfm: true
@@ -428,7 +515,6 @@ Check the documentation in the original project or reach out for support.
 
             container.innerHTML = marked.parse(markdown);
             
-            // Add fade-in effect
             setTimeout(() => {
                 container.classList.add('loaded');
                 if (window.Prism) Prism.highlightAll();
@@ -443,7 +529,8 @@ Check the documentation in the original project or reach out for support.
         }
     }
 
-    renderDocs();
+    // Initial load
+    setLanguage(currentLang);
 </script>
 
 </body>

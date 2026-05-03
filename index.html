@@ -1,534 +1,1080 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="Premium student roster management for TedTalk evaluation">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="TedTalk">
+  <title id="page-title">Taqeem | The Blueprint for Excellence</title>
   <link rel="icon" href="icons/logo.png" type="image/png">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css?v=3.2">
-  <title>TedTalk | Premium Edition</title>
-  <script src="lib/supabase.js"></script>
-  <script>
-    const SUPABASE_URL = 'https://mdzsxzrisfxgebtgetxp.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kenN4enJpc2Z4Z2VidGdldHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTA5MTEsImV4cCI6MjA5MTIyNjkxMX0.6r1IZJo28dEv7dnfppkwNwATIMt9ahRhLYCxSPAKRXw';
-    if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
-      window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Public+Sans:wght@300;400;600;700&family=Space+Mono:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    :root {
+      /* Base Indigo Palette */
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --navy: #0f172a;
+      
+      /* Dark Theme (Default) */
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.2);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      --grid-opacity: 0.4;
+      --glass-bg: rgba(15, 23, 42, 0.8);
+      
+      /* Typography & Misc */
+      --radius: 4px;
+      --font-main: 'Public Sans', sans-serif;
+      --font-heading: 'Outfit', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-arabic: 'Cairo', sans-serif;
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-  </script>
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(15, 23, 42, 0.1);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --grid-opacity: 0.1;
+      --glass-bg: rgba(248, 250, 252, 0.8);
+    }
+
+    [dir="rtl"] {
+      --font-main: var(--font-arabic);
+      --font-heading: var(--font-arabic);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: var(--transition);
+    }
+
+    /* Reveal Animation */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .badge-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .section { 
+      padding: 120px 0; 
+      border-bottom: 1px solid var(--border);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 50% 50%, transparent 0%, var(--bg) 100%),
+        url('icons/grid.png');
+      background-size: cover;
+      opacity: var(--grid-opacity);
+      z-index: -1;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    nav {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: var(--transition);
+    }
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-img { 
+      width: 32px; 
+      height: 32px; 
+      filter: brightness(0) invert(1); 
+      transition: var(--transition);
+    }
+    [data-theme="light"] .logo-img { filter: none; }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    .theme-toggle:hover {
+      border-color: var(--primary);
+      transform: rotate(15deg);
+    }
+
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+
+    .lang-toggle {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0 16px;
+      height: 36px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lang-toggle:hover { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 12px;
+    }
+    [dir="rtl"] .nav-actions { margin-left: 0; margin-right: 12px; }
+
+    .hero {
+      padding: 120px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.7rem;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      line-height: 1.1;
+      font-weight: 800;
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-illustration {
+      margin-top: 60px;
+      max-width: 900px;
+      width: 100%;
+      border: 1px solid var(--border);
+      padding: 20px;
+      background: var(--surface);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: none;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+    .section { padding: 120px 0; border-bottom: 1px solid var(--border); }
+    
+    .section-title { margin-bottom: 60px; text-align: left; }
+    .section-title h2 {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .section-title h2::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-title p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; }
+
+    .roadmap { display: flex; flex-direction: column; gap: 40px; }
+    .roadmap-step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 40px;
+      background: var(--surface);
+      padding: 40px;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    .roadmap-step:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .step-num-large {
+      font-family: var(--font-mono);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      opacity: 0.5;
+      line-height: 1;
+    }
+
+    .step-content h3 {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .step-content .description {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    .tutorial-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .tutorial-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-top: 16px;
+      display: none;
+      transition: var(--transition);
+    }
+
+    .tutorial-panel img { 
+      width: 100%; 
+      border: 1px solid var(--border); 
+      margin-top: 16px;
+      transition: var(--transition);
+    }
+
+    .direct-links { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .direct-link {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .direct-link:hover { border-color: var(--primary); background: var(--bg); }
+
+    .card {
+      background: var(--surface);
+      padding: 48px;
+      border: 1px solid var(--border);
+    }
+
+    .console {
+      background: #000;
+      padding: 40px;
+      border: 2px solid var(--slate-700);
+      position: relative;
+      overflow: hidden;
+    }
+    .console::before {
+      content: 'SYSTEM CONSOLE V1.0';
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--slate-400);
+    }
+
+    .generator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .generator-grid { grid-template-columns: 1fr; }
+      .roadmap-step { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    .form-group { margin-bottom: 24px; }
+    label {
+      display: block;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.7rem;
+      margin-bottom: 12px;
+      color: var(--slate-400);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      background: #000;
+      border: 1px solid var(--border);
+      color: #10b981;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(79, 70, 229, 0.2); }
+
+    .status-box {
+      margin-top: 24px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      display: none;
+      border-left: 4px solid var(--primary);
+    }
+
+    footer {
+      padding: 80px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .step-check {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      transition: all 0.3s;
+    }
+    .step-check.active {
+      border-color: #10b981;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    (function () {
-      const savedTheme = localStorage.getItem('tedtalk_theme');
-      const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
+    const CENTRAL_URL = 'https://rztcbfulvzuqdmkffvcq.supabase.co';
+    const CENTRAL_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6dGNiZnVsdnp1cWRta2ZmdmNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1ODkzMzMsImV4cCI6MjA5MjE2NTMzM30.XKVBbizlcW5d8ggbKdI2Ay-FZoNTPRY9_XmYhQUoEBo';
+    let centralSupabase;
+    if (typeof window.supabase !== 'undefined') {
+      centralSupabase = window.supabase.createClient(CENTRAL_URL, CENTRAL_KEY);
+    }
   </script>
 </head>
-
 <body>
-  <!-- Login View -->
-  <div id="login-view" class="login-view">
-    <div class="login-container glass">
-      <div class="login-header">
-        <img src="icons/logo.png" alt="Al Hassad Logo" class="login-logo-img">
-        <h1 class="login-title">Al Hassad TedTalk</h1>
-        <p class="login-subtitle">Sign in to manage student evaluations</p>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo-container">
+      <img src="icons/logo.png" alt="Logo" class="logo-img">
+      <span data-i18n="app-name">Taqeem</span>
+    </a>
+    <div class="nav-links">
+      <a href="#setup" data-i18n="nav-steps">Blueprint</a>
+      <a href="#sql" data-i18n="nav-db">Archive</a>
+      <a href="#generator" data-i18n="nav-gen">Console</a>
+      <a href="wiki.html" data-i18n="nav-wiki">Wiki</a>
+      <a href="demo.html" style="color: var(--primary);" target="_blank" data-i18n="nav-demo">Live Preview</a>
+      <div class="nav-actions">
+        <button onclick="toggleTheme()" class="theme-toggle" id="theme-btn">🌙</button>
+        <button onclick="toggleLang()" class="lang-toggle" id="lang-btn" data-i18n="lang-btn">ARABIC</button>
       </div>
-
-      <form id="login-form" class="login-form">
-        <div class="form-group">
-          <label for="login-email" class="form-label">Username</label>
-          <input type="text" id="login-email" class="form-input" placeholder="Enter your username" required
-            autocomplete="username">
-        </div>
-
-        <div class="form-group">
-          <label for="login-password" class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required
-            autocomplete="current-password">
-        </div>
-
-        <div id="login-error" class="login-error" hidden></div>
-
-        <button type="submit" id="login-btn" class="btn btn-login">Sign In</button>
-      </form>
-
     </div>
-    <button type="button" id="theme-toggle-login" class="login-theme-toggle" title="Toggle Theme">
-      <span id="theme-icon-login">🌙</span>
-    </button>
   </div>
+</nav>
 
-  <!-- Main App (hidden until authenticated) -->
-  <div id="app-container" class="app-container" hidden>
-    <header class="header">
-      <div class="header-content">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="icons/logo.png" alt="Logo" class="header-logo-img">
-          <h1 class="app-title">TedTalk</h1>
+<header class="hero">
+  <div class="container">
+    <div class="hero-content">
+        <div class="hero-badges">
+          <span class="badge" data-i18n="hero-badge">Free and Open Source</span>
+          <span class="badge badge-success" data-i18n="hero-counter">🚀 150+ Deployed Systems</span>
         </div>
-        <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
-          <button id="theme-toggle" class="btn btn-logout"
-            style="width: 40px; height: 40px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;"
-            title="Toggle Theme">
-            <span id="theme-icon" style="font-size: 1.2rem;">🌙</span>
-          </button>
-          <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-            <span id="current-username-display" style="font-weight: 600; font-size: 0.9rem;"></span>
-            <span id="role-badge" class="role-badge" style="margin: 0; padding: 2px 8px; font-size: 0.65rem;"></span>
-          </div>
-          <button id="logout-btn" class="btn btn-logout">Logout</button>
-        </div>
-
+        <h1 data-i18n="hero-title">Precision Evaluation for Every Student</h1>
+        <p data-i18n="hero-subtitle">The all-in-one platform for school competitions. Empowering judges with professional scoring tools and administrators with real-time insights.</p>
+      <div class="cta-group">
+        <a href="#setup" class="btn btn-primary" data-i18n="btn-start">Begin Setup</a>
+        <a href="demo.html" class="btn btn-secondary" target="_blank" data-i18n="btn-demo">View Demo</a>
       </div>
-    </header>
+      <img src="icons/hero.png" alt="Taqeem System" class="hero-illustration">
+    </div>
+  </div>
+</header>
 
-    <nav class="tab-bar glass" role="tablist">
-      <button class="tab" role="tab" data-tab="setup">Admin</button>
-      <button class="tab active" role="tab" data-tab="judging">Judging</button>
-      <button class="tab" role="tab" data-tab="results">Results</button>
-    </nav>
+<section id="setup" class="section">
+  <div class="container">
+    <div class="section-title">
+      <h2 data-i18n="steps-title">01. Setup Roadmap</h2>
+      <p data-i18n="steps-p">Follow this technical blueprint to provision your own school's evaluation system.</p>
+    </div>
 
-    <main class="main-content">
-      <!-- Setup Section -->
-      <section id="setup-panel" class="setup-section" hidden>
-        <nav class="sub-tab-bar" role="tablist">
-          <button class="sub-tab active" data-subtab="students">Students</button>
-          <button class="sub-tab" data-subtab="users">Users</button>
-          <button class="sub-tab" data-subtab="config">Configuration</button>
-        </nav>
-
-        <!-- Students Sub-Tab -->
-        <div id="students-subpanel">
-          <div class="setup-grid">
-            <div class="setup-card">
-              <h2 class="section-title" id="student-form-title">Add Student</h2>
-              <form id="add-student-form" class="input-group" style="display: flex; flex-direction: column; gap: 12px;"
-                autocomplete="off">
-                <input type="text" id="student-number" placeholder="Number *" class="form-input" required>
-                <input type="text" id="student-name" placeholder="Name *" class="form-input" required>
-                <div style="display: flex; gap: 12px;">
-                  <input type="text" id="student-class" placeholder="Class *" class="form-input" required>
-                  <input type="text" id="student-section" placeholder="Section" class="form-input">
-                </div>
-                <!-- Student Photo Upload -->
-                <div class="form-group" style="margin-top: 4px;">
-                  <label class="form-label" style="font-size: 0.85rem; font-weight: 600;">Student Photo (optional)</label>
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <img id="student-photo-preview" src="" alt="Preview"
-                      style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); display: none;">
-                    <div style="flex: 1;">
-                      <label for="student-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 0.85rem;">
-                        📷 Choose Photo
-                      </label>
-                      <input type="file" id="student-photo-upload" accept="image/*" style="display: none;">
-                    </div>
-                  </div>
-                </div>
-                <div style="display: flex; gap: 12px;">
-                  <button type="submit" id="student-submit-btn" class="btn btn-login" style="flex: 2;">Add
-                    Student</button>
-                  <button type="button" id="student-cancel-btn" class="btn btn-logout" style="flex: 1; display: none;"
-                    onclick="cancelEditStudent()">Cancel</button>
-                </div>
-              </form>
-            </div>
-
-            <div class="setup-card">
-              <h2 class="section-title">Bulk Import</h2>
-              <div class="bulk-import-section" style="margin-top: 0; padding-top: 0; border-top: none;">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-                  Fill this <a href="#" id="download-template-btn" style="color: var(--primary); font-weight: 600;">CSV
-                    template</a> and upload it below.
-                </p>
-                <label for="csv-import" class="file-input-label" id="drop-zone">
-                  <input type="file" id="csv-import" accept=".csv" class="file-input">
-                  <div style="font-size: 2rem; margin-bottom: 8px;">📂</div>
-                  <span style="font-weight: 600; font-size: 1rem; display: block; margin-bottom: 4px;">Choose CSV
-                    File</span>
-                  <span style="font-size: 0.8rem; opacity: 0.7;">or drag and drop here</span>
-                  <div id="file-name" class="file-name"
-                    style="margin-top: 12px; font-weight: 700; color: var(--primary);"></div>
-                </label>
-                <button type="button" id="import-btn" class="btn btn-login" style="width: 100%; margin-top: 16px;"
-                  disabled>Import Students</button>
-              </div>
-            </div>
+    <div class="roadmap">
+      <div class="roadmap-step" id="roadmap-1">
+        <div class="step-num-large">01</div>
+        <div class="step-content">
+          <h3 data-i18n="step1-h">Create School Project</h3>
+          <p class="description" data-i18n="step1-p">Initialize your school's private database on the Supabase platform.</p>
+          <div class="direct-links">
+            <a href="https://supabase.com/dashboard/projects" target="_blank" class="direct-link"><span>+ Create Project</span></a>
+            <div class="tutorial-link" onclick="toggleTutorial(1)" data-i18n="tut-link">How do I find this? →</div>
           </div>
-
-          <div class="roster-header" style="margin-top: 40px; margin-bottom: 20px;">
-            <div
-              style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 12px; gap: 16px; flex-wrap: wrap;">
-              <h2 class="section-title" style="margin: 0;">Student Roster</h2>
-              <div style="display: flex; gap: 12px; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
-                <div class="filter-group" style="width: 150px;">
-                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Filter Class</label>
-                  <select id="filter-class" class="form-input" style="padding: 4px 8px; font-size: 0.85rem;">
-                    <option value="">All Classes</option>
-                  </select>
-                </div>
-                <div class="filter-group" style="width: 150px;">
-                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Filter Section</label>
-                  <select id="filter-section" class="form-input" style="padding: 4px 8px; font-size: 0.85rem;">
-                    <option value="">All Sections</option>
-                  </select>
-                </div>
-                <div class="search-box" style="width: 250px;">
-                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;">Search</label>
-                  <input type="text" id="roster-search" placeholder="Name or number..." class="form-input" style="padding: 4px 8px; font-size: 0.85rem;">
-                </div>
-              </div>
-            </div>
-            <div id="bulk-actions-toolbar" class="bulk-actions-toolbar" hidden>
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <input type="checkbox" id="select-all-students" class="custom-checkbox">
-                <span id="bulk-selection-count" style="font-weight: 600;">0 selected</span>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" id="bulk-edit-btn" class="btn"
-                  style="padding: 6px 12px; font-size: 0.85rem; background: var(--primary-light); color: var(--primary);">Bulk
-                  Edit</button>
-                <button type="button" id="bulk-delete-btn" class="btn btn-logout"
-                  style="padding: 6px 12px; font-size: 0.85rem; color: var(--danger); border-color: var(--danger);">Bulk
-                  Delete</button>
-              </div>
-            </div>
-          </div>
-          <ul id="roster-list" class="roster-list"></ul>
-        </div>
-
-        <!-- Users Sub-Tab -->
-        <div id="users-subpanel" hidden>
-          <div class="setup-grid">
-            <div class="setup-card">
-              <h2 class="section-title">User Management</h2>
-              <div id="role-users-list"></div>
-            </div>
-
-            <div class="setup-card">
-              <h2 class="section-title" id="user-form-title">Create New User</h2>
-              <div class="input-group" style="display: flex; flex-direction: column; gap: 12px;">
-                <input type="text" id="new-user-username" placeholder="Username *" class="form-input">
-                <input type="password" id="new-user-password" placeholder="Password *" class="form-input">
-                <select id="new-user-role" class="form-input">
-                  <option value="judge">Judge</option>
-                  <option value="admin">Admin</option>
-                </select>
-                <div style="display: flex; gap: 12px;">
-                  <button type="button" id="create-user-btn" class="btn btn-login" style="flex: 2;">Create User</button>
-                  <button type="button" id="user-cancel-btn" class="btn btn-logout" style="flex: 1; display: none;"
-                    onclick="cancelEditUser()">Cancel</button>
-                </div>
-              </div>
-            </div>
+          <div id="tut-1" class="tutorial-panel">
+            <p data-i18n="tut1-p">Go to Settings → API in your Supabase dashboard. You will see your Project URL and Anon Key there.</p>
+            <img src="icons/tut_keys.png" alt="Keys Tutorial">
           </div>
         </div>
+        <div class="step-check" id="check-1">✓</div>
+      </div>
 
-        <!-- Configuration Sub-Tab -->
-        <div id="config-subpanel" hidden>
-
-          <!-- Branding Card -->
-          <div class="setup-card" style="margin-bottom: 24px;">
-            <h2 class="section-title">🎨 Branding</h2>
-
-            <!-- App Name -->
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">App Name</label>
-              <input type="text" id="cfg-app-name" class="form-input" placeholder="e.g. TedTalk">
-              <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;">Updates the header title, browser tab, login screen, and PWA name.</p>
-            </div>
-
-            <!-- Event Subtitle -->
-            <div class="form-group" style="margin-top: 16px;">
-              <label class="form-label" style="font-weight: 600;">Login Subtitle</label>
-              <input type="text" id="cfg-app-subtitle" class="form-input" placeholder="e.g. Sign in to manage student evaluations">
-              <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;">The tagline shown below the title on the login screen.</p>
-            </div>
-
-            <!-- Logo Upload -->
-            <div class="form-group" style="margin-top: 16px;">
-              <label class="form-label" style="font-weight: 600;">App Logo</label>
-              <div style="display: flex; align-items: center; gap: 16px;">
-                <img id="cfg-logo-preview" src="icons/logo.png" alt="Logo Preview"
-                  style="width: 64px; height: 64px; object-fit: contain; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); padding: 4px;">
-                <div style="flex: 1;">
-                  <label for="cfg-logo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;">
-                    📂 Choose Image
-                  </label>
-                  <input type="file" id="cfg-logo-upload" accept="image/*" style="display: none;">
-                  <button id="cfg-logo-reset" class="btn btn-logout" style="margin-left: 8px; padding: 10px 16px; color: var(--danger); border-color: var(--danger);">Reset to Default</button>
-                  <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;">Applies to login screen, header, and PWA icon. PNG or SVG recommended.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Primary Color -->
-            <div class="form-group" style="margin-top: 16px;">
-              <label class="form-label" style="font-weight: 600;">Primary Color</label>
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <input type="color" id="cfg-primary-color" value="#4f46e5"
-                  style="width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; padding: 2px; background: var(--surface);">
-                <div>
-                  <span id="cfg-color-hex" style="font-weight: 600; font-family: monospace; font-size: 1rem;">#4f46e5</span>
-                  <p class="bulk-import-hint" style="margin-top: 2px; font-style: italic;">Accent color for buttons, active states, and highlights.</p>
-                </div>
-                <button id="cfg-color-reset" class="btn btn-logout" style="padding: 8px 14px; font-size: 0.85rem; margin-left: auto;">Reset</button>
-              </div>
-            </div>
-
-            <button id="save-branding-btn" class="btn btn-login" style="margin-top: 24px; width: 100%;">💾 Save Branding</button>
+      <div class="roadmap-step" id="roadmap-2">
+        <div class="step-num-large">02</div>
+        <div class="step-content">
+          <h3 data-i18n="step2-h">Provision Database</h3>
+          <p class="description" data-i18n="step2-p">Configure your archive tables by pasting our setup blueprint into your SQL console.</p>
+          <div class="direct-links">
+            <a href="#sql" class="direct-link"><span>Go to Script ↓</span></a>
+            <div class="tutorial-link" onclick="toggleTutorial(2)" data-i18n="tut-link">How do I find this? →</div>
           </div>
-
-          <!-- Timer Card -->
-          <div class="setup-card" style="margin-bottom: 24px;">
-            <h2 class="section-title">⏱️ Timer Settings</h2>
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Default Speech Duration</label>
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <input type="number" id="settings-timer-duration" class="form-input" value="180" min="0" max="600"
-                  style="width: 120px;">
-                <span style="font-weight: 500; color: var(--text-muted);">Seconds</span>
-              </div>
-              <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;">Adjust the primary timer length
-                (e.g., set to 180 for 3 minutes). This affects all judges.</p>
-            </div>
-            <button id="save-settings-btn" class="btn btn-login" style="margin-top: 24px;">Apply Changes</button>
-          </div>
-
-          <!-- Criteria Manager Card -->
-          <div class="setup-card" style="margin-bottom: 24px;">
-            <h2 class="section-title">📊 Evaluation Criteria</h2>
-            <div id="cfg-criteria-list" style="margin-bottom: 20px;">
-              <!-- Dynamic Criteria List -->
-            </div>
-            <div style="display: flex; gap: 12px; margin-top: 20px;">
-              <input type="text" id="cfg-new-criterion-label" class="form-input" placeholder="e.g. Stage Presence">
-              <button id="cfg-add-criterion-btn" class="btn btn-login" style="white-space: nowrap;">➕ Add Criterion</button>
-            </div>
-            <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;">Each criterion is scored from 1 to 10. Changes affect the total possible score.</p>
-          </div>
-
-
-          <!-- Dangerous Zone Card -->
-          <div class="setup-card"
-            style="border-style: dashed; border-color: var(--danger); background: rgba(239, 68, 68, 0.02);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h3 style="color: var(--danger); font-size: 1.1rem; margin-bottom: 4px;">Dangerous Zone</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Permanently wipe evaluations.</p>
-              </div>
-              <button id="clear-data-btn" class="btn btn-logout"
-                style="color: var(--danger); border-color: var(--danger); background: white;">Clear Data</button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Judging Section -->
-      <section id="judging-panel" class="judging-section" hidden>
-        <div class="judging-layout">
-          <!-- Left: Quick-Select Sidebar -->
-          <aside class="judging-sidebar" id="judging-sidebar">
-            <p class="empty-state-text">Loading roster...</p>
-          </aside>
-
-          <!-- Right: Evaluation Workspace -->
-          <div class="judging-workspace">
-            <div class="workspace-header-grid">
-              <div class="timer-card">
-                <div class="timer-display" id="timer-display">00:00</div>
-                <div class="timer-controls">
-                  <button type="button" id="timer-start" class="timer-btn">Start</button>
-                  <button type="button" id="timer-reset" class="timer-btn">Reset</button>
-                </div>
-              </div>
-
-              <div class="setup-card">
-                <label class="form-label">Speaker Management</label>
-                <select id="student-select" class="form-input custom-select">
-                  <option value="">-- Change Speaker --</option>
-                </select>
-                <div id="active-student-badge"
-                  style="font-weight: 700; color: var(--primary); font-size: 1.1rem; margin-top: 8px;"></div>
-                <div id="active-student-details" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;"></div>
-              </div>
-            </div>
-
-            <form id="evaluation-form" class="evaluation-form">
-              <div class="setup-card">
-                <h2 class="section-title">Evaluation Matrix</h2>
-
-                <div class="criteria-container" id="criteria-container">
-                  <!-- Generated by JS: renderCriteriaMatrix() -->
-                </div>
-
-                <div class="form-group" style="margin-top: 24px;">
-                  <label class="form-label">Judge Comments</label>
-                  <textarea id="evaluation-comments" class="form-input" placeholder="Enter feedback for the student..."
-                    style="min-height: 100px;"></textarea>
-                </div>
-
-                <div class="total-display glass" style="margin-top: 32px; padding: 20px; text-align: center;">
-                  <span class="total-label" style="display: block; margin-bottom: 8px;">Final Score</span>
-                  <span id="total-score" class="total-value"
-                    style="font-size: 2rem; font-weight: 700; color: var(--primary);">0 / --</span>
-                </div>
-
-                <button type="submit" class="btn btn-login"
-                  style="width: 100%; height: 56px; font-size: 1.1rem; margin-top: 24px;">Save Evaluation</button>
-              </div>
-            </form>
+          <div id="tut-2" class="tutorial-panel">
+            <p data-i18n="tut2-p">Click SQL Editor in the left sidebar, create a New Query, and paste the code below.</p>
+            <img src="icons/tut_sql.png" alt="SQL Tutorial">
           </div>
         </div>
-      </section>
+        <div class="step-check" id="check-2">✓</div>
+      </div>
 
-      <!-- Results Section -->
-      <section id="results-panel" class="results-section" hidden>
-        <div class="setup-card" style="margin-bottom: 24px;">
-          <h2 class="section-title">Actions & Filters</h2>
-          <div class="actions-dashboard">
-            <input type="text" id="results-search" placeholder="Search by name..." class="form-input" style="flex: 2;">
-            <select id="results-grade-filter" class="form-input custom-select" style="flex: 1.2">
-              <option value="">All Grades</option>
-            </select>
-            <select id="results-section-filter" class="form-input custom-select" style="flex: 1">
-              <option value="">All Sections</option>
-            </select>
-            <select id="results-view-toggle" class="form-input custom-select" style="flex: 1.5">
-              <option value="highest">Best Performances</option>
-              <option value="all">All Raw Scores</option>
-            </select>
-            <button id="clear-results-filters" class="btn btn-logout"
-              style="padding-left: 16px; padding-right: 16px;" title="Reset Filters">↺ Reset</button>
-            <button id="export-csv-btn" class="btn btn-logout" style="min-width: 120px;">Export CSV</button>
-          </div>
+      <div class="roadmap-step" id="roadmap-3">
+        <div class="step-num-large">03</div>
+        <div class="step-content">
+          <h3 data-i18n="step3-h">Deploy Application</h3>
+          <p class="description" data-i18n="step3-p">Enter your school's unique access keys to generate your private application package.</p>
+          <a href="#generator" class="btn btn-primary" style="margin-top: 10px;" data-i18n="btn-go-gen">Go to Console</a>
         </div>
-        <div class="table-card">
-          <div id="results-table-wrapper" class="results-table-wrapper" style="border: none; border-radius: 0;">
-            <table id="results-table" class="results-table">
-              <thead id="results-thead">
-                <tr>
-                  <th style="width: 80px;">Rank</th>
-                  <th style="width: 100px;">Num</th>
-                  <th>Student Name</th>
-                  <th>Class</th>
-                  <th>Section</th>
-                  <th style="width: 80px; text-align: center;">Highest</th>
-                  <th style="width: 80px; text-align: center;">Average</th>
-                  <th style="width: 100px; text-align: center;">Details</th>
-                </tr>
-              </thead>
-              <tbody id="results-tbody"></tbody>
-            </table>
-            <div id="results-empty" class="results-empty" hidden>
-              <p class="empty-state-text">No evaluations collected yet.</p>
-            </div>
-          </div>
-        </div>
-        <!-- Winner Announcement (Consolidated from Winners tab) -->
-        <div class="setup-card" style="margin-top: 40px; border-color: var(--gold, #fbbf24); border-width: 2px;">
-          <h2 class="section-title">🏆 Winner Announcement</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-            Push a winner to the <a href="winners/" target="_blank" style="color: var(--primary); font-weight: 600;">display screen</a>. 
-            Open the display screen on a projector or separate screen, then control it from here.
-          </p>
+        <div class="step-check" id="check-3">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <!-- Student Selection -->
+<section id="sql" class="section">
+  <div class="container">
+    <div class="section-title">
+      <h2 data-i18n="db-title">02. Archive Blueprint</h2>
+      <p data-i18n="db-p">Copy this technical specification and paste it into your Supabase SQL Editor.</p>
+    </div>
+
+    <div style="border: 1px solid var(--border); background: #000; overflow: hidden;">
+      <div style="padding: 12px 20px; background: var(--slate-800); display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: var(--slate-400); font-family: var(--font-mono); font-size: 0.7rem;">ARCHIVE_SCHEMA.SQL</span>
+        <button onclick="copySQL()" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.7rem;" data-i18n="btn-copy">Copy Specification</button>
+      </div>
+      <pre id="sql-code" style="color: #10b981; padding: 32px; font-size: 0.8rem; max-height: 400px; overflow: auto; text-align: left; font-family: var(--font-mono); line-height: 1.5;"></pre>
+    </div>
+  </div>
+</section>
+
+<section id="generator" class="section" style="border-bottom: none;">
+  <div class="container">
+    <div class="section-title">
+      <h2 data-i18n="gen-title">03. Project Console</h2>
+      <p data-i18n="gen-p">Finalize your deployment by injecting your project credentials into the system core.</p>
+    </div>
+
+    <div class="console">
+      <div class="generator-grid">
+        <div class="generator-form">
           <div class="form-group">
-            <label class="form-label" style="font-weight: 600;">Select Winner</label>
-            <select id="winner-student-select" class="form-input custom-select">
-              <option value="">-- Choose a student --</option>
-            </select>
+            <label for="sb-url" data-i18n="label-url">School Project URL</label>
+            <input type="text" id="sb-url" placeholder="https://your-school.supabase.co" oninput="validateInput()">
           </div>
-
-          <!-- Photo Upload -->
-          <div class="form-group" style="margin-top: 12px;">
-            <label class="form-label" style="font-weight: 600;">Winner Photo (optional)</label>
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <img id="winner-photo-preview" src="" alt="Preview"
-                style="width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 3px solid var(--border); background: var(--bg); display: none;">
-              <div style="flex: 1;">
-                <label for="winner-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;">
-                  📷 Choose Photo
-                </label>
-                <input type="file" id="winner-photo-upload" accept="image/*" style="display: none;">
-                <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;">If no photo is provided, a microphone icon will be shown.</p>
-              </div>
-            </div>
+          <div class="form-group">
+            <label for="sb-key" data-i18n="label-key">Access Secret (Anon Key)</label>
+            <input type="text" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." oninput="validateInput()">
           </div>
-
-          <!-- Action Buttons -->
-          <div style="display: flex; gap: 12px; margin-top: 20px;">
-            <button type="button" id="push-winner-btn" class="btn btn-login" style="flex: 2; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-size: 1rem;">
-              🏅 Push to Winner Screen
-            </button>
-            <button type="button" id="clear-winner-btn" class="btn btn-logout" style="flex: 1; color: var(--danger); border-color: var(--danger);">
-              Clear Screen
-            </button>
-          </div>
+          <button id="build-btn" class="btn btn-primary" style="width: 100%; height: 60px;">
+            <span class="spinner" id="btn-spinner"></span>
+            <span id="btn-text" data-i18n="btn-gen">Execute Build Sequence</span>
+          </button>
+          <div id="status-box" class="status-box"></div>
         </div>
 
-      </section>
-
-    </main>
-  </div>
-  <div id="bulk-edit-modal" class="login-view" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" hidden>
-    <div class="login-container glass" style="max-width: 400px; padding: 32px;">
-      <h2 style="margin-bottom: 16px; font-family: var(--font-heading);">Bulk Edit Students</h2>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Leave a field blank to keep its
-        original value.</p>
-      <div class="form-group">
-        <label class="form-label">Update Class/Grade</label>
-        <input type="text" id="bulk-edit-class" class="form-input" placeholder="e.g. Grade 10">
-      </div>
-      <div class="form-group" style="margin-top: 16px;">
-        <label class="form-label">Update Section</label>
-        <input type="text" id="bulk-edit-section" class="form-input" placeholder="e.g. A">
-      </div>
-      <div class="form-group" style="margin-top: 16px;">
-        <label class="form-label" style="font-size: 0.85rem; font-weight: 600;">Bulk Student Photo (optional)</label>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img id="bulk-student-photo-preview" src="" alt="Preview"
-            style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); display: none;">
-          <div style="flex: 1;">
-            <label for="bulk-student-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 0.85rem;">
-              📷 Choose Bulk Photo
-            </label>
-            <input type="file" id="bulk-student-photo-upload" accept="image/*" style="display: none;">
+        <div class="console-output" style="text-align: left;">
+          <div style="background: rgba(16, 185, 129, 0.05); padding: 24px; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 4px;">
+            <p style="font-family: var(--font-mono); font-size: 0.8rem; color: #10b981;">
+              > INITIALIZING PACKAGER...<br>
+              > STANDBY FOR CREDENTIAL INPUT...<br>
+              > ENCRYPTION PROTOCOL: ACTIVE<br>
+              > TARGET: CLIENT_ZIP_V1.0
+            </p>
           </div>
         </div>
       </div>
-      <div style="display: flex; gap: 12px; margin-top: 24px;">
-        <button type="button" id="bulk-edit-confirm-btn" class="btn btn-login" style="flex: 2;">Update Selected</button>
-        <button type="button" onclick="document.getElementById('bulk-edit-modal').hidden = true;" class="btn btn-logout"
-          style="flex: 1;">Cancel</button>
+      <div class="community-impact">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-deployed">150+</div>
+          <div class="stat-label" data-i18n="stats-deployed">Schools Deployed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-evals">50k+</div>
+          <div class="stat-label" data-i18n="stats-evals">Evaluations Processed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label" data-i18n="stats-ownership">Data Ownership</div>
+        </div>
       </div>
     </div>
   </div>
-  <div id="toast-container" class="toast-container"></div>
-  <script src="app.js?v=3.5"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-      });
-    }
-  </script>
-</body>
+</section>
 
+<footer>
+    <div class="container">
+      <p data-i18n="footer-text">© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.</p>
+      <p style="margin-top: 12px; font-size: 0.8rem; opacity: 0.7;">
+        Powered by <a href="https://appwand.net" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700;">AppWand</a>
+      </p>
+      <a href="wiki.html" class="tutorial-link" style="margin-top: 40px;" data-i18n="footer-link">Full Documentation Portal →</a>
+    </div>
+  </footer>
+
+<script>
+  const translations = {
+    en: {
+      'page-title': 'Taqeem | The Blueprint for Excellence',
+      'nav-steps': 'Setup Guide',
+      'nav-db': 'Database',
+      'nav-gen': 'App Builder',
+      'nav-demo': 'Live Demo',
+      'nav-wiki': 'Wiki',
+      'app-name': 'Taqeem',
+      'hero-badge': 'Free and Open Source',
+      'hero-counter': '🚀 150+ Deployed Systems',
+      'hero-title': 'Precision Evaluation for Every Student',
+      'hero-subtitle': 'The all-in-one platform for school competitions. Empowering judges with professional scoring tools and administrators with real-time insights.',
+      'btn-demo': 'View Demo',
+      'btn-start': 'Begin Setup',
+      'steps-title': '01. Setup Roadmap',
+      'steps-p': 'Follow this technical blueprint to provision your own school\'s evaluation system.',
+      'step1-h': 'Create School Project',
+      'step1-p': 'Initialize your school\'s private database on the Supabase platform.',
+      'step2-h': 'Provision Database',
+      'step2-p': 'Configure your archive tables by pasting our setup blueprint into your SQL console.',
+      'step3-h': 'Deploy Application',
+      'step3-p': 'Enter your school\'s unique access keys to generate your private application package.',
+      'db-title': '02. Archive Blueprint',
+      'db-p': 'Copy this technical specification and paste it into your Supabase SQL Editor.',
+      'btn-copy': 'Copy Specification',
+      'gen-title': '03. Project Console',
+      'gen-p': 'Finalize your deployment by injecting your project credentials into the system core.',
+      'label-url': 'School Project URL',
+      'label-key': 'Access Secret (Anon Key)',
+      'btn-gen': 'Execute Build Sequence',
+      'btn-go-gen': 'Go to App Builder',
+      'tut-link': 'How do I find this? →',
+      'footer-text': '© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.',
+      'footer-link': 'Full Documentation Portal →',
+      'lang-btn': 'ARABIC',
+      'toast-copy': 'Archive specification copied to clipboard!',
+      'alert-keys': 'ERROR: Credentials required for build sequence.',
+      'status-prep': '> PREPARING BUILD ASSETS...',
+      'status-ready': '> BUILD SUCCESSFUL. PACKAGE TRANSMITTED.',
+      'stats-deployed': 'Schools Deployed',
+      'stats-evals': 'Evaluations Processed',
+      'stats-ownership': 'Data Ownership'
+    },
+    ar: {
+      'page-title': 'تقييم | منظومة التميز',
+      'nav-steps': 'دليل الإعداد',
+      'nav-db': 'قاعدة البيانات',
+      'nav-gen': 'منشئ التطبيق',
+      'nav-demo': 'معاينة حية',
+      'nav-wiki': 'الموسوعة',
+      'app-name': 'تقييم',
+      'hero-badge': 'مجاني ومفتوح المصدر',
+      'hero-counter': '🚀 ١٥٠+ نظام مفعّل',
+      'hero-title': 'منظومة تقييم دقيقة لكل طالب',
+      'hero-subtitle': 'المنصة المتكاملة لإدارة المسابقات المدرسية. تمكين المحكمين بأدوات تقييم احترافية والمشرفين بنتائج فورية وشاملة.',
+      'btn-demo': 'مشاهدة العرض الحي',
+      'btn-start': 'بدء الإعداد',
+      'steps-title': '01. الخارطة التقنية',
+      'steps-p': 'اتبع هذا المسار الفني لتجهيز نظام التقييم الرقمي الخاص بمدرستك.',
+      'step1-h': 'تأسيس مشروع المدرسة',
+      'step1-p': 'قم بتهيئة البنية التحتية للمشروع عبر منصة Supabase السحابية.',
+      'step2-h': 'برمجة الأرشيف الرقمي',
+      'step2-p': 'قم بتكوين جداول البيانات عن طريق لصق مواصفات الإعداد في محرر SQL.',
+      'step3-h': 'نشر المنظومة',
+      'step3-p': 'أدخل مفاتيح الوصول الفريدة لتوليد حزمة التطبيق النهائية.',
+      'db-title': '02. مواصفات المستودع',
+      'db-p': 'انسخ هذه التعليمات البرمجية والصقها في محرر SQL الخاص بـ Supabase.',
+      'btn-copy': 'نسخ التعليمات',
+      'gen-title': '03. كونسول المشروع',
+      'gen-p': 'أتمم عملية النشر عبر إدخال بيانات الاعتماد في نواة النظام.',
+      'label-url': 'رابط المشروع (URL)',
+      'label-key': 'مفتاح الوصول (Anon Key)',
+      'btn-gen': 'بدء تسلسل التوليد',
+      'btn-go-gen': 'الانتقال إلى منشئ التطبيق',
+      'tut-link': 'دليل استخراج البيانات ←',
+      'footer-p': 'تقييم: تمكين المعلمين، والاحتفاء بالطلاب.',
+      'footer-link': 'بوابة الوثائق الفنية ←',
+      'lang-btn': 'ENGLISH',
+      'toast-copy': 'تم نسخ التعليمات البرمجية بنجاح!',
+      'alert-keys': 'خطأ: بيانات الاعتماد مطلوبة لبدء تسلسل البناء.',
+      'status-prep': '> جاري تحضير أصول المنظومة...',
+      'status-ready': '> اكتمل البناء بنجاح. تم إرسال الحزمة.',
+      'stats-deployed': 'مدرسة مفعّلة',
+      'stats-evals': 'عملية تقييم',
+      'stats-ownership': 'ملكية البيانات'
+    }
+  };
+
+  async function loadStats() {
+    if (!centralSupabase) return;
+    try {
+      const { data, error } = await centralSupabase.from('global_metrics').select('*');
+      if (data) {
+        const builds = data.find(m => m.metric_name === 'app_builds')?.value || 150;
+        const evals = data.find(m => m.metric_name === 'total_evals')?.value || 50000;
+        
+        document.getElementById('stat-deployed').textContent = builds + '+';
+        document.getElementById('stat-evals').textContent = (evals / 1000).toFixed(0) + 'k+';
+        
+        // Update hero counter too
+        const heroCounter = document.querySelector('[data-i18n="hero-counter"]');
+        if (heroCounter) {
+          heroCounter.textContent = currentLang === 'ar' ? `🚀 ${builds}+ نظام مفعّل` : `🚀 ${builds}+ Deployed Systems`;
+        }
+      }
+    } catch (e) { console.warn('Stats fetch failed', e); }
+  }
+
+  window.addEventListener('DOMContentLoaded', loadStats);
+
+  let currentLang = localStorage.getItem('taqeem_lang') || 'en';
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('taqeem_lang', lang);
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) {
+        if (el.tagName === 'INPUT' && el.placeholder) {
+          el.placeholder = translations[lang][key];
+        } else {
+          el.textContent = translations[lang][key];
+        }
+      }
+    });
+    document.getElementById('page-title').textContent = translations[lang]['page-title'];
+    if (document.getElementById('lang-btn')) {
+      document.getElementById('lang-btn').textContent = translations[lang]['lang-btn'];
+    }
+  }
+
+  function toggleLang() {
+    setLanguage(currentLang === 'en' ? 'ar' : 'en');
+  }
+
+  // Theme Logic
+  let currentTheme = localStorage.getItem('taqeem_theme') || 'dark';
+  
+  function setTheme(theme) {
+    currentTheme = theme;
+    localStorage.setItem('taqeem_theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('theme-btn').textContent = theme === 'dark' ? '🌙' : '☀️';
+  }
+
+  function toggleTheme() {
+    setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+  }
+
+  setTheme(currentTheme);
+
+  function toggleTutorial(id) {
+    const panel = document.getElementById(`tut-${id}`);
+    const isVisible = panel.style.display === 'block';
+    panel.style.display = isVisible ? 'none' : 'block';
+  }
+
+  function validateInput() {
+    const url = document.getElementById('sb-url').value.trim();
+    const key = document.getElementById('sb-key').value.trim();
+    if (url.includes('supabase.co')) document.getElementById('check-1').classList.add('active');
+    else document.getElementById('check-1').classList.remove('active');
+    if (key.length > 50) document.getElementById('check-3').classList.add('active');
+    else document.getElementById('check-3').classList.remove('active');
+  }
+
+  setLanguage(currentLang);
+
+  const fullSQL = `-- ==========================================
+-- TAQEEM ARCHIVE SPECIFICATION
+-- ==========================================
+BEGIN;
+
+DROP TABLE IF EXISTS competitions CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS evaluations CASCADE;
+DROP TABLE IF EXISTS custom_users CASCADE;
+DROP TABLE IF EXISTS winners_display CASCADE;
+DROP TABLE IF EXISTS site_settings CASCADE;
+
+CREATE TABLE IF NOT EXISTS competitions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
+  number TEXT NOT NULL,
+  name TEXT NOT NULL,
+  class_name TEXT,
+  section TEXT,
+  photo_url TEXT,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS evaluations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
+  student_id UUID REFERENCES students(id) ON DELETE CASCADE,
+  student_name TEXT,
+  student_number TEXT,
+  class_name TEXT,
+  section TEXT,
+  scores JSONB,
+  total INT,
+  comments TEXT,
+  judge_id TEXT,
+  judge_name TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS custom_users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  role TEXT DEFAULT 'judge',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS winners_display (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
+  student_id UUID REFERENCES students(id) ON DELETE SET NULL,
+  student_name TEXT NOT NULL,
+  student_number TEXT,
+  class_name TEXT,
+  section TEXT,
+  photo_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS site_settings (
+  id TEXT PRIMARY KEY,
+  config JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE competitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE evaluations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE custom_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE winners_display ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public access" ON competitions FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access" ON site_settings FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access" ON students FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access" ON evaluations FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access" ON custom_users FOR SELECT USING (true);
+CREATE POLICY "Admin insert" ON custom_users FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin update" ON custom_users FOR UPDATE USING (true);
+CREATE POLICY "Admin delete" ON custom_users FOR DELETE USING (true);
+CREATE POLICY "Public access" ON winners_display FOR ALL USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
+DROP POLICY IF EXISTS "Public Update" ON storage.objects;
+
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING ( bucket_id = 'winner-photos' );
+CREATE POLICY "Public Insert" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'winner-photos' );
+CREATE POLICY "Public Update" ON storage.objects FOR UPDATE USING ( bucket_id = 'winner-photos' );
+
+DROP PUBLICATION IF EXISTS supabase_realtime;
+CREATE PUBLICATION supabase_realtime FOR TABLE competitions, winners_display, students, evaluations;
+ALTER TABLE winners_display REPLICA IDENTITY FULL;
+
+INSERT INTO custom_users (username, password_hash, role)
+VALUES ('admin', '4269b9dec987c1b8ea82df355eee97e63645894e532aee99182a66586660e872', 'admin')
+ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash;
+
+COMMIT;`;
+
+  document.getElementById('sql-code').textContent = fullSQL;
+
+  async function copySQL() {
+    try {
+      await navigator.clipboard.writeText(fullSQL);
+      alert(translations[currentLang]['toast-copy']);
+    } catch (err) {
+      alert('Failed to copy. Please select the text manually.');
+    }
+  }
+
+  const buildBtn = document.getElementById('build-btn');
+  const btnSpinner = document.getElementById('btn-spinner');
+  const btnText = document.getElementById('btn-text');
+  const statusBox = document.getElementById('status-box');
+
+  const filesToInclude = [
+    { path: 'demo.html', targetPath: 'index.html', type: 'text' },
+    { path: 'app.js', type: 'text' },
+    { path: 'styles.css', type: 'text' },
+    { path: 'sw.js', type: 'text' },
+    { path: 'manifest.json', type: 'text' },
+    { path: 'students_template.csv', type: 'text' },
+    { path: 'client_setup.sql', type: 'text' },
+    { path: 'lib/supabase.js', type: 'blob' },
+    { path: 'lib/confetti.js', type: 'blob' },
+    { path: 'audio/cheer.mp3', type: 'blob' },
+    { path: 'audio/drumroll.mp3', type: 'blob' },
+    { path: 'audio/idle.mp3', type: 'blob' },
+    { path: 'icons/logo.png', type: 'blob' },
+    { path: 'icons/icon-192.png', type: 'blob' },
+    { path: 'icons/grid.png', type: 'blob' },
+    { path: 'icons/hero.png', type: 'blob' },
+    { path: 'icons/tut_keys.png', type: 'blob' },
+    { path: 'icons/tut_sql.png', type: 'blob' },
+    { path: 'winners/index.html', type: 'text' },
+    { path: 'winners/app.js', type: 'text' },
+    { path: 'winners/style.css', type: 'text' }
+  ];
+
+  async function buildPackage() {
+    const url = document.getElementById('sb-url').value.trim();
+    const key = document.getElementById('sb-key').value.trim();
+
+    if (!url || !key) {
+      alert(translations[currentLang]['alert-keys']);
+      return;
+    }
+
+    buildBtn.disabled = true;
+    btnSpinner.style.display = 'block';
+    btnText.textContent = '...';
+    statusBox.style.display = 'block';
+    statusBox.style.background = '#f1f5f9';
+    statusBox.style.color = '#64748b';
+    statusBox.textContent = translations[currentLang]['status-prep'];
+
+    try {
+      const zip = new JSZip();
+
+      for (const file of filesToInclude) {
+        const response = await fetch(file.path);
+        if (!response.ok) throw new Error(`Could not fetch ${file.path}`);
+
+        let content;
+        const targetPath = file.targetPath || file.path;
+
+        if (targetPath === 'index.html' || targetPath === 'winners/index.html') {
+          content = await response.text();
+          content = content.replace(/const SUPABASE_URL = '.*?';/, `const SUPABASE_URL = '${url}';`);
+          content = content.replace(/const SUPABASE_ANON_KEY = '.*?';/, `const SUPABASE_ANON_KEY = '${key}';`);
+        } else if (file.type === 'text') {
+          content = await response.text();
+        } else {
+          content = await response.blob();
+        }
+
+        zip.file(targetPath, content);
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      
+      // Real-time counter increment
+      if (centralSupabase) {
+        try {
+          await centralSupabase.rpc('increment_metric', { m_name: 'app_builds' });
+          loadStats(); // Refresh UI
+        } catch (e) { console.warn('Stat update failed', e); }
+      }
+
+      const downloadUrl = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `taqeem-school-package.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      statusBox.style.background = '#dcfce7';
+      statusBox.style.color = '#166534';
+      statusBox.textContent = translations[currentLang]['status-ready'];
+
+    } catch (err) {
+      console.error(err);
+      statusBox.style.background = '#fee2e2';
+      statusBox.style.color = '#991b1b';
+      statusBox.textContent = '❌ Error: ' + err.message;
+    } finally {
+      buildBtn.disabled = false;
+      btnSpinner.style.display = 'none';
+      btnText.textContent = translations[currentLang]['btn-gen'];
+    }
+  }
+
+  buildBtn.onclick = buildPackage;
+</script>
+
+</body>
 </html>
+>

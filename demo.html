@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="description" content="Premium student roster management for Taqeem evaluation">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Taqeem">
+  <link rel="icon" href="icons/logo.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css?v=3.2">
+  <title id="page-title">Taqeem | Premium Evaluation System</title>
+  <script src="lib/supabase.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://rztcbfulvzuqdmkffvcq.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6dGNiZnVsdnp1cWRta2ZmdmNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1ODkzMzMsImV4cCI6MjA5MjE2NTMzM30.XKVBbizlcW5d8ggbKdI2Ay-FZoNTPRY9_XmYhQUoEBo';
+    if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+      window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  </script>
+  <script>
+    (function () {
+      // Default to light theme. Only switch to dark if the user explicitly chose it.
+      const savedTheme = localStorage.getItem('tedtalk_theme') || localStorage.getItem('taqeem_theme');
+      const theme = savedTheme === 'dark' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      
+      const savedLang = localStorage.getItem('taqeem_lang') || 'en';
+      document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', savedLang);
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Login View -->
+  <div id="login-view" class="login-view">
+    <div class="login-container glass">
+      <div class="login-header">
+        <img src="icons/logo.png" alt="Taqeem Logo" class="login-logo-img">
+        <h1 class="login-title" data-i18n="login-title">Taqeem</h1>
+        <p class="login-subtitle" data-i18n="login-subtitle">Sign in to manage student evaluations</p>
+      </div>
+
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-email" class="form-label" data-i18n="label-username">Username</label>
+          <input type="text" id="login-email" class="form-input" placeholder="Enter your username" required
+            autocomplete="username" data-i18n="ph-username">
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label" data-i18n="label-password">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required
+            autocomplete="current-password" data-i18n="ph-password">
+        </div>
+
+        <div id="login-error" class="login-error" hidden></div>
+
+        <button type="submit" id="login-btn" class="btn btn-login" data-i18n="btn-signin">Sign In</button>
+      </form>
+
+    </div>
+    <div style="position: fixed; top: 24px; inset-inline-end: 80px; display: flex; gap: 12px; z-index: 1001;">
+      <button type="button" onclick="window.toggleLang()" class="login-theme-toggle" style="position: static; font-size: 0.85rem; font-weight: 700;" id="lang-btn-login">عربي</button>
+      <button type="button" id="theme-toggle-login" class="login-theme-toggle" style="position: static;" title="Toggle Theme">
+        <span id="theme-icon-login">🌙</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="competition-view" class="login-view" hidden>
+    <div class="login-container glass" style="max-width: 600px; width: 90%;">
+      <div class="login-header" style="margin-bottom: 24px;">
+        <h1 class="login-title" data-i18n="comp-title">Select Competition</h1>
+        <p class="login-subtitle" data-i18n="comp-subtitle">Choose an active competition or create a new one.</p>
+      </div>
+      
+      <div id="comp-selector-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; margin-bottom: 24px;">
+        <p class="empty-state-text" data-i18n="loading-comps">Loading competitions...</p>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 24px;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 12px; font-family: var(--font-heading);" data-i18n="comp-create-title">Create New Competition</h3>
+        <form id="create-comp-form" style="display: flex; gap: 12px;">
+          <input type="text" id="modal-comp-name" class="form-input" placeholder="Competition Name" required data-i18n="ph-comp-name" style="flex: 1;">
+          <button type="submit" class="btn btn-login" style="white-space: nowrap;" data-i18n="btn-create-comp">Create</button>
+        </form>
+      </div>
+      
+      <button id="comp-logout-btn" class="btn btn-logout" style="width: 100%; margin-top: 24px;" data-i18n="btn-logout">Logout</button>
+    </div>
+  </div>
+
+  <!-- Main App (hidden until authenticated and competition selected) -->
+  <div id="app-container" class="app-container" hidden>
+    <header class="header">
+      <div class="header-content">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="icons/logo.png" alt="Logo" class="header-logo-img">
+          <div>
+            <h1 class="app-title">Taqeem</h1>
+            <span id="active-comp-badge" style="font-size: 0.75rem; background: var(--primary-light); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-top: 2px; display: inline-block;"></span>
+          </div>
+        </div>
+        <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+          <button onclick="window.toggleLang()" class="btn btn-logout" style="padding: 8px 12px; font-weight: 700;" id="lang-btn-app">عربي</button>
+          <button id="theme-toggle" class="btn btn-logout"
+            style="width: 40px; height: 40px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;"
+            title="Toggle Theme">
+            <span id="theme-icon" style="font-size: 1.2rem;">🌙</span>
+          </button>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+            <span id="current-username-display" style="font-weight: 600; font-size: 0.9rem;"></span>
+            <span id="role-badge" class="role-badge" style="margin: 0; padding: 2px 8px; font-size: 0.65rem;"></span>
+          </div>
+          <button id="switch-comp-btn" class="btn btn-logout" data-i18n="btn-switch-comp" style="display: none;">Switch</button>
+          <button id="logout-btn" class="btn btn-logout" data-i18n="btn-logout">Logout</button>
+        </div>
+
+      </div>
+    </header>
+
+    <nav class="tab-bar glass" role="tablist">
+      <button class="tab" role="tab" data-tab="setup" data-i18n="tab-admin">Admin</button>
+      <button class="tab active" role="tab" data-tab="judging" data-i18n="tab-judging">Judging</button>
+      <button class="tab" role="tab" data-tab="results" data-i18n="tab-results">Results</button>
+    </nav>
+
+    <main class="main-content">
+      <!-- Setup Section -->
+      <section id="setup-panel" class="setup-section" hidden>
+        <nav class="sub-tab-bar" role="tablist">
+          <button class="sub-tab active" data-subtab="students" data-i18n="subtab-students">Students</button>
+          <button class="sub-tab" data-subtab="users" data-i18n="subtab-users">Users</button>
+          <button class="sub-tab" data-subtab="competitions" data-i18n="subtab-competitions">Competitions</button>
+          <button class="sub-tab" data-subtab="config" data-i18n="subtab-config">Configuration</button>
+        </nav>
+
+        <!-- Students Sub-Tab -->
+        <div id="students-subpanel">
+          <div class="setup-grid">
+            <div class="setup-card">
+              <h2 class="section-title" id="student-form-title" data-i18n="form-add-student">Add Student</h2>
+              <form id="add-student-form" class="input-group" style="display: flex; flex-direction: column; gap: 12px;"
+                autocomplete="off">
+                <input type="text" id="student-number" placeholder="Number *" class="form-input" required data-i18n="ph-number">
+                <input type="text" id="student-name" placeholder="Name *" class="form-input" required data-i18n="ph-name">
+                <div style="display: flex; gap: 12px;">
+                  <input type="text" id="student-class" placeholder="Class *" class="form-input" required data-i18n="ph-class">
+                  <input type="text" id="student-section" placeholder="Section" class="form-input" data-i18n="ph-section">
+                </div>
+                <!-- Student Photo Upload -->
+                <div class="form-group" style="margin-top: 4px;">
+                  <label class="form-label" style="font-size: 0.85rem; font-weight: 600;" data-i18n="label-photo">Student Photo (optional)</label>
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <img id="student-photo-preview" src="" alt="Preview"
+                      style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); display: none;">
+                    <div style="flex: 1;">
+                      <label for="student-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 0.85rem;">
+                        <span data-i18n="btn-choose-photo">📷 Choose Photo</span>
+                      </label>
+                      <input type="file" id="student-photo-upload" accept="image/*" style="display: none;">
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                  <button type="submit" id="student-submit-btn" class="btn btn-login" style="flex: 2;" data-i18n="btn-add-student">Add
+                    Student</button>
+                  <button type="button" id="student-cancel-btn" class="btn btn-logout" style="flex: 1; display: none;"
+                    onclick="cancelEditStudent()" data-i18n="btn-cancel">Cancel</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="setup-card">
+              <h2 class="section-title" data-i18n="title-bulk">Bulk Import</h2>
+              <div class="bulk-import-section" style="margin-top: 0; padding-top: 0; border-top: none;">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+                  <span data-i18n="bulk-p1">Fill this</span> <a href="#" id="download-template-btn" style="color: var(--primary); font-weight: 600;" data-i18n="bulk-link">CSV
+                    template</a> <span data-i18n="bulk-p2">and upload it below.</span>
+                </p>
+                <label for="csv-import" class="file-input-label" id="drop-zone">
+                  <input type="file" id="csv-import" accept=".csv" class="file-input">
+                  <div style="font-size: 2rem; margin-bottom: 8px;">📂</div>
+                  <span style="font-weight: 600; font-size: 1rem; display: block; margin-bottom: 4px;" data-i18n="btn-choose-csv">Choose CSV
+                    File</span>
+                  <span style="font-size: 0.8rem; opacity: 0.7;" data-i18n="bulk-drop">or drag and drop here</span>
+                  <div id="file-name" class="file-name"
+                    style="margin-top: 12px; font-weight: 700; color: var(--primary);"></div>
+                </label>
+                <button type="button" id="import-btn" class="btn btn-login" style="width: 100%; margin-top: 16px;"
+                  disabled data-i18n="btn-import">Import Students</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="roster-header" style="margin-top: 40px; margin-bottom: 20px;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 12px; gap: 16px; flex-wrap: wrap;">
+              <h2 class="section-title" style="margin: 0;" data-i18n="title-roster">Student Roster</h2>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
+                <div class="filter-group" style="width: 150px;">
+                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;" data-i18n="label-filter-class">Filter Class</label>
+                  <select id="filter-class" class="form-input" style="padding: 4px 8px; font-size: 0.85rem;">
+                    <option value="" data-i18n="opt-all-classes">All Classes</option>
+                  </select>
+                </div>
+                <div class="filter-group" style="width: 150px;">
+                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;" data-i18n="label-filter-section">Filter Section</label>
+                  <select id="filter-section" class="form-input" style="padding: 4px 8px; font-size: 0.85rem;">
+                    <option value="" data-i18n="opt-all-sections">All Sections</option>
+                  </select>
+                </div>
+                <div class="search-box" style="width: 250px;">
+                  <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px;" data-i18n="label-search">Search</label>
+                  <input type="text" id="roster-search" placeholder="Name or number..." class="form-input" style="padding: 4px 8px; font-size: 0.85rem;" data-i18n="ph-search-roster">
+                </div>
+              </div>
+            </div>
+            <div id="bulk-actions-toolbar" class="bulk-actions-toolbar" hidden>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <input type="checkbox" id="select-all-students" class="custom-checkbox">
+                <span id="bulk-selection-count" style="font-weight: 600;">0 selected</span>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" id="bulk-edit-btn" class="btn"
+                  style="padding: 6px 12px; font-size: 0.85rem; background: var(--primary-light); color: var(--primary);" data-i18n="btn-bulk-edit">Bulk
+                  Edit</button>
+                <button type="button" id="bulk-delete-btn" class="btn btn-logout"
+                  style="padding: 6px 12px; font-size: 0.85rem; color: var(--danger); border-color: var(--danger);" data-i18n="btn-bulk-delete">Bulk
+                  Delete</button>
+              </div>
+            </div>
+          </div>
+          <ul id="roster-list" class="roster-list"></ul>
+        </div>
+
+        <!-- Users Sub-Tab -->
+        <div id="users-subpanel" hidden>
+          <div class="setup-grid">
+            <div class="setup-card">
+              <h2 class="section-title" data-i18n="title-users">User Management</h2>
+              <div id="role-users-list"></div>
+            </div>
+
+            <div class="setup-card">
+              <h2 class="section-title" id="user-form-title" data-i18n="form-create-user">Create New User</h2>
+              <div class="input-group" style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="new-user-username" placeholder="Username *" class="form-input" data-i18n="ph-username">
+                <input type="password" id="new-user-password" placeholder="Password *" class="form-input" data-i18n="ph-password">
+                <select id="new-user-role" class="form-input">
+                  <option value="judge" data-i18n="role-judge">Judge</option>
+                  <option value="admin" data-i18n="role-admin">Admin</option>
+                </select>
+                <select id="new-user-competition" class="form-input">
+                  <option value="" data-i18n="opt-no-comp">Assign to Competition...</option>
+                </select>
+                <div style="display: flex; gap: 12px;">
+                  <button type="button" id="create-user-btn" class="btn btn-login" style="flex: 2;" data-i18n="btn-create-user">Create User</button>
+                  <button type="button" id="user-cancel-btn" class="btn btn-logout" style="flex: 1; display: none;"
+                    onclick="cancelEditUser()" data-i18n="btn-cancel">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Competitions Sub-Tab -->
+        <div id="competitions-subpanel" hidden>
+          <div class="setup-grid">
+            <div class="setup-card">
+              <h2 class="section-title" data-i18n="title-competitions">Competition Management</h2>
+              <div id="competitions-subpanel-list"></div>
+            </div>
+
+            <div class="setup-card">
+              <h2 class="section-title" data-i18n="form-create-competition">Create New Competition</h2>
+              <div class="input-group" style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="new-comp-name" placeholder="Competition Name *" class="form-input" data-i18n="ph-comp-name">
+                <button type="button" id="create-comp-btn" class="btn btn-login" style="width: 100%;" data-i18n="btn-create-comp">Create Competition</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Configuration Sub-Tab -->
+        <div id="config-subpanel" hidden>
+
+          <!-- Branding Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-branding">🎨 Branding</h2>
+
+            <!-- App Name -->
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-app-name">App Name</label>
+              <input type="text" id="cfg-app-name" class="form-input" placeholder="e.g. Taqeem">
+              <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;" data-i18n="hint-app-name">Updates the header title, browser tab, login screen, and PWA name.</p>
+            </div>
+
+            <!-- Event Subtitle -->
+            <div class="form-group" style="margin-top: 16px;">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-login-subtitle">Login Subtitle</label>
+              <input type="text" id="cfg-app-subtitle" class="form-input" placeholder="e.g. Sign in to manage student evaluations">
+              <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;" data-i18n="hint-login-subtitle">The tagline shown below the title on the login screen.</p>
+            </div>
+
+            <!-- Logo Upload -->
+            <div class="form-group" style="margin-top: 16px;">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-app-logo">App Logo</label>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <img id="cfg-logo-preview" src="icons/logo.png" alt="Logo Preview"
+                  style="width: 64px; height: 64px; object-fit: contain; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); padding: 4px;">
+                <div style="flex: 1;">
+                  <label for="cfg-logo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;">
+                    <span data-i18n="btn-choose-img">📂 Choose Image</span>
+                  </label>
+                  <input type="file" id="cfg-logo-upload" accept="image/*" style="display: none;">
+                  <button id="cfg-logo-reset" class="btn btn-logout" style="margin-inline-start: 8px; padding: 10px 16px; color: var(--danger); border-color: var(--danger);" data-i18n="btn-reset-default">Reset to Default</button>
+                  <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;" data-i18n="hint-app-logo">Applies to login screen, header, and PWA icon. PNG or SVG recommended.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Color -->
+            <div class="form-group" style="margin-top: 16px;">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-primary-color">Primary Color</label>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <input type="color" id="cfg-primary-color" value="#4f46e5"
+                  style="width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; padding: 2px; background: var(--surface);">
+                <div>
+                  <span id="cfg-color-hex" style="font-weight: 600; font-family: monospace; font-size: 1rem;">#4f46e5</span>
+                  <p class="bulk-import-hint" style="margin-top: 2px; font-style: italic;" data-i18n="hint-primary-color">Accent color for buttons, active states, and highlights.</p>
+                </div>
+                <button id="cfg-color-reset" class="btn btn-logout" style="padding: 8px 14px; font-size: 0.85rem; margin-inline-start: auto;" data-i18n="btn-reset">Reset</button>
+              </div>
+            </div>
+
+            <button id="save-branding-btn" class="btn btn-login" style="margin-top: 24px; width: 100%;" data-i18n="btn-save-branding">💾 Save Branding</button>
+          </div>
+
+          <!-- Timer Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-timer">⏱️ Timer Settings</h2>
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-duration">Default Speech Duration</label>
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="number" id="settings-timer-duration" class="form-input" value="180" min="0" max="600"
+                  style="width: 120px;">
+                <span style="font-weight: 500; color: var(--text-muted);" data-i18n="unit-seconds">Seconds</span>
+              </div>
+              <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;" data-i18n="hint-timer">Adjust the primary timer length
+                (e.g., set to 180 for 3 minutes). This affects all judges.</p>
+            </div>
+            <button id="save-settings-btn" class="btn btn-login" style="margin-top: 24px;" data-i18n="btn-apply">Apply Changes</button>
+          </div>
+
+          <!-- Criteria Manager Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-criteria">📊 Evaluation Criteria</h2>
+            <div id="cfg-criteria-list" style="margin-bottom: 20px;">
+              <!-- Dynamic Criteria List -->
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <input type="text" id="cfg-new-criterion-label" class="form-input" placeholder="e.g. Stage Presence" data-i18n="ph-new-criterion">
+              <button id="cfg-add-criterion-btn" class="btn btn-login" style="white-space: nowrap;" data-i18n="btn-add-criterion">➕ Add Criterion</button>
+            </div>
+            <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;" data-i18n="hint-criteria">Each criterion is scored from 1 to 10. Changes affect the total possible score.</p>
+          </div>
+
+
+          <!-- Dangerous Zone Card -->
+          <div class="setup-card"
+            style="border-style: dashed; border-color: var(--danger); background: rgba(239, 68, 68, 0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="color: var(--danger); font-size: 1.1rem; margin-bottom: 4px;" data-i18n="title-danger">Dangerous Zone</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="danger-p">Permanently wipe evaluations.</p>
+              </div>
+              <button id="clear-data-btn" class="btn btn-logout"
+                style="color: var(--danger); border-color: var(--danger); background: white;" data-i18n="btn-clear-data">Clear Data</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Judging Section -->
+      <section id="judging-panel" class="judging-section" hidden>
+        <div class="judging-layout">
+          <!-- Left: Quick-Select Sidebar -->
+          <aside class="judging-sidebar" id="judging-sidebar">
+            <p class="empty-state-text" data-i18n="loading-roster">Loading roster...</p>
+          </aside>
+
+          <!-- Right: Evaluation Workspace -->
+          <div class="judging-workspace">
+            <div class="workspace-header-grid">
+              <div class="timer-card">
+                <div class="timer-display" id="timer-display">00:00</div>
+                <div class="timer-controls">
+                  <button type="button" id="timer-start" class="timer-btn" data-i18n="btn-timer-start">Start</button>
+                  <button type="button" id="timer-reset" class="timer-btn" data-i18n="btn-timer-reset">Reset</button>
+                </div>
+              </div>
+
+              <div class="setup-card">
+                <label class="form-label" data-i18n="label-speaker-mgmt">Speaker Management</label>
+                <select id="student-select" class="form-input custom-select">
+                  <option value="" data-i18n="opt-change-speaker">-- Change Speaker --</option>
+                </select>
+                <div id="active-student-badge"
+                  style="font-weight: 700; color: var(--primary); font-size: 1.1rem; margin-top: 8px;"></div>
+                <div id="active-student-details" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;"></div>
+              </div>
+            </div>
+
+            <form id="evaluation-form" class="evaluation-form">
+              <div class="setup-card">
+                <h2 class="section-title" data-i18n="title-matrix">Evaluation Matrix</h2>
+
+                <div class="criteria-container" id="criteria-container">
+                  <!-- Generated by JS: renderCriteriaMatrix() -->
+                </div>
+
+                <div class="form-group" style="margin-top: 24px;">
+                  <label class="form-label" data-i18n="label-comments">Judge Comments</label>
+                  <textarea id="evaluation-comments" class="form-input" placeholder="Enter feedback for the student..."
+                    style="min-height: 100px;" data-i18n="ph-comments"></textarea>
+                </div>
+
+                <div class="total-display glass" style="margin-top: 32px; padding: 20px; text-align: center;">
+                  <span class="total-label" style="display: block; margin-bottom: 8px;" data-i18n="label-final-score">Final Score</span>
+                  <span id="total-score" class="total-value"
+                    style="font-size: 2rem; font-weight: 700; color: var(--primary);">0 / --</span>
+                </div>
+
+                <button type="submit" class="btn btn-login"
+                  style="width: 100%; height: 56px; font-size: 1.1rem; margin-top: 24px;" data-i18n="btn-save-eval">Save Evaluation</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Section -->
+      <section id="results-panel" class="results-section" hidden>
+        <div class="setup-card" style="margin-bottom: 24px;">
+          <h2 class="section-title" data-i18n="title-results-actions">Actions & Filters</h2>
+          <div class="actions-dashboard">
+            <input type="text" id="results-search" placeholder="Search by name..." class="form-input" style="flex: 2;" data-i18n="ph-search-results">
+            <select id="results-grade-filter" class="form-input custom-select" style="flex: 1.2">
+              <option value="" data-i18n="opt-all-grades">All Grades</option>
+            </select>
+            <select id="results-section-filter" class="form-input custom-select" style="flex: 1">
+              <option value="" data-i18n="opt-all-sections">All Sections</option>
+            </select>
+            <select id="results-view-toggle" class="form-input custom-select" style="flex: 1.5">
+              <option value="highest" data-i18n="opt-best">Best Performances</option>
+              <option value="all" data-i18n="opt-raw">All Raw Scores</option>
+            </select>
+            <button id="clear-results-filters" class="btn btn-logout"
+              style="padding-inline-start: 16px; padding-inline-end: 16px;" title="Reset Filters"><span data-i18n="btn-reset-filters">↺ Reset</span></button>
+            <button id="export-csv-btn" class="btn btn-logout" style="min-width: 120px;" data-i18n="btn-export">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-card">
+          <div id="results-table-wrapper" class="results-table-wrapper" style="border: none; border-radius: 0;">
+            <table id="results-table" class="results-table">
+              <thead id="results-thead">
+                <tr>
+                  <th style="width: 80px;" data-i18n="th-rank">Rank</th>
+                  <th style="width: 100px;" data-i18n="th-num">Num</th>
+                  <th data-i18n="th-name">Student Name</th>
+                  <th data-i18n="th-class">Class</th>
+                  <th data-i18n="th-section">Section</th>
+                  <th style="width: 80px; text-align: center;" data-i18n="th-highest">Highest</th>
+                  <th style="width: 80px; text-align: center;" data-i18n="th-avg">Average</th>
+                  <th style="width: 100px; text-align: center;" data-i18n="th-details">Details</th>
+                </tr>
+              </thead>
+              <tbody id="results-tbody"></tbody>
+            </table>
+            <div id="results-empty" class="results-empty" hidden>
+              <p class="empty-state-text" data-i18n="results-empty">No evaluations collected yet.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Winner Announcement -->
+        <div class="setup-card" style="margin-top: 40px; border-color: var(--gold, #fbbf24); border-width: 2px;">
+          <h2 class="section-title" data-i18n="title-winner">🏆 Winner Announcement</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+            <span data-i18n="winner-p1">Push a winner to the</span> <a href="winners/" id="winner-screen-link" target="_blank" style="color: var(--primary); font-weight: 600;" data-i18n="winner-link">display screen</a>. 
+            <span data-i18n="winner-p2">Open the display screen on a projector or separate screen, then control it from here.</span>
+          </p>
+
+          <!-- Student Selection -->
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;" data-i18n="label-select-winner">Select Winner</label>
+            <select id="winner-student-select" class="form-input custom-select">
+              <option value="" data-i18n="opt-choose-student">-- Choose a student --</option>
+            </select>
+          </div>
+
+          <!-- Photo Upload -->
+          <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label" style="font-weight: 600;" data-i18n="label-winner-photo">Winner Photo (optional)</label>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <img id="winner-photo-preview" src="" alt="Preview"
+                style="width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 3px solid var(--border); background: var(--bg); display: none;">
+              <div style="flex: 1;">
+                <label for="winner-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;">
+                  <span data-i18n="btn-choose-photo">📷 Choose Photo</span>
+                </label>
+                <input type="file" id="winner-photo-upload" accept="image/*" style="display: none;">
+                <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;" data-i18n="hint-winner-photo">If no photo is provided, a microphone icon will be shown.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button type="button" id="push-winner-btn" class="btn btn-login" style="flex: 2; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-size: 1rem;" data-i18n="btn-push-winner">
+              🏅 Push to Winner Screen
+            </button>
+            <button type="button" id="clear-winner-btn" class="btn btn-logout" style="flex: 1; color: var(--danger); border-color: var(--danger);" data-i18n="btn-clear-screen">
+              Clear Screen
+            </button>
+          </div>
+      </section>
+
+    </main>
+
+    <footer>
+        <div class="container" style="text-align: center; padding: 40px 0; border-top: 1px solid var(--border); margin-top: 40px;">
+            <p>&copy; 2026 AppWand. <span data-i18n="footer-p">Built for schools, by the community.</span></p>
+            <p style="margin-top: 8px; font-weight: 600;">Powered by <a href="https://appwand.net" target="_blank" style="color: var(--primary); text-decoration: none;">AppWand</a></p>
+        </div>
+    </footer>
+  </div>
+  <div id="bulk-edit-modal" class="login-view" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" hidden>
+    <div class="login-container glass" style="max-width: 400px; padding: 32px;">
+      <h2 style="margin-bottom: 16px; font-family: var(--font-heading);" data-i18n="title-bulk-edit">Bulk Edit Students</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;" data-i18n="bulk-edit-p">Leave a field blank to keep its
+        original value.</p>
+      <div class="form-group">
+        <label class="form-label" data-i18n="label-bulk-class">Update Class/Grade</label>
+        <input type="text" id="bulk-edit-class" class="form-input" placeholder="e.g. Grade 10" data-i18n="ph-class">
+      </div>
+      <div class="form-group" style="margin-top: 16px;">
+        <label class="form-label" data-i18n="label-bulk-section">Update Section</label>
+        <input type="text" id="bulk-edit-section" class="form-input" placeholder="e.g. A" data-i18n="ph-section">
+      </div>
+      <div class="form-group" style="margin-top: 16px;">
+        <label class="form-label" style="font-size: 0.85rem; font-weight: 600;" data-i18n="label-bulk-photo">Bulk Student Photo (optional)</label>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img id="bulk-student-photo-preview" src="" alt="Preview"
+            style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); display: none;">
+          <div style="flex: 1;">
+            <label for="bulk-student-photo-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 0.85rem;">
+              <span data-i18n="btn-choose-bulk-photo">📷 Choose Bulk Photo</span>
+            </label>
+            <input type="file" id="bulk-student-photo-upload" accept="image/*" style="display: none;">
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button type="button" id="bulk-edit-confirm-btn" class="btn btn-login" style="flex: 2;" data-i18n="btn-update-selected">Update Selected</button>
+        <button type="button" onclick="document.getElementById('bulk-edit-modal').hidden = true;" class="btn btn-logout"
+          style="flex: 1;" data-i18n="btn-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container" class="toast-container"></div>
+  <script src="app.js?v=3.9"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+</body>
+
+</html>

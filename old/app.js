@@ -1,14 +1,13 @@
 const STORAGE_KEY = 'studentRoster';
 const EVALUATIONS_KEY = 'evaluations';
-const SETTINGS_KEY = 'taqeem_settings';
+const SETTINGS_KEY = 'tedtalk_settings';
 
 let roster = [];
 let evaluations = [];
 let allCustomUsers = [];
-let competitions = [];
 let currentChannel = null;
-let currentTab = localStorage.getItem('taqeem_currentTab') || 'judging';
-let currentSubTab = localStorage.getItem('taqeem_currentSubTab') || 'students';
+let currentTab = localStorage.getItem('tedtalk_currentTab') || 'judging';
+let currentSubTab = localStorage.getItem('tedtalk_currentSubTab') || 'students';
 let isAuthenticated = false;
 let userRole = 'judge';
 let currentUserId = null;
@@ -37,481 +36,6 @@ let criteriaLabels = {
     'delivery': 'Delivery & Fluency'
 };
 
-const translations = {
-    en: {
-        'login-title': 'Taqeem',
-        'login-subtitle': 'Sign in to manage student evaluations',
-        'label-username': 'Username',
-        'label-password': 'Password',
-        'ph-username': 'Enter your username',
-        'ph-password': 'Enter your password',
-        'btn-signin': 'Sign In',
-        'btn-logout': 'Logout',
-        'btn-switch-comp': 'Switch Competition',
-        'tab-admin': 'Admin',
-        'tab-judging': 'Judging',
-        'tab-results': 'Results',
-        'subtab-students': 'Students',
-        'subtab-users': 'Users',
-        'subtab-config': 'Configuration',
-        'form-add-student': 'Add Student',
-        'form-edit-student': 'Edit Student',
-        'ph-number': 'Number *',
-        'ph-name': 'Name *',
-        'ph-class': 'Class *',
-        'ph-section': 'Section',
-        'label-photo': 'Student Photo (optional)',
-        'btn-choose-photo': '📷 Choose Photo',
-        'btn-add-student': 'Add Student',
-        'btn-update-student': 'Update Student',
-        'btn-cancel': 'Cancel',
-        'title-bulk': 'Bulk Import',
-        'bulk-p1': 'Fill this',
-        'bulk-link': 'CSV template',
-        'bulk-p2': 'and upload it below.',
-        'btn-choose-csv': 'Choose CSV File',
-        'bulk-drop': 'or drag and drop here',
-        'btn-import': 'Import Students',
-        'title-roster': 'Student Roster',
-        'label-filter-class': 'Filter Class',
-        'label-filter-section': 'Filter Section',
-        'opt-all-classes': 'All Classes',
-        'opt-all-sections': 'All Sections',
-        'label-search': 'Search',
-        'ph-search-roster': 'Name or number...',
-        'btn-bulk-edit': 'Bulk Edit',
-        'btn-bulk-delete': 'Bulk Delete',
-        'title-users': 'User Management',
-        'form-create-user': 'Create New User',
-        'form-edit-user': 'Edit User',
-        'role-judge': 'Judge',
-        'role-admin': 'Admin',
-        'btn-create-user': 'Create User',
-        'btn-update-user': 'Update User',
-        'title-branding': '🎨 Branding',
-        'label-app-name': 'App Name',
-        'hint-app-name': 'Updates the header title, browser tab, login screen, and PWA name.',
-        'label-login-subtitle': 'Login Subtitle',
-        'hint-login-subtitle': 'The tagline shown below the title on the login screen.',
-        'label-app-logo': 'App Logo',
-        'btn-choose-img': '📂 Choose Image',
-        'btn-reset-default': 'Reset to Default',
-        'hint-app-logo': 'Applies to login screen, header, and PWA icon.',
-        'label-primary-color': 'Primary Color',
-        'hint-primary-color': 'Accent color for buttons, active states, and highlights.',
-        'btn-reset': 'Reset',
-        'btn-save-branding': '💾 Save Branding',
-        'title-timer': '⏱️ Timer Settings',
-        'label-duration': 'Default Speech Duration',
-        'unit-seconds': 'Seconds',
-        'hint-timer': 'Adjust the primary timer length (e.g., 180 for 3 minutes).',
-        'btn-apply': 'Apply Changes',
-        'title-criteria': '📊 Evaluation Criteria',
-        'btn-add-criterion': '➕ Add Criterion',
-        'ph-new-criterion': 'e.g. Stage Presence',
-        'hint-criteria': 'Each criterion is scored from 1 to 10.',
-        'title-danger': 'Dangerous Zone',
-        'danger-p': 'Permanently wipe evaluations.',
-        'btn-clear-data': 'Clear Data',
-        'loading-roster': 'Loading roster...',
-        'btn-timer-start': 'Start',
-        'btn-timer-pause': 'Pause',
-        'btn-timer-resume': 'Resume',
-        'btn-timer-reset': 'Reset',
-        'btn-timer-up': 'Time Up',
-        'label-speaker-mgmt': 'Speaker Management',
-        'opt-change-speaker': '-- Change Speaker --',
-        'title-matrix': 'Evaluation Matrix',
-        'label-comments': 'Judge Comments',
-        'ph-comments': 'Enter feedback for the student...',
-        'label-final-score': 'Final Score',
-        'btn-save-eval': 'Save Evaluation',
-        'btn-update-eval': 'Update Evaluation',
-        'title-results-actions': 'Actions & Filters',
-        'ph-search-results': 'Search by name...',
-        'opt-all-grades': 'All Grades',
-        'opt-best': 'Best Performances',
-        'opt-raw': 'All Raw Scores',
-        'btn-reset-filters': '↺ Reset',
-        'btn-export': 'Export CSV',
-        'th-rank': 'Rank',
-        'th-num': 'Num',
-        'th-name': 'Student Name',
-        'th-class': 'Class',
-        'th-section': 'Section',
-        'th-highest': 'Highest',
-        'th-avg': 'Average',
-        'th-details': 'Details',
-        'th-time': 'Time',
-        'th-judge': 'Judge',
-        'th-score': 'Score',
-        'th-feedback': 'Feedback',
-        'results-empty': 'No evaluations collected yet.',
-        'comp-title': 'Select Competition',
-        'comp-subtitle': 'Choose an active competition or create a new one.',
-        'loading-comps': 'Loading competitions...',
-        'comp-create-title': 'Create New Competition',
-        'ph-comp-name': 'Competition Name',
-        'btn-create-comp': 'Create Competition',
-        'subtab-competitions': 'Competitions',
-        'title-competitions': 'Competition Management',
-        'form-create-competition': 'Create New Competition',
-        'opt-no-comp': '-- Select Competition --',
-        'btn-delete': 'Delete',
-        'msg-delete-comp-confirm': 'Are you sure you want to delete this competition? All related students and evaluations will be permanently lost.',
-        'msg-comp-deleted': 'Competition deleted successfully.',
-        'title-winner': '🏆 Winner Announcement',
-        'winner-p1': 'Push a winner to the',
-        'winner-link': 'display screen',
-        'winner-p2': 'Open the display screen on a projector, then control it here.',
-        'label-select-winner': 'Select Winner',
-        'opt-choose-student': '-- Choose a student --',
-        'label-winner-photo': 'Winner Photo (optional)',
-        'hint-winner-photo': 'If no photo is provided, a microphone icon will be shown.',
-        'btn-push-winner': '🏅 Push to Winner Screen',
-        'btn-clear-screen': 'Clear Screen',
-        'title-bulk-edit': 'Bulk Edit Students',
-        'bulk-edit-p': 'Leave a field blank to keep original values.',
-        'label-bulk-class': 'Update Class/Grade',
-        'label-bulk-section': 'Update Section',
-        'label-bulk-photo': 'Bulk Student Photo (optional)',
-        'btn-choose-bulk-photo': '📷 Choose Bulk Photo',
-        'btn-update-selected': 'Update Selected',
-        'msg-eval-exists': 'You have already evaluated this student. Update?',
-        'msg-complete-criteria': 'Please complete all evaluation criteria.',
-        'msg-eval-saved': 'Evaluation saved!',
-        'msg-eval-updated': 'Evaluation updated!',
-        'msg-all-done': 'All students have been evaluated!',
-        'msg-delete-student': 'Are you sure you want to delete this student?',
-        'msg-delete-user': 'Delete user?',
-        'msg-clear-confirm': 'Type DELETE to confirm:',
-        'msg-pushing': '⏳ Pushing...',
-        'msg-pushed': '🏆 Winner pushed to display screen!',
-        'msg-clear-display': 'Winner display cleared.',
-        'msg-no-results': 'No results to export',
-        'msg-duplicates-skipped': 'Duplicate student numbers were skipped.',
-        'label-criterion': 'Criterion',
-        'label-score': 'Score',
-        'label-feedback': 'Feedback',
-        'title-detailed-scores': 'Detailed Scores',
-        'lang-btn': 'عربي',
-        'judging-active': 'Judging:',
-        'already-evaluated': '(Already Evaluated)',
-        'empty-no-students': 'No students in roster.',
-        'empty-go-setup': 'Go to "Setup" to add students.',
-        'footer-p': 'Built for schools, by the community.',
-        'waiting': 'Waiting for announcement...',
-        'unlock-audio': 'Enable Sound for Reveal',
-        'congrats': 'CONGRATULATIONS',
-        'dyn_str_0': 'Please select a student first.',
-        'dyn_str_1': 'Please complete all evaluation criteria.',
-        'dyn_str_2': 'Evaluation updated!',
-        'dyn_str_3': 'Evaluation saved!',
-        'dyn_str_4': 'Evaluation updated (Offline).',
-        'dyn_str_5': 'Evaluation saved (Offline).',
-        'dyn_str_6': 'Username is required',
-        'dyn_str_7': 'Password is required for new users',
-        'dyn_str_8': 'User updated successfully',
-        'dyn_str_9': 'User created successfully',
-        'dyn_str_10': 'Number and Name are required',
-        'dyn_str_11': 'Student updated successfully',
-        'dyn_str_12': 'Student added successfully',
-        'dyn_str_13': 'Please select a CSV file first',
-        'dyn_str_14': 'No valid student data found in CSV',
-        'dyn_str_15': 'Error importing students: ',
-        'dyn_str_16': 'Reordered students...',
-        'dyn_str_17': 'Error saving order to server',
-        'dyn_str_18': 'Order saved successfully!',
-        'dyn_str_19': 'Order saved locally.',
-        'dyn_str_20': 'Criteria updated successfully! ✨',
-        'dyn_str_21': 'Please enter a criterion name.',
-        'dyn_str_22': 'Criterion added!',
-        'dyn_str_23': 'Criterion removed.',
-        'dyn_str_24': 'No results to export',
-        'dyn_str_25': 'Timer settings saved!',
-        'dyn_str_26': 'Branding saved! ✨',
-        'dyn_str_27': 'Filters reset',
-        'dyn_str_28': 'Data cleared',
-        'dyn_str_29': 'Students deleted successfully',
-        'dyn_str_30': 'No students selected',
-        'dyn_str_31': 'Please drop a valid CSV file.',
-        'dyn_str_32': 'All students in roster have been evaluated!',
-        'dyn_str_33': 'Photo upload failed, pushing without photo.',
-        'dyn_str_34': '🏆 Winner pushed to display screen!',
-        'dyn_str_35': 'Winner display cleared.',
-        'dyn_str_36': 'All Classes',
-        'dyn_str_37': 'All Sections',
-        'dyn_str_38': 'No results found',
-        'dyn_str_39': 'No raw evaluations found',
-        'dyn_str_40': 'All Grades',
-        'dyn_str_41': '-- Select a student --',
-        'dyn_str_42': 'No criteria defined.',
-        'dyn_str_43': '-- Choose a student --',
-        'dyn_str_44': '-- No students available --',
-    },
-    ar: {
-        'login-title': 'Taqeem',
-        'login-subtitle': 'قم بتسجيل الدخول لإدارة تقييمات الطلاب',
-        'label-username': 'اسم المستخدم',
-        'label-password': 'كلمة المرور',
-        'ph-username': 'أدخل اسم المستخدم الخاص بك',
-        'ph-password': 'أدخل كلمة المرور الخاصة بك',
-        'btn-signin': 'تسجيل الدخول',
-        'btn-logout': 'تسجيل الخروج',
-        'btn-switch-comp': 'تغيير المسابقة',
-        'tab-admin': 'الإدارة',
-        'tab-judging': 'التحكيم',
-        'tab-results': 'النتائج',
-        'subtab-students': 'الطلاب',
-        'subtab-users': 'المستخدمون',
-        'subtab-config': 'الإعدادات',
-        'form-add-student': 'إضافة طالب',
-        'form-edit-student': 'تعديل بيانات طالب',
-        'ph-number': 'الرقم *',
-        'ph-name': 'الاسم *',
-        'ph-class': 'الصف *',
-        'ph-section': 'الشعبة',
-        'label-photo': 'صورة الطالب (اختياري)',
-        'btn-choose-photo': '📷 اختر صورة',
-        'btn-add-student': 'إضافة طالب',
-        'btn-update-student': 'تحديث بيانات الطالب',
-        'btn-cancel': 'إلغاء',
-        'title-bulk': 'استيراد جماعي',
-        'bulk-p1': 'قم بتعبئة هذا',
-        'bulk-link': 'نموذج CSV',
-        'bulk-p2': 'وقم برفع الملف أدناه.',
-        'btn-choose-csv': 'اختر ملف CSV',
-        'bulk-drop': 'أو قم بسحبه وإفلاته هنا',
-        'btn-import': 'استيراد الطلاب',
-        'title-roster': 'قائمة الطلاب',
-        'label-filter-class': 'تصفية حسب الصف',
-        'label-filter-section': 'تصفية حسب الشعبة',
-        'opt-all-classes': 'جميع الصفوف',
-        'opt-all-sections': 'جميع الشعب',
-        'label-search': 'بحث',
-        'ph-search-roster': 'الاسم أو الرقم...',
-        'btn-bulk-edit': 'تعديل جماعي',
-        'btn-bulk-delete': 'حذف جماعي',
-        'title-users': 'إدارة المستخدمين',
-        'form-create-user': 'إنشاء مستخدم جديد',
-        'form-edit-user': 'تعديل مستخدم',
-        'role-judge': 'حكم',
-        'role-admin': 'مدير',
-        'btn-create-user': 'إنشاء مستخدم',
-        'btn-update-user': 'تحديث المستخدم',
-        'title-branding': '🎨 الهوية البصرية',
-        'label-app-name': 'اسم التطبيق',
-        'hint-app-name': 'يقوم بتحديث عنوان الرأس، علامة تبويب المتصفح، وشاشة الدخول.',
-        'label-login-subtitle': 'وصف شاشة الدخول',
-        'hint-login-subtitle': 'الوصف الذي يظهر أسفل العنوان في شاشة تسجيل الدخول.',
-        'label-app-logo': 'شعار التطبيق',
-        'btn-choose-img': '📂 اختر صورة',
-        'btn-reset-default': 'استعادة الافتراضي',
-        'hint-app-logo': 'يطبق على شاشة الدخول، الرأس، وأيقونة التطبيق.',
-        'label-primary-color': 'اللون الأساسي',
-        'hint-primary-color': 'لون التمييز للأزرار والحالات النشطة.',
-        'btn-reset': 'إعادة تعيين',
-        'btn-save-branding': '💾 حفظ الهوية',
-        'title-timer': '⏱️ إعدادات المؤقت',
-        'label-duration': 'مدة الحديث الافتراضية',
-        'unit-seconds': 'ثانية',
-        'hint-timer': 'اضبط طول المؤقت الأساسي (مثلاً 180 لـ 3 دقائق).',
-        'btn-apply': 'تطبيق التغييرات',
-        'title-criteria': '📊 معايير التقييم',
-        'btn-add-criterion': '➕ إضافة معيار',
-        'ph-new-criterion': 'مثلاً: الثقة بالنفس',
-        'hint-criteria': 'يتم تقييم كل معيار من 1 إلى 10.',
-        'title-danger': 'منطقة الخطر',
-        'danger-p': 'مسح جميع التقييمات نهائياً.',
-        'btn-clear-data': 'مسح البيانات',
-        'loading-roster': 'جاري تحميل القائمة...',
-        'btn-timer-start': 'ابدأ',
-        'btn-timer-pause': 'إيقاف مؤقت',
-        'btn-timer-resume': 'استئناف',
-        'btn-timer-reset': 'إعادة تعيين',
-        'btn-timer-up': 'انتهى الوقت',
-        'label-speaker-mgmt': 'إدارة المتحدثين',
-        'opt-change-speaker': '-- تغيير المتحدث --',
-        'title-matrix': 'مصفوفة التقييم',
-        'label-comments': 'ملاحظات الحكم',
-        'ph-comments': 'أدخل ملاحظاتك للطالب هنا...',
-        'label-final-score': 'النتيجة النهائية',
-        'btn-save-eval': 'حفظ التقييم',
-        'btn-update-eval': 'تحديث التقييم',
-        'title-results-actions': 'الإجراءات والفلاتر',
-        'ph-search-results': 'بحث بالاسم...',
-        'opt-all-grades': 'جميع الصفوف',
-        'opt-best': 'أفضل العروض',
-        'opt-raw': 'جميع الدرجات الخام',
-        'btn-reset-filters': '↺ إعادة تعيين',
-        'btn-export': 'تصدير CSV',
-        'th-rank': 'الرتبة',
-        'th-num': 'الرقم',
-        'th-name': 'اسم الطالب',
-        'th-class': 'الصف',
-        'th-section': 'الشعبة',
-        'th-highest': 'الأعلى',
-        'th-avg': 'المعدل',
-        'th-details': 'التفاصيل',
-        'th-time': 'الوقت',
-        'th-judge': 'الحكم',
-        'th-score': 'الدرجة',
-        'th-feedback': 'الملاحظات',
-        'results-empty': 'لم يتم جمع أي تقييمات بعد.',
-        'title-winner': '🏆 إعلان الفائز',
-        'winner-p1': 'دفع الفائز إلى',
-        'winner-link': 'شاشة العرض',
-        'winner-p2': 'افتح شاشة العرض على جهاز عرض، ثم تحكم بها من هنا.',
-        'label-select-winner': 'اختر الفائز',
-        'opt-choose-student': '-- اختر طالباً --',
-        'label-winner-photo': 'صورة الفائز (اختياري)',
-        'hint-winner-photo': 'إذا لم يتم توفير صورة، سيتم عرض أيقونة ميكروفون.',
-        'btn-push-winner': '🏅 دفع إلى شاشة الفوز',
-        'btn-clear-screen': 'مسح الشاشة',
-        'title-bulk-edit': 'تعديل جماعي للطلاب',
-        'bulk-edit-p': 'اترك الحقل فارغاً للاحتفاظ بالقيم الأصلية.',
-        'label-bulk-class': 'تحديث الصف',
-        'label-bulk-section': 'تحديث الشعبة',
-        'label-bulk-photo': 'صورة جماعية (اختياري)',
-        'btn-choose-bulk-photo': '📷 اختر صورة جماعية',
-        'btn-update-selected': 'تحديث المختار',
-        'msg-eval-exists': 'لقد قمت بتقييم هذا الطالب بالفعل. هل تريد التحديث؟',
-        'msg-complete-criteria': 'يرجى إكمال جميع معايير التقييم.',
-        'msg-eval-saved': 'تم حفظ التقييم!',
-        'msg-eval-updated': 'تم تحديث التقييم!',
-        'msg-all-done': 'تم تقييم جميع الطلاب في القائمة!',
-        'msg-delete-student': 'هل أنت متأكد من حذف هذا الطالب؟',
-        'msg-delete-user': 'حذف المستخدم؟',
-        'msg-clear-confirm': 'اكتب DELETE للتأكيد:',
-        'msg-pushing': '⏳ جاري الدفع...',
-        'msg-pushed': '🏆 تم دفع الفائز لشاشة العرض!',
-        'msg-clear-display': 'تم مسح شاشة العرض.',
-        'msg-no-results': 'لا توجد نتائج للتصدير',
-        'lang-btn': 'English',
-        'judging-active': 'يتم تقييم:',
-        'already-evaluated': '(تم التقييم)',
-        'empty-no-students': 'لا يوجد طلاب في القائمة.',
-        'empty-go-setup': 'انتقل إلى "الإدارة" لإضافة طلاب.',
-        'footer-p': 'بني للمدارس، بواسطة المجتمع.',
-        'dyn_str_0': 'الرجاء اختيار طالب أولاً.',
-        'dyn_str_1': 'الرجاء إكمال جميع معايير التقييم.',
-        'dyn_str_2': 'تم تحديث التقييم!',
-        'dyn_str_3': 'تم حفظ التقييم!',
-        'dyn_str_4': 'تم تحديث التقييم (بدون اتصال).',
-        'dyn_str_5': 'تم حفظ التقييم (بدون اتصال).',
-        'dyn_str_6': 'اسم المستخدم مطلوب',
-        'dyn_str_7': 'كلمة المرور مطلوبة للمستخدمين الجدد',
-        'dyn_str_8': 'تم تحديث المستخدم بنجاح',
-        'dyn_str_9': 'تم إنشاء المستخدم بنجاح',
-        'dyn_str_10': 'الرقم والاسم مطلوبان',
-        'dyn_str_11': 'تم تحديث الطالب بنجاح',
-        'dyn_str_12': 'تمت إضافة الطالب بنجاح',
-        'dyn_str_13': 'الرجاء تحديد ملف CSV أولاً',
-        'dyn_str_14': 'لم يتم العثور على بيانات طالب صالحة في ملف CSV',
-        'dyn_str_15': 'خطأ في استيراد الطلاب: ',
-        'dyn_str_16': 'تمت إعادة ترتيب الطلاب...',
-        'dyn_str_17': 'خطأ في حفظ الترتيب على الخادم',
-        'dyn_str_18': 'تم حفظ الترتيب بنجاح!',
-        'dyn_str_19': 'تم حفظ الترتيب محلياً.',
-        'dyn_str_20': 'تم تحديث المعايير بنجاح! ✨',
-        'dyn_str_21': 'الرجاء إدخال اسم المعيار.',
-        'dyn_str_22': 'تمت إضافة المعيار!',
-        'dyn_str_23': 'تمت إزالة المعيار.',
-        'dyn_str_24': 'لا توجد نتائج للتصدير',
-        'dyn_str_25': 'تم حفظ إعدادات المؤقت!',
-        'dyn_str_26': 'تم حفظ الهوية البصرية! ✨',
-        'dyn_str_27': 'تمت إعادة تعيين الفلاتر',
-        'dyn_str_28': 'تم مسح البيانات',
-        'dyn_str_29': 'تم حذف الطلاب بنجاح',
-        'dyn_str_30': 'لم يتم تحديد أي طلاب',
-        'dyn_str_31': 'الرجاء إفلات ملف CSV صالح.',
-        'dyn_str_32': 'تم تقييم جميع الطلاب في القائمة!',
-        'dyn_str_33': 'فشل رفع الصورة، يتم الدفع بدون صورة.',
-        'dyn_str_34': '🏆 تم دفع الفائز لشاشة العرض!',
-        'dyn_str_35': 'تم مسح شاشة عرض الفائز.',
-        'dyn_str_36': 'جميع الصفوف',
-        'dyn_str_37': 'جميع الشعب',
-        'dyn_str_38': 'لم يتم العثور على نتائج',
-        'dyn_str_39': 'لم يتم العثور على تقييمات خام',
-        'dyn_str_40': 'جميع الصفوف',
-        'dyn_str_41': '-- اختر طالباً --',
-        'dyn_str_42': 'لم يتم تحديد معايير.',
-        'dyn_str_43': '-- اختر طالباً --',
-        'dyn_str_44': '-- لا يوجد طلاب متاحين --',
-        'comp-title': 'اختر المسابقة',
-        'comp-subtitle': 'اختر مسابقة نشطة أو أنشئ مسابقة جديدة.',
-        'loading-comps': 'جاري تحميل المسابقات...',
-        'comp-create-title': 'إنشاء مسابقة جديدة',
-        'ph-comp-name': 'اسم المسابقة',
-        'btn-create-comp': 'إنشاء مسابقة',
-        'subtab-competitions': 'المسابقات',
-        'title-competitions': 'إدارة المسابقات',
-        'form-create-competition': 'إنشاء مسابقة جديدة',
-        'opt-no-comp': '-- اختر المسابقة --',
-        'btn-delete': 'حذف',
-        'msg-delete-comp-confirm': 'هل أنت متأكد من حذف هذه المسابقة؟ سيتم فقدان جميع الطلاب والتقييمات المرتبطة بها نهائياً.',
-        'msg-comp-deleted': 'تم حذف المسابقة بنجاح.',
-        'msg-duplicates-skipped': 'تم تخطي أرقام الطلاب المكررة.',
-        'label-criterion': 'المعيار',
-        'label-score': 'الدرجة',
-        'label-feedback': 'الملاحظات',
-        'title-detailed-scores': 'تفاصيل الدرجات',
-        'waiting': 'بانتظار الإعلان عن الفائز...',
-        'unlock-audio': 'تفعيل الصوت للعرض',
-        'congrats': 'ألف مبروك',
-    }
-};
-
-let currentLang = localStorage.getItem('taqeem_lang') || 'en';
-
-
-function translate(key) {
-    return translations[currentLang][key] || key;
-}
-
-function applyTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const val = translate(key);
-        if (el.tagName === 'INPUT' && el.placeholder) el.placeholder = val;
-        else if (el.tagName === 'TEXTAREA' && el.placeholder) el.placeholder = val;
-        else el.textContent = val;
-    });
-}
-
-function setLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem('taqeem_lang', lang);
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang;
-    
-    applyTranslations();
-
-    const langBtns = ['lang-btn-login', 'lang-btn-app'];
-    langBtns.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) btn.textContent = translate('lang-btn');
-    });
-
-    const pageTitle = document.getElementById('page-title');
-    if (pageTitle) pageTitle.textContent = 'Taqeem | ' + (lang === 'ar' ? 'نظام التقييم المتميز' : 'Premium Evaluation System');
-
-    if (isAuthenticated) {
-        renderRoster();
-        renderJudgingSidebar();
-        renderResults();
-        populateStudentSelect();
-        populateWinnerSelect();
-        renderCriteriaMatrix();
-        if (currentTab === 'setup' && currentSubTab === 'config') renderCriteriaManager();
-    }
-}
-
-window.toggleLang = () => {
-    setLanguage(currentLang === 'en' ? 'ar' : 'en');
-};
-
-
 function getSupabase() {
   return window.supabaseClient || null;
 }
@@ -522,14 +46,17 @@ async function init() {
   console.log('TedTalk App v2.5 Loaded');
   bindAuthEvents();
   bindAppEvents();
-  setLanguage(currentLang);
   await loadSettings();
   await checkAuthState();
-
+  
   if (isAuthenticated) {
     applyRolePermissions();
-    // Channel subscription moved to finishInitSession
-
+    // Initialize Realtime Channel
+    const supabase = getSupabase();
+    if (supabase) {
+        currentChannel = supabase.channel('winners-display-channel').subscribe();
+    }
+    
     await loadRoster();
     await loadEvaluations();
     renderRoster();
@@ -545,6 +72,7 @@ async function init() {
     startSilentRefresh();
   }
 }
+
 async function loadSettings() {
   let settings = {};
   const stored = localStorage.getItem(SETTINGS_KEY);
@@ -554,7 +82,7 @@ async function loadSettings() {
   const supabase = getSupabase();
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('site_settings').select('config').eq('id', 'global_config').maybeSingle();
+      const { data, error } = await supabase.from('site_settings').select('config').eq('id', 'global_config').single();
       if (data && data.config) {
         settings = data.config;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
@@ -635,13 +163,13 @@ function applyBranding() {
   const stored = localStorage.getItem(SETTINGS_KEY);
   const settings = stored ? JSON.parse(stored) : {};
 
-  const appName = settings.appName || 'Taqeem';
+  const appName = settings.appName || 'TedTalk';
   const subtitle = settings.appSubtitle || 'Sign in to manage student evaluations';
   const logoSrc = settings.logoDataUrl || null;
   const primaryColor = settings.primaryColor || null;
 
   // App name
-  document.title = appName + ' | Premium Evaluation System';
+  document.title = appName + ' | Premium Edition';
   const headerTitle = document.querySelector('.app-title');
   if (headerTitle) headerTitle.textContent = appName;
   const loginTitle = document.querySelector('.login-title');
@@ -667,7 +195,7 @@ function applyBranding() {
 
   // Populate branding fields if config panel is loaded
   const nameInput = document.getElementById('cfg-app-name');
-  if (nameInput) nameInput.value = appName !== 'Taqeem' ? appName : '';
+  if (nameInput) nameInput.value = appName !== 'TedTalk' ? appName : '';
   const subtitleInput = document.getElementById('cfg-app-subtitle');
   if (subtitleInput) subtitleInput.value = subtitle !== 'Sign in to manage student evaluations' ? subtitle : '';
   const colorInput = document.getElementById('cfg-primary-color');
@@ -717,40 +245,9 @@ async function checkAuthState() {
   if (storedUserId && storedUsername) {
     userRole = localStorage.getItem('currentUserRole') || 'judge';
     currentUserId = storedUserId;
-    
-    // Restore competition context
-    currentCompetitionId = localStorage.getItem('currentCompetitionId');
-    currentCompetitionName = localStorage.getItem('currentCompetitionName');
-
+    showApp();
+    switchTab(userRole === 'admin' ? 'setup' : 'judging');
     isAuthenticated = true;
-
-    if (userRole === 'admin') {
-      if (!currentCompetitionId) {
-        // Admin is logged in but no competition selected, show selector
-        document.getElementById('login-view').hidden = true;
-        document.getElementById('competition-view').hidden = false;
-        document.getElementById('app-container').hidden = true;
-        await loadCompetitions();
-      } else {
-        // Restore active competition
-        showApp();
-        const badge = document.getElementById('active-comp-badge');
-        if (badge) badge.textContent = currentCompetitionName;
-        const switchBtn = document.getElementById('switch-comp-btn');
-        if (switchBtn) switchBtn.style.display = 'inline-flex';
-        await finishInitSession();
-      }
-    } else {
-      // Judge must have competition ID
-      if (!currentCompetitionId) {
-        alert("Judge account error: No competition assigned.");
-        handleLogout();
-        return;
-      }
-      showApp();
-      await finishInitSession();
-    }
-
     bindAuthEvents();
     return;
   }
@@ -805,7 +302,7 @@ function switchTab(tabName) {
     tabName = 'judging';
   }
   currentTab = tabName;
-  localStorage.setItem('taqeem_currentTab', tabName);
+  localStorage.setItem('tedtalk_currentTab', tabName);
 
   document.querySelectorAll('.tab-bar .tab').forEach(tab => {
     const isActive = tab.dataset.tab === tabName;
@@ -850,7 +347,7 @@ function switchTab(tabName) {
 
 function switchSubTab(subtabName) {
   currentSubTab = subtabName;
-  localStorage.setItem('taqeem_currentSubTab', subtabName);
+  localStorage.setItem('tedtalk_currentSubTab', subtabName);
 
   document.querySelectorAll('.sub-tab-bar .sub-tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.subtab === subtabName);
@@ -859,8 +356,7 @@ function switchSubTab(subtabName) {
   const subPanelMap = {
     'students': 'students-subpanel',
     'users': 'users-subpanel',
-    'config': 'config-subpanel',
-    'competitions': 'competitions-subpanel'
+    'config': 'config-subpanel'
   };
 
   Object.entries(subPanelMap).forEach(([key, panelId]) => {
@@ -873,30 +369,14 @@ function switchSubTab(subtabName) {
     }
   });
 
-  if (subtabName === 'competitions') {
-    renderCompetitionsTab();
-  }
-
-  if (subtabName === 'users') {
-    // Reload all users for the current competition, then render
-    loadAllCustomUsers().then(() => {
-      renderRolePanel();
-      renderCompetitionsTab(); // also populate the competition dropdown in user form
-    });
-  }
-
   // Refresh branding fields and winner dropdown when admin opens the config tab
   if (subtabName === 'config') {
     applyBranding();
     populateWinnerSelect();
-    renderCriteriaManager();
   }
 }
 
 // ===== AUTH CORE =====
-
-let currentCompetitionId = localStorage.getItem('currentCompetitionId') || null;
-let currentCompetitionName = localStorage.getItem('currentCompetitionName') || null;
 
 async function handleLogin() {
   const username = document.getElementById('login-email').value.trim();
@@ -921,17 +401,10 @@ async function handleLogin() {
     }
 
     if (data) {
-      let compName = null;
-      if (data.competition_id) {
-          const { data: compData } = await supabase.from('competitions')
-            .select('name').eq('id', data.competition_id).maybeSingle();
-          if (compData) compName = compData.name;
-      }
-      
       const inputHash = await hashPassword(password);
       if (inputHash === data.password_hash) {
         console.log('Password verified successfully.');
-        setAndInitSession(data.id, data.username, data.role, data.competition_id, compName);
+        setAndInitSession(data.id, data.username, data.role);
         return;
       } else {
         throw new Error('Invalid password');
@@ -948,9 +421,18 @@ async function handleLogin() {
         }]).select().single();
         
         if (!insertError && newUser) {
-            setAndInitSession(newUser.id, newUser.username, newUser.role, null, null);
+            setAndInitSession(newUser.id, newUser.username, newUser.role);
             return;
         }
+    }
+
+    const storedUserStr = localStorage.getItem('user_' + username);
+    if (storedUserStr) {
+      const user = JSON.parse(storedUserStr);
+      if (user.password === password) {
+        setAndInitSession(user.id || 'legacy-user', username, user.role || 'judge');
+        return;
+      }
     }
 
     throw new Error('Invalid username or password');
@@ -964,288 +446,38 @@ async function handleLogin() {
   }
 }
 
-async function setAndInitSession(id, username, role, compId, compName) {
+async function setAndInitSession(id, username, role) {
   currentUserId = id;
   userRole = role;
   localStorage.setItem('currentUserId', id);
   localStorage.setItem('currentUsername', username);
   localStorage.setItem('currentUserRole', role);
   isAuthenticated = true;
-
-  if (role === 'admin') {
-    document.getElementById('login-view').hidden = true;
-    document.getElementById('competition-view').hidden = false;
-    await loadCompetitions();
-  } else {
-    if (!compId) {
-      alert("Judge account is not assigned to any competition.");
-      return;
-    }
-    selectCompetition(compId, compName || 'Competition');
-  }
-}
-
-async function loadCompetitions() {
-  // Target the competition-view modal's list specifically
-  const listEl = document.querySelector('#competition-view #comp-selector-list');
-  if (listEl) listEl.innerHTML = '<p class="empty-state-text" data-i18n="loading-comps">Loading competitions...</p>';
   
-  const supabase = getSupabase();
-  if (!supabase) {
-    if (listEl) listEl.innerHTML = '<p class="empty-state-text">Database not connected.</p>';
-    return;
-  }
-
-  const { data, error } = await supabase.from('competitions').select('*').order('created_at', { ascending: false });
-  if (!error && data) competitions = data;
+  // Show app UI first
+  showApp();
   
-  if (!listEl) return;
+  // Switch to correct tab immediately to prevent flash of wrong content
+  switchTab(userRole === 'admin' ? 'setup' : 'judging');
   
-  if (error || !data || data.length === 0) {
-    listEl.innerHTML = '<p class="empty-state-text">No competitions found. Create one below.</p>';
-    return;
-  }
-
-  listEl.innerHTML = '';
-  data.forEach(comp => {
-    const card = document.createElement('div');
-    card.className = 'setup-card';
-    card.style.display = 'flex';
-    card.style.justifyContent = 'space-between';
-    card.style.alignItems = 'center';
-    card.style.padding = '12px 16px';
-    card.style.marginBottom = '0';
-    card.style.cursor = 'pointer';
-    card.style.border = '1px solid var(--border)';
-    
-    card.innerHTML = `
-      <div>
-        <h3 style="margin: 0; font-size: 1.1rem;">${escapeHtml(comp.name)}</h3>
-        <span style="font-size: 0.8rem; color: ${comp.status === 'active' ? 'var(--success)' : 'var(--text-muted)'}">${comp.status.toUpperCase()}</span>
-      </div>
-      <button class="btn btn-login" style="padding: 6px 12px; font-size: 0.85rem;">Enter</button>
-    `;
-    card.onclick = () => selectCompetition(comp.id, comp.name);
-    listEl.appendChild(card);
-  });
-
-  // Also update the sub-tab panel if visible
-  renderCompetitionsTab();
-  applyTranslations();
-}
-
-
-
-document.getElementById('comp-logout-btn')?.addEventListener('click', handleLogout);
-
-async function selectCompetition(id, name) {
-  currentCompetitionId = id;
-  currentCompetitionName = name;
-  localStorage.setItem('currentCompetitionId', id);
-  localStorage.setItem('currentCompetitionName', name);
-  
-  const badge = document.getElementById('active-comp-badge');
-  if (badge) badge.textContent = name;
-  
-  document.getElementById('competition-view').hidden = true;
-  document.getElementById('app-container').hidden = false;
-  
-  const switchBtn = document.getElementById('switch-comp-btn');
-  if (switchBtn) switchBtn.style.display = userRole === 'admin' ? 'inline-flex' : 'none';
-
-  const winnerLink = document.getElementById('winner-screen-link');
-  if (winnerLink) {
-    winnerLink.href = 'winners/?comp=' + id;
-    winnerLink.textContent = name + ' ' + translate('winner-link');
-  }
-
-  await finishInitSession();
-}
-
-async function renderCompetitionsTab() {
-  // Target the admin sub-tab panel's list (distinct ID to avoid collision with login modal)
-  const container = document.getElementById('competitions-subpanel-list');
-  const userSelect = document.getElementById('new-user-competition');
-  
-  const supabase = getSupabase();
-  if (!supabase) return;
-  
-  const { data, error } = await supabase.from('competitions').select('*').order('created_at', { ascending: false });
-  if (!error && data) competitions = data;
-  
-  // Always update the user competition dropdown if it exists
-  if (userSelect) {
-    if (error || !data || data.length === 0) {
-      userSelect.innerHTML = '<option value="">No competitions available</option>';
-    } else {
-      userSelect.innerHTML = '<option value="">Assign to Competition...</option>' + 
-        data.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
-    }
-  }
-
-  if (!container) return;
-  
-  if (error) {
-    container.innerHTML = `<p class="empty-state-text" style="color:var(--danger)">Failed to load competitions: ${error.message}</p>`;
-    return;
-  }
-  
-  if (!data || data.length === 0) {
-    container.innerHTML = `<p class="empty-state-text">No competitions found. Create one below.</p>`;
-    return;
-  }
-  
-  container.innerHTML = data.map(c => `
-    <div class="user-row" style="cursor:pointer;" onclick="switchToCompetition('${c.id}', '${escapeHtml(c.name).replace(/'/g, "\\'")}')">
-      <div>
-        <div style="font-weight: 600;">${escapeHtml(c.name)}</div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);">
-          ${c.id === currentCompetitionId ? '<span style="color:var(--success); font-weight:700;">● ACTIVE</span>' : c.status.toUpperCase()}
-        </div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <span class="role-badge ${c.status === 'active' ? 'admin' : 'judge'}">${c.status}</span>
-        ${c.id !== currentCompetitionId ? `
-          <button class="btn btn-login" style="padding:4px 10px; font-size:0.8rem;" onclick="event.stopPropagation(); switchToCompetition('${c.id}', '${escapeHtml(c.name).replace(/'/g, "\\'")}')" data-i18n="btn-switch-comp">Switch</button>
-          <button class="btn btn-login" style="padding:4px 10px; font-size:0.8rem; background:var(--danger); border-color:var(--danger);" onclick="event.stopPropagation(); deleteCompetition('${c.id}', '${escapeHtml(c.name).replace(/'/g, "\\'")}')" data-i18n="btn-delete">Delete</button>
-        ` : '<span style="color:var(--success);font-size:0.85rem;font-weight:700;">✓ Current</span>'}
-      </div>
-    </div>
-  `).join('');
-
-  applyTranslations();
-}
-
-window.deleteCompetition = async function(id, name) {
-  if (!confirm(translate('msg-delete-comp-confirm'))) return;
-
-  const supabase = getSupabase();
-  if (!supabase) return;
-
-  try {
-    const { error } = await supabase.from('competitions').delete().eq('id', id);
-    if (error) throw error;
-    
-    // Refresh the list
-    await loadCompetitions();
-    showToast(translate('msg-comp-deleted'));
-
-    // If we deleted the current competition, we must reset
-    if (id === currentCompetitionId) {
-      currentCompetitionId = null;
-      localStorage.removeItem('currentCompetitionId');
-      location.reload();
-    }
-  } catch (err) {
-    console.error('Error deleting competition:', err);
-    alert('Failed to delete competition: ' + err.message);
-  }
-}
-
-function bindCompetitionViewEvents() {
-  // Competition creation form in the login modal
-  document.getElementById('create-comp-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
-    if (btn && btn.disabled) return;
-
-    const nameInput = document.getElementById('modal-comp-name');
-    if (!nameInput) return;
-    const name = nameInput.value.trim();
-    if (!name) return;
-
-    const supabase = getSupabase();
-    if (!supabase) return;
-
-    if (btn) {
-        btn.disabled = true;
-        btn.textContent = currentLang === 'ar' ? 'جاري الإنشاء...' : 'Creating...';
-    }
-
-    try {
-        const { data, error } = await supabase.from('competitions').insert([{ name, status: 'active' }]).select().single();
-        if (error) {
-            showToast('Error: ' + error.message, 'error');
-        } else {
-            nameInput.value = '';
-            showToast(currentLang === 'ar' ? 'تم إنشاء المسابقة!' : 'Competition created!');
-            await loadCompetitions();
-        }
-    } finally {
-        if (btn) {
-            btn.disabled = false;
-            btn.textContent = currentLang === 'ar' ? 'إنشاء' : 'Create';
-        }
-    }
-  });
-
-  document.getElementById('comp-logout-btn')?.addEventListener('click', handleLogout);
-
-  // Switch-comp button in the app header (show competition selector)
-  const switchCompBtn = document.getElementById('switch-comp-btn');
-  if (switchCompBtn) {
-    switchCompBtn.onclick = async () => {
-      document.getElementById('app-container').hidden = true;
-      document.getElementById('competition-view').hidden = false;
-      document.getElementById('login-view').hidden = true;
-      await loadCompetitions();
-    };
-  }
-}
-window.switchToCompetition = async function(id, name) {
-  if (id === currentCompetitionId) return; // Already active
-  if (!confirm(`Switch to competition: "${name}"? This will reload data for that competition.`)) return;
-  
-  currentCompetitionId = id;
-  currentCompetitionName = name;
-  localStorage.setItem('currentCompetitionId', id);
-  localStorage.setItem('currentCompetitionName', name);
-  
-  const badge = document.getElementById('active-comp-badge');
-  if (badge) badge.textContent = name;
-  
-  // Reload all data for new competition
-  roster = [];
-  evaluations = [];
-  allCustomUsers = [];
-  
-  await finishInitSession();
-  showToast('Switched to: ' + name);
-};
-
-async function finishInitSession() {
-  const supabase = getSupabase();
-  if (supabase && currentCompetitionId) {
-      if (currentChannel) {
-          supabase.removeChannel(currentChannel);
-      }
-      currentChannel = supabase.channel('winners-display-' + currentCompetitionId).subscribe();
-  }
-
+  // Then load data and settings
   await loadSettings();
   applyRolePermissions();
   await loadRoster();
   await loadEvaluations();
-  await loadAllCustomUsers();
   updateFilterDropdowns();
-  updateResultFilterOptions();
   populateStudentSelect();
   populateWinnerSelect();
   renderRolePanel();
-  renderJudgingSidebar();
-  bindAppEvents();
-  switchTab(userRole === 'admin' ? 'setup' : 'judging');
+  bindAppEvents(); // Crucial: bind events after UI is shown
 }
 
 function handleLogout() {
   localStorage.removeItem('currentUserId');
   localStorage.removeItem('currentUsername');
   localStorage.removeItem('currentUserRole');
-  localStorage.removeItem('currentCompetitionId');
-  localStorage.removeItem('currentCompetitionName');
-  localStorage.removeItem('taqeem_currentTab');
-  localStorage.removeItem('taqeem_currentSubTab');
+  localStorage.removeItem('tedtalk_currentTab');
+  localStorage.removeItem('tedtalk_currentSubTab');
   location.reload();
 }
 
@@ -1255,10 +487,7 @@ async function loadRoster() {
   const supabase = getSupabase();
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('students')
-        .select('*')
-        .eq('competition_id', currentCompetitionId)
-        .order('number');
+      const { data, error } = await supabase.from('students').select('*').order('number');
       if (error) {
         console.error('Supabase roster error details:', JSON.stringify(error, null, 2));
         throw error;
@@ -1297,10 +526,7 @@ async function loadEvaluations() {
   const supabase = getSupabase();
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('evaluations')
-        .select('*')
-        .eq('competition_id', currentCompetitionId)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('evaluations').select('*').order('created_at', { ascending: false });
       if (error) {
         console.error('Supabase evaluations error details:', JSON.stringify(error, null, 2));
         throw error;
@@ -1317,7 +543,7 @@ async function loadEvaluations() {
 
 async function saveEvaluation() {
   const select = document.getElementById('student-select');
-  if (!select || !select.value) return showToast(translate('dyn_str_0'), 'error');
+  if (!select || !select.value) return showToast('Please select a student first.', 'error');
 
   const studentId = select.value;
   const activeStudent = roster.find(s => s.id === studentId);
@@ -1352,12 +578,11 @@ async function saveEvaluation() {
 
   if (firstMissingElement) {
     firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return showToast(translate('dyn_str_1'), 'error');
+    return showToast('Please complete all evaluation criteria.', 'error');
   }
 
   const judgeName = localStorage.getItem('currentUsername') || 'Judge';
   const evaluation = {
-    competition_id: currentCompetitionId,
     student_id: activeStudent.id,
     student_name: activeStudent.name,
     student_number: activeStudent.number,
@@ -1389,12 +614,12 @@ async function saveEvaluation() {
       updateResultFilterOptions(); 
       await renderResults();
       renderJudgingSidebar(); 
-      showToast(existingEval ? translate('dyn_str_2') : translate('dyn_str_3'));
+      showToast(existingEval ? 'Evaluation updated!' : 'Evaluation saved!');
       autoAdvance(); 
       return;
     } else {
       console.error('Supabase evaluation error details:', error);
-      showToast((currentLang==='ar'?'خطأ في قاعدة البيانات: ':'Supabase Error: ') + (error.message || 'Check console'), 'error');
+      showToast('Supabase Error: ' + (error.message || 'Check console'), 'error');
     }
   }
 
@@ -1413,7 +638,7 @@ async function saveEvaluation() {
   localStorage.setItem(EVALUATIONS_KEY, JSON.stringify(evaluations));
   await renderResults();
   renderJudgingSidebar();
-  showToast(existingEval ? translate('dyn_str_4') : translate('dyn_str_5'));
+  showToast(existingEval ? 'Evaluation updated (Offline).' : 'Evaluation saved (Offline).');
   autoAdvance();
 }
 
@@ -1462,50 +687,25 @@ function updateTimerDisplay() {
 async function loadAllCustomUsers() {
   const supabase = getSupabase();
   if (!supabase) return;
-  
-  // Ensure competitions are loaded for mapping names
-  if (competitions.length === 0) {
-    const { data: compData } = await supabase.from('competitions').select('*');
-    if (compData) competitions = compData;
-  }
-
-  let query = supabase.from('custom_users').select('*').order('username');
-  
-  // If user is admin, show ALL users. Otherwise, filter by current competition.
-  if (userRole !== 'admin') {
-    query = query.eq('competition_id', currentCompetitionId);
-  }
-
-  const { data, error } = await query;
+  const { data, error } = await supabase.from('custom_users').select('*').order('username');
   if (!error) allCustomUsers = data || [];
 }
 
 function renderRolePanel() {
   const container = document.getElementById('role-users-list');
   if (!container) return;
-  
-  container.innerHTML = allCustomUsers.map(u => {
-    const comp = competitions.find(c => c.id === u.competition_id);
-    const compName = comp ? comp.name : (u.role === 'admin' ? 'Global System' : 'Not Assigned');
-    
-    return `
-      <div class="user-card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px;">
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="user-info-name" style="font-weight: 600;">${escapeHtml(u.username)}</span>
-            <span class="role-badge ${u.role}" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; text-transform: uppercase;">${u.role}</span>
-          </div>
-          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
-            <span style="font-weight: 600; color: var(--primary);">Competition:</span> ${escapeHtml(compName)}
-          </div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn" style="padding: 4px 12px; font-size: 0.8rem; background: rgba(79, 70, 229, 0.1); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);" onclick="startEditUser('${u.id}')">Edit</button>
-          <button class="btn btn-logout" style="padding: 4px 12px; font-size: 0.8rem; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);" onclick="deleteCustomUser('${u.id}')">Delete</button>
-        </div>
+  container.innerHTML = allCustomUsers.map(u => `
+    <div class="user-card">
+      <div>
+        <span class="user-info-name">${escapeHtml(u.username)}</span>
+        <span class="user-info-role">${u.role}</span>
       </div>
-    `;
-  }).join('') || '<p class="empty-state-text">No custom users yet.</p>';
+      <div style="display:flex; gap:8px;">
+        <button class="btn" style="padding: 4px 12px; font-size: 0.8rem; background: rgba(79, 70, 229, 0.1); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);" onclick="startEditUser('${u.id}')">Edit</button>
+        <button class="btn btn-logout" style="padding: 4px 12px; font-size: 0.8rem; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);" onclick="deleteCustomUser('${u.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('') || '<p class="empty-state-text">No custom users yet.</p>';
 }
 
 function startEditUser(id) {
@@ -1542,23 +742,13 @@ async function createCustomUser() {
   const password = document.getElementById('new-user-password').value;
   const role = document.getElementById('new-user-role').value;
   
-  const competitionId = document.getElementById('new-user-competition').value;
-
-  if (!username) return showToast(translate('dyn_str_6'), 'error');
-  if (!editingUserId && !password) return showToast(translate('dyn_str_7'), 'error');
+  if (!username) return showToast('Username is required', 'error');
+  if (!editingUserId && !password) return showToast('Password is required for new users', 'error');
   
-  if (role === 'judge' && !competitionId) {
-    return showToast('Please assign the judge to a competition', 'error');
-  }
-
   const supabase = getSupabase();
   if (!supabase) return;
 
   const userData = { username, role };
-  if (competitionId) {
-    userData.competition_id = competitionId;
-  }
-
   if (password) {
     userData.password_hash = await hashPassword(password);
   }
@@ -1567,24 +757,24 @@ async function createCustomUser() {
     if (editingUserId) {
       const { error } = await supabase.from('custom_users').update(userData).eq('id', editingUserId);
       if (error) throw error;
-      showToast(translate('dyn_str_8'));
+      showToast('User updated successfully');
       cancelEditUser();
     } else {
       const { error } = await supabase.from('custom_users').insert([userData]);
       if (error) throw error;
-      showToast(translate('dyn_str_9'));
+      showToast('User created successfully');
       document.getElementById('new-user-username').value = '';
       document.getElementById('new-user-password').value = '';
     }
     await loadAllCustomUsers();
     renderRolePanel();
   } catch (err) {
-    showToast((currentLang==='ar'?'خطأ: ':'Error: ') + err.message, 'error');
+    showToast('Error: ' + err.message, 'error');
   }
 }
 
 async function deleteCustomUser(id) {
-  if (!confirm(translate('msg-delete-user'))) return;
+  if (!confirm('Delete user?')) return;
   const supabase = getSupabase();
   if (supabase) await supabase.from('custom_users').delete().eq('id', id);
   await loadAllCustomUsers();
@@ -1596,14 +786,13 @@ async function deleteCustomUser(id) {
 async function handleAddStudent(e) {
   e.preventDefault();
   const student = {
-    competition_id: currentCompetitionId,
     number: document.getElementById('student-number').value.trim(),
     name: document.getElementById('student-name').value.trim(),
     class_name: document.getElementById('student-class').value.trim(),
     section: document.getElementById('student-section').value.trim() || null
   };
   
-  if (!student.number || !student.name) return showToast(translate('dyn_str_10'), 'error');
+  if (!student.number || !student.name) return showToast('Number and Name are required', 'error');
 
   const supabase = getSupabase();
   try {
@@ -1627,7 +816,7 @@ async function handleAddStudent(e) {
         student.photo_url = photoUrl;
       } else {
         console.error('Photo upload error:', uploadError);
-        showToast((currentLang==='ar'?'خطأ في رفع الصورة: ':'Error uploading photo: ') + uploadError.message, 'error');
+        showToast('Error uploading photo: ' + uploadError.message, 'error');
       }
     }
 
@@ -1645,7 +834,7 @@ async function handleAddStudent(e) {
         if (!student.photo_url) student.photo_url = roster[idx].photo_url;
         roster[idx] = { ...roster[idx], ...student };
       }
-      showToast(translate('dyn_str_11'));
+      showToast('Student updated successfully');
       cancelEditStudent();
     } else {
       if (supabase) {
@@ -1659,7 +848,7 @@ async function handleAddStudent(e) {
         student.id = crypto.randomUUID();
         roster.push(student);
       }
-      showToast(translate('dyn_str_12'));
+      showToast('Student added successfully');
       e.target.reset();
       // Also reset the preview
       cancelEditStudent(); 
@@ -1673,7 +862,7 @@ async function handleAddStudent(e) {
     populateStudentSelect();
     populateWinnerSelect();
   } catch (err) {
-    showToast((currentLang==='ar'?'خطأ: ':'Error: ') + (err.message || 'Database error'), 'error');
+    showToast('Error: ' + (err.message || 'Database error'), 'error');
   }
 }
 
@@ -1722,106 +911,51 @@ function cancelEditStudent() {
 
 async function importStudents() {
   const fileInput = document.getElementById('csv-import');
-  const importBtn = document.getElementById('import-btn');
   const file = fileInput.files[0];
-  if (!file) return showToast(translate('dyn_str_13'), 'error');
+  if (!file) return showToast('Please select a CSV file first', 'error');
 
-  // Disable button to prevent double clicks
-  const originalText = importBtn.textContent;
-  importBtn.disabled = true;
-  importBtn.textContent = currentLang === 'ar' ? 'جاري الاستيراد...' : 'Importing...';
-
-  try {
-    const text = await file.text();
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-    const newStudents = [];
-    
-    // Existing numbers in roster for this competition
-    const existingNumbers = new Set(roster.map(s => String(s.number)));
-    let duplicatesSkipped = 0;
-
-    for (let i = 1; i < lines.length; i++) {
-      const parts = lines[i].split(',').map(s => s.trim());
-      if (parts.length >= 2 && parts[0] && parts[1]) {
-        const studentNumber = String(parts[0]);
-        if (existingNumbers.has(studentNumber)) {
-          duplicatesSkipped++;
-          continue;
-        }
-        
-        newStudents.push({
-          competition_id: currentCompetitionId,
-          number: studentNumber,
-          name: parts[1],
-          class_name: parts[2] || '',
-          section: parts[3] || ''
-        });
-        existingNumbers.add(studentNumber);
-      }
+  const text = await file.text();
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  const newStudents = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const parts = lines[i].split(',').map(s => s.trim());
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      newStudents.push({
+        number: parts[0],
+        name: parts[1],
+        class_name: parts[2] || '',
+        section: parts[3] || ''
+      });
     }
+  }
 
-    if (newStudents.length === 0) {
-      if (duplicatesSkipped > 0) {
-        showToast(translate('msg-duplicates-skipped'), 'warning');
-      } else {
-        showToast(translate('dyn_str_14'), 'error');
-      }
-      return;
-    }
+  if (newStudents.length === 0) return showToast('No valid student data found in CSV', 'error');
 
-    const supabase = getSupabase();
-    if (supabase) {
-      const { data, error } = await supabase.from('students').insert(newStudents).select();
-      if (!error) {
-        roster = [...roster, ...data];
-        sortRoster();
-        renderRoster();
-        updateFilterDropdowns();
-        populateStudentSelect();
-        populateWinnerSelect();
-        
-        let msg = (currentLang==='ar'?'تم استيراد ':'Successfully imported ') + newStudents.length + (currentLang==='ar'?' طلاب':' students');
-        if (duplicatesSkipped > 0) msg += ` (${duplicatesSkipped} ${translate('msg-duplicates-skipped')})`;
-        showToast(msg);
-        resetImportUI();
-      } else {
-        showToast(translate('dyn_str_15') + error.message, 'error');
-      }
-    } else {
-      newStudents.forEach(s => s.id = crypto.randomUUID());
-      roster = [...roster, ...newStudents];
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data, error } = await supabase.from('students').insert(newStudents).select();
+    if (!error) {
+      roster = [...roster, ...data];
       sortRoster();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(roster));
       renderRoster();
       updateFilterDropdowns();
       populateStudentSelect();
       populateWinnerSelect();
-      
-      let msg = (currentLang==='ar'?'تم استيراد ':'Successfully imported ') + newStudents.length + (currentLang==='ar'?' طلاب (بدون اتصال)':' students (Offline)');
-      if (duplicatesSkipped > 0) msg += ` (${duplicatesSkipped} ${translate('msg-duplicates-skipped')})`;
-      showToast(msg);
-      resetImportUI();
+      showToast(`Successfully imported ${newStudents.length} students`);
+    } else {
+      showToast('Error importing students: ' + error.message, 'error');
     }
-  } catch (err) {
-    console.error('Import error:', err);
-    showToast('Error: ' + err.message, 'error');
-  } finally {
-    importBtn.disabled = (fileInput.files.length === 0);
-    importBtn.textContent = originalText;
-  }
-}
-
-function resetImportUI() {
-  const fileInput = document.getElementById('csv-import');
-  const fileNameDisplay = document.getElementById('file-name');
-  const importBtn = document.getElementById('import-btn');
-  
-  if (fileInput) fileInput.value = '';
-  if (fileNameDisplay) fileNameDisplay.textContent = '';
-  if (importBtn) {
-    importBtn.disabled = true;
-    importBtn.classList.remove('btn-login');
-    importBtn.classList.add('btn-logout');
+  } else {
+    newStudents.forEach(s => s.id = crypto.randomUUID());
+    roster = [...roster, ...newStudents];
+    sortRoster();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(roster));
+    renderRoster();
+    updateFilterDropdowns();
+    populateStudentSelect();
+    populateWinnerSelect();
+    showToast(`Successfully imported ${newStudents.length} students (Offline)`);
   }
 }
 
@@ -1880,7 +1014,7 @@ async function handleDrop(e) {
     });
 
     renderRoster();
-    showToast(translate('dyn_str_16'));
+    showToast('Reordered students...');
 
     // Persist to Supabase
     const supabase = getSupabase();
@@ -1897,13 +1031,13 @@ async function handleDrop(e) {
         const { error } = await supabase.from('students').upsert(updates);
         if (error) {
             console.error('Order persist error:', error);
-            showToast(translate('dyn_str_17'), 'error');
+            showToast('Error saving order to server', 'error');
         } else {
-            showToast(translate('dyn_str_18'));
+            showToast('Order saved successfully!');
         }
     } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(roster));
-        showToast(translate('dyn_str_19'));
+        showToast('Order saved locally.');
     }
 }
 
@@ -1934,10 +1068,10 @@ function updateFilterDropdowns() {
 
     console.log(`Updating roster filters: ${classes.length} classes, ${sections.length} sections found.`);
 
-    classSelect.innerHTML = '<option value="">' + translate('dyn_str_36') + '</option>' + 
+    classSelect.innerHTML = '<option value="">All Classes</option>' + 
         classes.map(c => `<option value="${escapeHtml(c)}" ${c === currentClass ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('');
     
-    sectionSelect.innerHTML = '<option value="">' + translate('dyn_str_37') + '</option>' + 
+    sectionSelect.innerHTML = '<option value="">All Sections</option>' + 
         sections.map(s => `<option value="${escapeHtml(s)}" ${s === currentSection ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('');
 }
 
@@ -2032,7 +1166,7 @@ function renderCriteriaManager() {
     if (!list) return;
 
     if (CRITERIA_KEYS.length === 0) {
-        list.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">' + translate('dyn_str_42') + '</p>';
+        list.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">No criteria defined.</p>';
         return;
     }
 
@@ -2077,13 +1211,13 @@ async function saveAllCriteria() {
 
     renderCriteriaMatrix();
     renderCriteriaManager();
-    showToast(translate('dyn_str_20'));
+    showToast('Criteria updated successfully! ✨');
 }
 
 async function addTodoCriterion() {
     const input = document.getElementById('cfg-new-criterion-label');
     const label = input.value.trim();
-    if (!label) return showToast(translate('dyn_str_21'), 'error');
+    if (!label) return showToast('Please enter a criterion name.', 'error');
 
     const id = 'crit_' + Date.now();
     
@@ -2101,7 +1235,7 @@ async function addTodoCriterion() {
     input.value = '';
     renderCriteriaMatrix();
     renderCriteriaManager();
-    showToast(translate('dyn_str_22'));
+    showToast('Criterion added!');
 }
 
 async function deleteCriterion(id) {
@@ -2118,7 +1252,7 @@ async function deleteCriterion(id) {
 
     renderCriteriaMatrix();
     renderCriteriaManager();
-    showToast(translate('dyn_str_23'));
+    showToast('Criterion removed.');
 }
 
 function renderResults(searchQuery = '') {
@@ -2165,7 +1299,7 @@ function renderResults(searchQuery = '') {
     });
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;">' + translate('dyn_str_38') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;">No results found</td></tr>';
       return;
     }
 
@@ -2220,7 +1354,7 @@ function renderResults(searchQuery = '') {
     }).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
     if (filteredEvaluations.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;">' + translate('dyn_str_39') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem;">No raw evaluations found</td></tr>';
       return;
     }
 
@@ -2275,10 +1409,10 @@ function updateResultFilterOptions() {
     const currentGrade = gradeSelect.value;
     const currentSection = sectionSelect.value;
 
-    gradeSelect.innerHTML = '<option value="">' + translate('dyn_str_40') + '</option>' + 
+    gradeSelect.innerHTML = '<option value="">All Grades</option>' + 
         Array.from(grades).sort().map(g => `<option value="${escapeHtml(g)}">${escapeHtml(g)}</option>`).join('');
     
-    sectionSelect.innerHTML = '<option value="">' + translate('dyn_str_37') + '</option>' + 
+    sectionSelect.innerHTML = '<option value="">All Sections</option>' + 
         Array.from(sections).sort().map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
 
     gradeSelect.value = grades.has(currentGrade) ? currentGrade : "";
@@ -2287,7 +1421,7 @@ function updateResultFilterOptions() {
 
 async function exportToCSV() {
   const aggregated = getAggregatedResults();
-  if (aggregated.length === 0) return showToast(translate('dyn_str_24'), 'error');
+  if (aggregated.length === 0) return showToast('No results to export', 'error');
   let csv = 'Rank,Number,Name,Class,Average Score,Highest Score,Evaluations Count\n';
   aggregated.forEach((r, i) => {
     csv += `${i+1},${r.student_number},"${r.student_name}",${r.class_name},${r.average_total},${r.highest_total},${r.all_evaluations.length}\n`;
@@ -2322,7 +1456,7 @@ function toggleDetails(id) {
 function populateStudentSelect() {
   const select = document.getElementById('student-select');
   if (!select) return;
-  select.innerHTML = '<option value="">' + translate('dyn_str_41') + '</option>' + 
+  select.innerHTML = '<option value="">-- Select a student --</option>' + 
     roster.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
 }
 
@@ -2380,7 +1514,7 @@ function bindAppEvents() {
       settings.timerDuration = duration;
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
       syncSettingsToSupabase(settings);
-
+      
       // Update timer visibility
       const timerCard = document.querySelector('.timer-card');
       if (timerCard) {
@@ -2388,7 +1522,7 @@ function bindAppEvents() {
       }
       
       resetTimer();
-      showToast(translate('dyn_str_25'));
+      showToast('Timer settings saved!');
     }
   };
 
@@ -2463,7 +1597,7 @@ function bindAppEvents() {
           localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
           syncSettingsToSupabase(settings);
           applyBranding();
-          showToast(translate('dyn_str_26'));
+          showToast('Branding saved! ✨');
         };
         reader.readAsDataURL(logoFile);
       } else if (preview.src.includes('icons/logo.png') || preview.src.endsWith('icons/logo.png')) {
@@ -2472,12 +1606,12 @@ function bindAppEvents() {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
         syncSettingsToSupabase(settings);
         applyBranding();
-        showToast(translate('dyn_str_26'));
+        showToast('Branding saved! ✨');
       } else {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
         syncSettingsToSupabase(settings);
         applyBranding();
-        showToast(translate('dyn_str_26'));
+        showToast('Branding saved! ✨');
       }
     };
   }
@@ -2529,7 +1663,7 @@ function bindAppEvents() {
       if (gradeSel) gradeSel.value = '';
       if (sectionSel) sectionSel.value = '';
       renderResults();
-      showToast(translate('dyn_str_27'));
+      showToast('Filters reset');
     };
   }
 
@@ -2543,15 +1677,15 @@ function bindAppEvents() {
 
   const clearBtn = document.getElementById('clear-data-btn');
   if (clearBtn) clearBtn.onclick = async () => {
-      if (prompt(translate('msg-clear-confirm')) === 'DELETE') {
+      if (prompt('Type DELETE to confirm:') === 'DELETE') {
           const supabase = getSupabase();
           if (supabase) {
-              await supabase.from('evaluations').delete().eq('competition_id', currentCompetitionId);
+              await supabase.from('evaluations').delete().neq('id', '00000000-0000-0000-0000-000000000000');
           }
           evaluations = [];
           localStorage.removeItem(EVALUATIONS_KEY);
           renderResults();
-          showToast(translate('dyn_str_28'));
+          showToast('Data cleared');
       }
   };
 
@@ -2621,7 +1755,7 @@ function bindAppEvents() {
           const supabase = getSupabase();
           if (supabase) {
               const { error } = await supabase.from('students').delete().in('id', ids);
-              if (error) return showToast((currentLang==='ar'?'خطأ في الحذف: ':'Error deleting: ') + error.message, 'error');
+              if (error) return showToast('Error deleting: ' + error.message, 'error');
           }
           roster = roster.filter(s => !selectedStudents.has(s.id));
           selectedStudents.clear();
@@ -2629,7 +1763,7 @@ function bindAppEvents() {
           renderRoster();
           populateStudentSelect();
           populateWinnerSelect();
-          showToast(translate('dyn_str_29'));
+          showToast('Students deleted successfully');
       };
   }
 
@@ -2660,7 +1794,7 @@ function bindAppEvents() {
 
           const ids = Array.from(selectedStudents);
           if (ids.length === 0) {
-              showToast(translate('dyn_str_30'), 'error');
+              showToast('No students selected', 'error');
               return;
           }
 
@@ -2733,10 +1867,10 @@ function bindAppEvents() {
               populateWinnerSelect();
               
               document.getElementById('bulk-edit-modal').hidden = true;
-              showToast((currentLang==='ar'?'تم تحديث ':'Updated ') + ids.length + (currentLang==='ar'?' طلاب بنجاح!':' students successfully!'));
+              showToast(`Updated ${ids.length} students successfully!`);
           } catch (err) {
               console.error('Bulk update error details:', err);
-              showToast((currentLang==='ar'?'خطأ في التحديث: ':'Error updating: ') + (err.message || 'Unknown error'), 'error');
+              showToast('Error updating: ' + (err.message || 'Unknown error'), 'error');
           } finally {
               bulkEditConfirmBtn.disabled = false;
               bulkEditConfirmBtn.textContent = originalText;
@@ -2787,7 +1921,7 @@ function bindAppEvents() {
         csvImport.files = dt.files; 
         updateFileSelection(file);
       } else {
-        showToast(translate('dyn_str_31'), 'error');
+        showToast('Please drop a valid CSV file.', 'error');
       }
     }, false);
   }
@@ -2797,50 +1931,6 @@ function bindAppEvents() {
   
   const createUserBtn = document.getElementById('create-user-btn');
   if (createUserBtn) createUserBtn.onclick = createCustomUser;
-  
-  const createCompBtn = document.getElementById('create-comp-btn');
-  if (createCompBtn) {
-    createCompBtn.onclick = async () => {
-      if (createCompBtn.disabled) return;
-
-      const nameInput = document.getElementById('new-comp-name');
-      const name = nameInput.value.trim();
-      if (!name) return showToast('Please enter a competition name', 'error');
-      
-      const supabase = getSupabase();
-      if (!supabase) return;
-      
-      createCompBtn.disabled = true;
-      const originalText = createCompBtn.textContent;
-      createCompBtn.textContent = currentLang === 'ar' ? 'جاري الإنشاء...' : 'Creating...';
-
-      try {
-        const { error } = await supabase.from('competitions').insert([{ name }]);
-        if (error) throw error;
-        showToast(currentLang === 'ar' ? 'تم إنشاء المسابقة' : 'Competition created');
-        nameInput.value = '';
-        renderCompetitionsTab();
-      } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-      } finally {
-        createCompBtn.disabled = false;
-        createCompBtn.textContent = originalText;
-      }
-    };
-  }
-
-  // Note: switch-comp-btn is already bound globally above bindAppEvents
-  // Only bind if not already bound to avoid duplicate handlers
-  const switchCompBtn = document.getElementById('switch-comp-btn');
-  if (switchCompBtn && !switchCompBtn._bound) {
-    switchCompBtn._bound = true;
-    switchCompBtn.onclick = async () => {
-      document.getElementById('app-container').hidden = true;
-      document.getElementById('competition-view').hidden = false;
-      document.getElementById('login-view').hidden = true;
-      await loadCompetitions();
-    };
-  }
   
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) logoutBtn.onclick = handleLogout;
@@ -2952,7 +2042,7 @@ function autoAdvance() {
         selectStudentForJudging(roster[nextIndex].id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-        showToast(translate('dyn_str_32'), 'success');
+        showToast('All students in roster have been evaluated!', 'success');
         resetEvaluationForm(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2970,7 +2060,7 @@ function resetEvaluationForm(fullReset = true) {
 
 // Global function exports for inline HTML handlers
 window.deleteStudent = async (id) => {
-    if (!confirm(translate('msg-delete-student'))) return;
+    if (!confirm('Are you sure you want to delete this student?')) return;
     const supabase = getSupabase();
     if (supabase) {
         await supabase.from('students').delete().eq('id', id);
@@ -3008,7 +2098,7 @@ function attachThemeToggle() {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('taqeem_theme', newTheme);
+                localStorage.setItem('tedtalk_theme', newTheme);
                 
                 const iconTheme = newTheme === 'dark' ? '☀️' : '🌙';
                 const icon1 = document.getElementById('theme-icon');
@@ -3026,7 +2116,6 @@ function attachThemeToggle() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    bindCompetitionViewEvents();
     init();
     attachThemeToggle();
 });
@@ -3098,12 +2187,12 @@ function populateWinnerSelect() {
   defaultOption.value = '';
   
   if (!roster || roster.length === 0) {
-    defaultOption.textContent = translate('dyn_str_44');
+    defaultOption.textContent = '-- No students available --';
     select.appendChild(defaultOption);
     return;
   }
 
-  defaultOption.textContent = translate('dyn_str_43');
+  defaultOption.textContent = '-- Choose a student --';
   select.appendChild(defaultOption);
 
   const fragment = document.createDocumentFragment();
@@ -3188,7 +2277,7 @@ function bindWinnerEvents() {
 async function pushWinner() {
   const select = document.getElementById('winner-student-select');
   if (!select || !select.value) {
-    return showToast(translate('dyn_str_0'), 'error');
+    return showToast('Please select a student first.', 'error');
   }
 
   const student = roster.find(s => s.id === select.value);
@@ -3219,7 +2308,7 @@ async function pushWinner() {
       if (uploadError) {
         console.warn('Photo upload failed:', uploadError.message);
         // Continue without photo — not a blocker
-        showToast(translate('dyn_str_33'), 'error');
+        showToast('Photo upload failed, pushing without photo.', 'error');
       } else {
         const { data: urlData } = supabase.storage
           .from('winner-photos')
@@ -3237,12 +2326,10 @@ async function pushWinner() {
     await supabase
       .from('winners_display')
       .update({ is_active: false })
-      .eq('competition_id', currentCompetitionId)
       .eq('is_active', true);
 
     // Insert new winner
     const record = {
-      competition_id: currentCompetitionId,
       student_id: student.id,
       student_name: student.name,
       student_number: student.number,
@@ -3269,7 +2356,7 @@ async function pushWinner() {
       });
     }
 
-    showToast(translate('dyn_str_34'));
+    showToast('🏆 Winner pushed to display screen!');
 
     // Reset form
     winnerPhotoFile = null;
@@ -3279,7 +2366,7 @@ async function pushWinner() {
     if (preview) preview.style.display = 'none';
 
   } catch (err) {
-    showToast((currentLang==='ar'?'خطأ: ':'Error: ') + err.message, 'error');
+    showToast('Error: ' + err.message, 'error');
     console.error('Push winner error:', err);
   } finally {
     if (pushBtn) {
@@ -3299,7 +2386,6 @@ async function clearWinnerDisplay() {
     const { error } = await supabase
       .from('winners_display')
       .update({ is_active: false })
-      .eq('competition_id', currentCompetitionId)
       .eq('is_active', true);
 
     if (error) throw error;
@@ -3317,8 +2403,8 @@ async function clearWinnerDisplay() {
       console.warn('Broadcast failed:', broadcastErr);
     }
 
-    showToast(translate('dyn_str_35'));
+    showToast('Winner display cleared.');
   } catch (err) {
-    showToast((currentLang==='ar'?'خطأ: ':'Error: ') + err.message, 'error');
+    showToast('Error: ' + err.message, 'error');
   }
 }

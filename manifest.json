@@ -1,24 +1,21 @@
 {
-  "name": "TedTalk Selector",
-  "short_name": "TedTalk",
-  "description": "Student roster management for random selection",
-  "start_url": "/",
+  "name": "Taqeem Premium Evaluation",
+  "short_name": "Taqeem",
+  "description": "Premium evaluation platform for schools and competitions.",
+  "start_url": "/demo.html",
   "display": "standalone",
-  "background_color": "#f8f9fa",
+  "background_color": "#ffffff",
   "theme_color": "#4f46e5",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icons/logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512",
+      "type": "image/png"
     },
     {
-      "src": "icons/logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ]
 }
