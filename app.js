@@ -248,6 +248,7 @@ const translations = {
         'dyn_str_42': 'No criteria defined.',
         'dyn_str_43': '-- Choose a student --',
         'dyn_str_44': '-- No students available --',
+        'loading-init': 'Initializing System...',
     },
     ar: {
         'login-title': 'Taqeem',
@@ -459,6 +460,7 @@ const translations = {
         'waiting': 'بانتظار الإعلان عن الفائز...',
         'unlock-audio': 'تفعيل الصوت للعرض',
         'congrats': 'ألف مبروك',
+        'loading-init': 'جاري تهيئة النظام...',
     }
 };
 
@@ -799,6 +801,8 @@ function showApp() {
   if (login) { login.hidden = true; login.style.display = 'none'; }
   if (app) { app.hidden = false; app.style.display = 'block'; }
   if (comp) { comp.hidden = true; comp.style.display = 'none'; }
+  
+  showHUD(); // Reveal HUD immediately
   console.log('App view activated.');
 }
 
@@ -808,9 +812,35 @@ function showCompetitionSelector() {
   const comp = document.getElementById('competition-view');
   if (login) { login.hidden = true; login.style.display = 'none'; }
   if (app) { app.hidden = true; app.style.display = 'none'; }
-  if (comp) { comp.hidden = false; comp.style.display = 'block'; }
+  if (comp) { comp.hidden = false; comp.style.display = 'flex'; }
   console.log('Competition selector activated.');
 }
+
+function showHUD() {
+  const loader = document.getElementById('init-loader');
+  if (loader) {
+    loader.hidden = false;
+    loader.style.display = 'flex';
+  }
+  updateHUD(5, 'Connecting...');
+}
+
+function hideHUD() {
+  const loader = document.getElementById('init-loader');
+  if (loader) {
+    loader.hidden = true;
+    loader.style.display = 'none';
+  }
+}
+
+function updateHUD(percent, detail) {
+  const bar = document.getElementById('hud-progress-bar');
+  const det = document.getElementById('hud-detail');
+  if (bar) bar.style.width = percent + '%';
+  if (det) det.textContent = detail;
+  console.log(`[Init] ${percent}% - ${detail}`);
+}
+
 
 function switchTab(tabName) {
   if ((tabName === 'setup' || tabName === 'results') && userRole !== 'admin') {
@@ -1060,6 +1090,9 @@ async function selectCompetition(id, name) {
   
   showApp();
   
+  // Call switchTab immediately to ensure the shell is visible while data loads
+  switchTab(userRole === 'admin' ? 'setup' : 'judging');
+
   const switchBtn = document.getElementById('switch-comp-btn');
   if (switchBtn) switchBtn.style.display = userRole === 'admin' ? 'inline-flex' : 'none';
 
@@ -1071,6 +1104,7 @@ async function selectCompetition(id, name) {
 
   await finishInitSession();
 }
+
 
 async function renderCompetitionsTab() {
   // Target the admin sub-tab panel's list (distinct ID to avoid collision with login modal)
@@ -1225,10 +1259,13 @@ window.switchToCompetition = async function(id, name) {
 };
 
 async function finishInitSession() {
-  console.log('Initializing session for competition:', currentCompetitionId);
+  console.group('Initializing Session');
+  console.time('SessionInit');
+  
   const supabase = getSupabase();
   if (supabase && currentCompetitionId) {
       try {
+          updateHUD(10, 'Establishing realtime connection...');
           if (currentChannel) {
               supabase.removeChannel(currentChannel);
           }
@@ -1239,11 +1276,22 @@ async function finishInitSession() {
   }
 
   try {
+      updateHUD(20, translate('loading-init') + ' (Settings)');
       await loadSettings();
+      
+      updateHUD(35, translate('loading-init') + ' (Permissions)');
       applyRolePermissions();
+      
+      updateHUD(50, translate('loading-init') + ' (Roster)');
       await loadRoster();
+      
+      updateHUD(65, translate('loading-init') + ' (Evaluations)');
       await loadEvaluations();
+      
+      updateHUD(80, translate('loading-init') + ' (Users)');
       await loadAllCustomUsers();
+      
+      updateHUD(90, translate('loading-init') + ' (Finalizing)');
       updateFilterDropdowns();
       updateResultFilterOptions();
       populateStudentSelect();
@@ -1251,13 +1299,24 @@ async function finishInitSession() {
       renderRolePanel();
       renderJudgingSidebar();
       bindAppEvents();
-      switchTab(userRole === 'admin' ? 'setup' : 'judging');
-      console.log('Session initialization complete.');
+      
+      updateHUD(100, translate('loading-init') + ' (Done)');
+      
+      // Delay slightly for smooth transition
+      setTimeout(() => {
+        hideHUD();
+        console.timeEnd('SessionInit');
+        console.groupEnd();
+      }, 600);
+      
   } catch (err) {
       console.error('Critical failure during session initialization:', err);
+      console.groupEnd();
+      updateHUD(100, 'Initialization failed.');
       showToast('Initialization error. Please refresh the page.', 'error');
   }
 }
+
 
 function handleLogout() {
   localStorage.removeItem('currentUserId');

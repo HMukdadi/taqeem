@@ -143,7 +143,20 @@
     </nav>
 
     <main class="main-content">
-      <!-- Setup Section -->
+      <!-- Initialization HUD -->
+      <div id="init-loader" class="init-hud" hidden>
+        <div class="hud-content glass">
+          <div class="hud-spinner"></div>
+          <div class="hud-status">
+            <h3 id="hud-msg" data-i18n="loading-init">Initializing System...</h3>
+            <div class="hud-progress-container">
+              <div id="hud-progress-bar" class="hud-progress-bar"></div>
+            </div>
+            <p id="hud-detail" class="hud-detail">Syncing data...</p>
+          </div>
+        </div>
+      </div>
+
       <section id="setup-panel" class="setup-section" hidden>
         <nav class="sub-tab-bar" role="tablist">
           <button class="sub-tab active" data-subtab="students" data-i18n="subtab-students">Students</button>

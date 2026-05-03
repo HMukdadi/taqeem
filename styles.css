@@ -959,9 +959,88 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: var(--danger);
 }
 
+
+.main-content {
+  position: relative;
+  min-height: 500px;
+}
+
+/* Initialization HUD */
+.init-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+}
+
+.hud-content {
+  padding: 40px;
+  border-radius: var(--radius);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.hud-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--primary-light);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: hud-spin 1s linear infinite;
+}
+
+.hud-status {
+  width: 100%;
+}
+
+.hud-status h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.hud-progress-container {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.hud-progress-bar {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.hud-detail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+}
+
+@keyframes hud-spin {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes shake {
   10%, 90% { transform: translate3d(calc(-1px * var(--dir-mod, 1)), 0, 0); }
   20%, 80% { transform: translate3d(calc(2px * var(--dir-mod, 1)), 0, 0); }
   30%, 50%, 70% { transform: translate3d(calc(-4px * var(--dir-mod, 1)), 0, 0); }
   40%, 60% { transform: translate3d(calc(4px * var(--dir-mod, 1)), 0, 0); }
 }
+
