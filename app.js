@@ -727,9 +727,7 @@ async function checkAuthState() {
     if (userRole === 'admin') {
       if (!currentCompetitionId) {
         // Admin is logged in but no competition selected, show selector
-        document.getElementById('login-view').hidden = true;
-        document.getElementById('competition-view').hidden = false;
-        document.getElementById('app-container').hidden = true;
+        showCompetitionSelector();
         await loadCompetitions();
       } else {
         // Restore active competition
@@ -788,16 +786,30 @@ function applyRolePermissions() {
 function showLogin() {
   const login = document.getElementById('login-view');
   const app = document.getElementById('app-container');
+  const comp = document.getElementById('competition-view');
   if (login) { login.hidden = false; login.style.display = 'flex'; }
   if (app) { app.hidden = true; app.style.display = 'none'; }
+  if (comp) { comp.hidden = true; comp.style.display = 'none'; }
 }
 
 function showApp() {
   const login = document.getElementById('login-view');
   const app = document.getElementById('app-container');
+  const comp = document.getElementById('competition-view');
   if (login) { login.hidden = true; login.style.display = 'none'; }
   if (app) { app.hidden = false; app.style.display = 'block'; }
+  if (comp) { comp.hidden = true; comp.style.display = 'none'; }
   console.log('App view activated.');
+}
+
+function showCompetitionSelector() {
+  const login = document.getElementById('login-view');
+  const app = document.getElementById('app-container');
+  const comp = document.getElementById('competition-view');
+  if (login) { login.hidden = true; login.style.display = 'none'; }
+  if (app) { app.hidden = true; app.style.display = 'none'; }
+  if (comp) { comp.hidden = false; comp.style.display = 'block'; }
+  console.log('Competition selector activated.');
 }
 
 function switchTab(tabName) {
@@ -973,8 +985,7 @@ async function setAndInitSession(id, username, role, compId, compName) {
   isAuthenticated = true;
 
   if (role === 'admin') {
-    document.getElementById('login-view').hidden = true;
-    document.getElementById('competition-view').hidden = false;
+    showCompetitionSelector();
     await loadCompetitions();
   } else {
     if (!compId) {
@@ -1047,8 +1058,7 @@ async function selectCompetition(id, name) {
   const badge = document.getElementById('active-comp-badge');
   if (badge) badge.textContent = name;
   
-  document.getElementById('competition-view').hidden = true;
-  document.getElementById('app-container').hidden = false;
+  showApp();
   
   const switchBtn = document.getElementById('switch-comp-btn');
   if (switchBtn) switchBtn.style.display = userRole === 'admin' ? 'inline-flex' : 'none';
@@ -1215,27 +1225,38 @@ window.switchToCompetition = async function(id, name) {
 };
 
 async function finishInitSession() {
+  console.log('Initializing session for competition:', currentCompetitionId);
   const supabase = getSupabase();
   if (supabase && currentCompetitionId) {
-      if (currentChannel) {
-          supabase.removeChannel(currentChannel);
+      try {
+          if (currentChannel) {
+              supabase.removeChannel(currentChannel);
+          }
+          currentChannel = supabase.channel('winners-display-' + currentCompetitionId).subscribe();
+      } catch (e) {
+          console.warn('Realtime subscription error:', e);
       }
-      currentChannel = supabase.channel('winners-display-' + currentCompetitionId).subscribe();
   }
 
-  await loadSettings();
-  applyRolePermissions();
-  await loadRoster();
-  await loadEvaluations();
-  await loadAllCustomUsers();
-  updateFilterDropdowns();
-  updateResultFilterOptions();
-  populateStudentSelect();
-  populateWinnerSelect();
-  renderRolePanel();
-  renderJudgingSidebar();
-  bindAppEvents();
-  switchTab(userRole === 'admin' ? 'setup' : 'judging');
+  try {
+      await loadSettings();
+      applyRolePermissions();
+      await loadRoster();
+      await loadEvaluations();
+      await loadAllCustomUsers();
+      updateFilterDropdowns();
+      updateResultFilterOptions();
+      populateStudentSelect();
+      populateWinnerSelect();
+      renderRolePanel();
+      renderJudgingSidebar();
+      bindAppEvents();
+      switchTab(userRole === 'admin' ? 'setup' : 'judging');
+      console.log('Session initialization complete.');
+  } catch (err) {
+      console.error('Critical failure during session initialization:', err);
+      showToast('Initialization error. Please refresh the page.', 'error');
+  }
 }
 
 function handleLogout() {
