@@ -75,29 +75,34 @@ ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
 -- Site Settings Policies
 DROP POLICY IF EXISTS "Public access" ON site_settings;
-CREATE POLICY "Public access" ON site_settings FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public select" ON site_settings FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- Students Policies
 DROP POLICY IF EXISTS "Public access" ON students;
-CREATE POLICY "Public access" ON students FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public select" ON students FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON students FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- Evaluations Policies
 DROP POLICY IF EXISTS "Public access" ON evaluations;
-CREATE POLICY "Public access" ON evaluations FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public select" ON evaluations FOR SELECT TO public USING (true);
+CREATE POLICY "Public insert" ON evaluations FOR INSERT TO public WITH CHECK (true);
+CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon USING (true);
 
 -- Custom Users Policies
 DROP POLICY IF EXISTS "Public access" ON custom_users;
-CREATE POLICY "Public access" ON custom_users FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Admin insert" ON custom_users;
-CREATE POLICY "Admin insert" ON custom_users FOR INSERT WITH CHECK (true);
 DROP POLICY IF EXISTS "Admin update" ON custom_users;
-CREATE POLICY "Admin update" ON custom_users FOR UPDATE USING (true);
 DROP POLICY IF EXISTS "Admin delete" ON custom_users;
-CREATE POLICY "Admin delete" ON custom_users FOR DELETE USING (true);
+CREATE POLICY "Login access" ON custom_users FOR SELECT TO public USING (true);
+CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (true);
+CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (true);
 
 -- Winners Display Policies
 DROP POLICY IF EXISTS "Public access" ON winners_display;
-CREATE POLICY "Public access" ON winners_display FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public select" ON winners_display FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- 4. STORAGE CONFIGURATION
 -- Note: Create Bucket named 'winner-photos' via Supabase UI first.
