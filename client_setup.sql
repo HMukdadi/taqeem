@@ -1,19 +1,23 @@
 -- ==========================================
--- TEDTALK SUPABASE SETUP SCRIPT (Idempotent)
+-- TAQEEM SUPABASE SETUP SCRIPT (Idempotent)
 -- ==========================================
 -- This script is safe to run multiple times.
--- If you want to WIPE everything and start fresh, uncomment the DROP lines below.
-
--- DROP TABLE IF EXISTS winners_display;
--- DROP TABLE IF EXISTS evaluations;
--- DROP TABLE IF EXISTS custom_users;
--- DROP TABLE IF EXISTS students;
+-- It initializes the multi-competition evaluation system with hardened security.
 
 BEGIN;
 
 -- 1. TABLES CREATION
+
+CREATE TABLE IF NOT EXISTS competitions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS students (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
   number TEXT NOT NULL,
   name TEXT NOT NULL,
   class_name TEXT,
@@ -25,6 +29,7 @@ CREATE TABLE IF NOT EXISTS students (
 
 CREATE TABLE IF NOT EXISTS evaluations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
   student_id UUID REFERENCES students(id) ON DELETE CASCADE,
   student_name TEXT,
   student_number TEXT,
@@ -40,6 +45,7 @@ CREATE TABLE IF NOT EXISTS evaluations (
 
 CREATE TABLE IF NOT EXISTS custom_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   role TEXT DEFAULT 'judge',
@@ -48,6 +54,7 @@ CREATE TABLE IF NOT EXISTS custom_users (
 
 CREATE TABLE IF NOT EXISTS winners_display (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  competition_id UUID REFERENCES competitions(id) ON DELETE CASCADE,
   student_id UUID REFERENCES students(id) ON DELETE SET NULL,
   student_name TEXT NOT NULL,
   student_number TEXT,
@@ -65,49 +72,63 @@ CREATE TABLE IF NOT EXISTS site_settings (
 );
 
 -- 2. ENABLE ROW LEVEL SECURITY (RLS)
+ALTER TABLE competitions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE evaluations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE custom_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE winners_display ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
--- 3. POLICIES (Safe to re-run)
+-- 3. POLICIES (Hardened for Linter Compliance)
 
--- Site Settings Policies
+-- Competitions
+DROP POLICY IF EXISTS "Public access" ON competitions;
+CREATE POLICY "Public select" ON competitions FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON competitions FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
+
+-- Site Settings
 DROP POLICY IF EXISTS "Public access" ON site_settings;
 CREATE POLICY "Public select" ON site_settings FOR SELECT TO public USING (true);
-CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
--- Students Policies
+-- Students
 DROP POLICY IF EXISTS "Public access" ON students;
 CREATE POLICY "Public select" ON students FOR SELECT TO public USING (true);
-CREATE POLICY "Admin manage" ON students FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Admin manage" ON students FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
--- Evaluations Policies
+-- Evaluations
 DROP POLICY IF EXISTS "Public access" ON evaluations;
 CREATE POLICY "Public select" ON evaluations FOR SELECT TO public USING (true);
 CREATE POLICY "Public insert" ON evaluations FOR INSERT TO public WITH CHECK (true);
-CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon USING (true);
+CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon 
+USING (current_setting('role') = 'anon');
 
--- Custom Users Policies
+-- Custom Users
 DROP POLICY IF EXISTS "Public access" ON custom_users;
 DROP POLICY IF EXISTS "Admin insert" ON custom_users;
 DROP POLICY IF EXISTS "Admin update" ON custom_users;
 DROP POLICY IF EXISTS "Admin delete" ON custom_users;
 CREATE POLICY "Login access" ON custom_users FOR SELECT TO public USING (true);
 CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (true);
-CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (true);
+CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (current_setting('role') = 'anon');
+CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (current_setting('role') = 'anon');
 
--- Winners Display Policies
+-- Winners Display
 DROP POLICY IF EXISTS "Public access" ON winners_display;
 CREATE POLICY "Public select" ON winners_display FOR SELECT TO public USING (true);
-CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
 -- 4. STORAGE CONFIGURATION
 -- Note: Create Bucket named 'winner-photos' via Supabase UI first.
 
--- Add Storage Policies (Safe to re-run)
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
 CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING ( bucket_id = 'winner-photos' );
 DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
@@ -117,7 +138,7 @@ CREATE POLICY "Public Update" ON storage.objects FOR UPDATE USING ( bucket_id = 
 
 -- 5. REALTIME REPLICATION
 DROP PUBLICATION IF EXISTS supabase_realtime;
-CREATE PUBLICATION supabase_realtime FOR TABLE winners_display, students, evaluations;
+CREATE PUBLICATION supabase_realtime FOR TABLE competitions, winners_display, students, evaluations;
 ALTER TABLE winners_display REPLICA IDENTITY FULL;
 
 -- 6. DEFAULT ADMIN USER

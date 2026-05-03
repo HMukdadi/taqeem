@@ -931,15 +931,27 @@ ALTER TABLE custom_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE winners_display ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public access" ON competitions FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public access" ON site_settings FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public access" ON students FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public access" ON evaluations FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public access" ON custom_users FOR SELECT USING (true);
-CREATE POLICY "Admin insert" ON custom_users FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admin update" ON custom_users FOR UPDATE USING (true);
-CREATE POLICY "Admin delete" ON custom_users FOR DELETE USING (true);
-CREATE POLICY "Public access" ON winners_display FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access" ON competitions FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON competitions FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
+CREATE POLICY "Public select" ON site_settings FOR SELECT TO public USING (true);
+CREATE POLICY "Admin settings" ON site_settings FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
+CREATE POLICY "Public select" ON students FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON students FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
+CREATE POLICY "Public select" ON evaluations FOR SELECT TO public USING (true);
+CREATE POLICY "Public insert" ON evaluations FOR INSERT TO public WITH CHECK (true);
+CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon USING (current_setting('role') = 'anon');
+
+CREATE POLICY "Login access" ON custom_users FOR SELECT TO public USING (true);
+CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (current_setting('role') = 'anon');
+CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (current_setting('role') = 'anon');
+
+CREATE POLICY "Public select" ON winners_display FOR SELECT TO public USING (true);
+CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
 DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
 DROP POLICY IF EXISTS "Public Update" ON storage.objects;
