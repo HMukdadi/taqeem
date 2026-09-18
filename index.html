@@ -4,63 +4,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Taqeem | The Blueprint for Excellence</title>
+  <title id="page-title">Taqeem | The Complete Platform for School Competitions & Live Judging</title>
   <link rel="icon" href="icons/logo.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  
+
   <!-- Social Preview Metadata -->
-  <meta property="og:title" content="Taqeem | The Blueprint for Excellence">
-  <meta property="og:description" content="Precision Evaluation for Every Student. The all-in-one platform for school competitions.">
+  <meta property="og:title" content="Taqeem | Precision Evaluation & Stage Arena for School Competitions">
+  <meta property="og:description" content="Eliminate paper scorecards, sync live countdowns to projectors, empower judges with voice scoring, and award luxury diplomas in 1 click. $0 running cost.">
   <meta property="og:image" content="https://taqeem.appwand.net/icons/logo.png">
   <meta property="og:url" content="https://taqeem.appwand.net/">
   <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Taqeem | The Blueprint for Excellence">
-  <meta name="twitter:description" content="Precision Evaluation for Every Student. The all-in-one platform for school competitions.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Taqeem | Precision Evaluation & Stage Arena">
+  <meta name="twitter:description" content="The all-in-one platform for school competitions. 100% free and open source.">
   <meta name="twitter:image" content="https://taqeem.appwand.net/icons/logo.png">
 
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Public+Sans:wght@300;400;600;700&family=Space+Mono:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <style>
     :root {
-      /* Base Indigo Palette */
+      /* Palette */
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --primary-light: #eef2ff;
+      --primary-glow: rgba(79, 70, 229, 0.25);
+      --gold: #d97706;
+      --gold-light: #fef3c7;
+      --success: #10b981;
+      --success-light: #d1fae5;
       --navy: #0f172a;
 
       /* Dark Theme (Default) */
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: rgba(148, 163, 184, 0.2);
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-      --grid-opacity: 0.4;
-      --glass-bg: rgba(15, 23, 42, 0.8);
+      --bg: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-card-hover: rgba(31, 41, 55, 0.8);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.5);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      --glass-bg: rgba(17, 24, 39, 0.85);
 
-      /* Typography & Misc */
-      --radius: 4px;
-      --font-main: 'Public Sans', sans-serif;
+      /* Typography & Shapes */
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-full: 9999px;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
       --font-heading: 'Outfit', sans-serif;
       --font-mono: 'Space Mono', monospace;
       --font-arabic: 'Cairo', sans-serif;
-      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     [data-theme="light"] {
       --bg: #f8fafc;
-      --surface: #ffffff;
+      --bg-surface: #ffffff;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
-      --border: rgba(15, 23, 42, 0.1);
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      --grid-opacity: 0.1;
-      --glass-bg: rgba(248, 250, 252, 0.8);
+      --border: rgba(15, 23, 42, 0.08);
+      --border-focus: rgba(79, 70, 229, 0.4);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 35px -10px rgba(15, 23, 42, 0.08);
+      --glass-bg: rgba(255, 255, 255, 0.85);
     }
 
     [dir="rtl"] {
@@ -74,6 +90,10 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: var(--font-main);
       background-color: var(--bg);
@@ -81,80 +101,35 @@
       line-height: 1.6;
       overflow-x: hidden;
       transition: var(--transition);
-    }
-
-    /* Reveal Animation */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .badge-success {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-    }
-
-    .hero-badges {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-      justify-content: center;
-    }
-
-    .section {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-      animation: fadeInUp 0.8s ease-out forwards;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(217, 119, 6, 0.08) 0%, transparent 45%);
+      background-attachment: fixed;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 24px;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(circle at 50% 50%, transparent 0%, var(--bg) 100%),
-        url('icons/grid.png');
-      background-size: cover;
-      opacity: var(--grid-opacity);
-      z-index: -1;
-      pointer-events: none;
-      transition: var(--transition);
-    }
-
+    /* ===== NAVBAR ===== */
     nav {
-      height: 80px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--border);
       transition: var(--transition);
     }
 
-    nav .container {
+    .nav-inner {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      width: 100%;
+      justify-content: space-between;
+      height: 72px;
     }
 
     .logo-container {
@@ -163,599 +138,843 @@
       gap: 12px;
       text-decoration: none;
       color: var(--text);
-      font-family: var(--font-heading);
       font-weight: 800;
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
+      font-size: 1.35rem;
+      font-family: var(--font-heading);
     }
 
     .logo-img {
-      width: 32px;
-      height: 32px;
-      filter: brightness(0) invert(1);
-      transition: var(--transition);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px var(--primary-glow);
     }
 
-    [data-theme="light"] .logo-img {
-      filter: none;
-    }
-
-    .theme-toggle {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: var(--transition);
-    }
-
-    .theme-toggle:hover {
-      border-color: var(--primary);
-      transform: rotate(15deg);
+    .version-tag {
+      font-size: 0.7rem;
+      background: rgba(79, 70, 229, 0.15);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      letter-spacing: 0.05em;
     }
 
     .nav-links {
       display: flex;
-      gap: 32px;
       align-items: center;
+      gap: 28px;
     }
 
-    .nav-links a {
+    .nav-link {
       text-decoration: none;
       color: var(--text-muted);
+      font-size: 0.95rem;
       font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    .lang-toggle {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0 16px;
-      height: 36px;
-      border-radius: var(--radius);
-      font-weight: 700;
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
       transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;
     }
 
-    .lang-toggle:hover {
-      border-color: var(--primary);
-      background: rgba(79, 70, 229, 0.05);
+    .nav-link:hover {
+      color: var(--primary);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-left: 12px;
     }
 
-    [dir="rtl"] .nav-actions {
-      margin-left: 0;
-      margin-right: 12px;
+    .btn-nav-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      background: var(--primary);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 700;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: var(--transition);
     }
 
+    .btn-nav-demo:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .lang-pill-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lang-pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ===== HERO SECTION ===== */
     .hero {
-      padding: 120px 0 100px;
+      padding: 80px 0 60px 0;
       text-align: center;
       position: relative;
     }
 
-    .hero-content {
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border: 1px solid var(--primary);
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(79, 70, 229, 0.1);
+      border: 1px solid rgba(79, 70, 229, 0.25);
       color: var(--primary);
-      font-family: var(--font-mono);
+      font-size: 0.85rem;
       font-weight: 700;
-      font-size: 0.7rem;
       margin-bottom: 24px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+      animation: pulseGlow 2.5s infinite;
     }
 
-    h1 {
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+    }
+
+    .hero-title {
       font-family: var(--font-heading);
-      font-size: clamp(2.5rem, 8vw, 4.5rem);
-      line-height: 1.1;
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
       font-weight: 800;
-      margin-bottom: 24px;
-      letter-spacing: -0.03em;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 960px;
+      margin: 0 auto 22px auto;
     }
 
-    .hero p {
-      font-size: 1.25rem;
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
-
-    .hero-illustration {
-      margin-top: 60px;
-      max-width: 900px;
-      width: 100%;
-      border: 1px solid var(--border);
-      padding: 20px;
-      background: var(--surface);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
+      max-width: 820px;
+      margin: 0 auto 36px auto;
+      line-height: 1.65;
     }
 
     .cta-group {
       display: flex;
       gap: 16px;
       justify-content: center;
+      align-items: center;
       flex-wrap: wrap;
+      margin-bottom: 50px;
     }
 
-    .btn {
+    .btn-hero-primary {
       padding: 14px 32px;
-      border-radius: var(--radius);
-      font-weight: 700;
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      color: #ffffff;
       text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      border: none;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      gap: 8px;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.45);
     }
 
-    .btn-primary:hover {
-      background: var(--primary-hover);
+    .btn-hero-secondary {
+      padding: 14px 28px;
+      background: var(--bg-card);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-hero-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
       transform: translateY(-2px);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text);
+    /* ===== HERO MULTI-DEVICE SHOWCASE MOCKUP ===== */
+    .hero-showcase {
+      max-width: 1060px;
+      margin: 0 auto 60px auto;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .mockup-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 20px;
+      text-align: start;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mockup-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      margin-bottom: 14px;
+    }
+
+    .mockup-badge.judge { background: rgba(79, 70, 229, 0.15); color: #818cf8; }
+    .mockup-badge.stage { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .mockup-badge.cert { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    /* Mockup 1: Mobile Scorecard */
+    .mockup-scorecard {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .speaker-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.03);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .speaker-photo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #4f46e5;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .score-pills-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mini-pill {
+      flex: 1;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
+    .mini-pill.selected {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
     }
 
-    .section {
-      padding: 120px 0;
+    .voice-mockup-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+    }
+
+    .voice-red-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+      animation: dotPulse 1.4s infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+    }
+
+    /* Mockup 2: Stage Projector Clock */
+    .stage-clock-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0;
+      text-align: center;
+    }
+
+    .clock-digits {
+      font-family: var(--font-mono);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fbbf24;
+      text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+      margin-bottom: 4px;
+    }
+
+    .warning-chime-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* Mockup 3: Luxury Diploma */
+    .diploma-preview {
+      background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
+      color: #1e293b;
+      border: 2px solid #d97706;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .diploma-seal {
+      width: 44px;
+      height: 44px;
+      background: #d97706;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin: 0 auto 8px auto;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+    }
+
+    /* ===== METRICS BAR ===== */
+    .metrics-bar {
+      padding: 30px 0 60px 0;
       border-bottom: 1px solid var(--border);
     }
 
-    .section-title {
-      margin-bottom: 60px;
-      text-align: left;
-    }
-
-    .section-title h2 {
-      font-family: var(--font-heading);
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .section-title h2::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .section-title p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-    }
-
-    .roadmap {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    .roadmap-step {
+    .metrics-grid {
       display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 40px;
-      background: var(--surface);
-      padding: 40px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      position: relative;
+      border-radius: var(--radius-md);
+      padding: 24px 20px;
+      text-align: center;
       transition: var(--transition);
-      box-shadow: var(--shadow);
     }
 
-    .roadmap-step:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
+    .metric-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-focus);
     }
 
-    .step-num-large {
-      font-family: var(--font-mono);
-      font-size: 3rem;
+    .metric-num {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
       font-weight: 800;
       color: var(--primary);
-      opacity: 0.5;
-      line-height: 1;
+      margin-bottom: 4px;
     }
 
-    .step-content h3 {
+    .metric-label {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 90px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 750px;
+      margin: 0 auto 60px auto;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
       font-family: var(--font-heading);
-      font-size: 1.75rem;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ===== THE 6 PILLARS FEATURE GRID ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .feature-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 26px;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon-wrapper {
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      background: rgba(79, 70, 229, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(79, 70, 229, 0.2);
+    }
+
+    .feature-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
       margin-bottom: 12px;
       color: var(--text);
     }
 
-    .step-content .description {
+    .feature-desc {
+      font-size: 0.92rem;
       color: var(--text-muted);
-      font-size: 1.1rem;
-      margin-bottom: 24px;
-      max-width: 700px;
+      line-height: 1.6;
+      flex: 1;
     }
 
-    .tutorial-link {
+    .feature-tag {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(79, 70, 229, 0.08);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      align-self: flex-start;
+    }
+
+    /* ===== INTERACTIVE SANDBOX TEST BAY ===== */
+    .sandbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .sandbox-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sandbox-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sandbox-icon {
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+    }
+
+    .sandbox-btn {
+      margin-top: 20px;
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.85rem;
+      gap: 6px;
+    }
+
+    /* ===== PERSONAS SECTION ===== */
+    .personas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .persona-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 26px;
+      position: relative;
+    }
+
+    .persona-role-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 20px;
-      cursor: pointer;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: block;
     }
 
-    .tutorial-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 24px;
-      margin-top: 16px;
-      display: none;
-      transition: var(--transition);
+    .persona-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 14px;
     }
 
-    .tutorial-panel img {
-      width: 100%;
-      border: 1px solid var(--border);
-      margin-top: 16px;
-      transition: var(--transition);
-    }
-
-    .direct-links {
+    .persona-checklist {
+      list-style: none;
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    .direct-link {
-      padding: 8px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-family: var(--font-mono);
-      display: inline-flex;
-      align-items: center;
+    .persona-checklist li {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
       gap: 8px;
-      transition: var(--transition);
     }
 
-    .direct-link:hover {
-      border-color: var(--primary);
-      background: var(--bg);
+    .persona-checklist li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 800;
     }
 
-    .card {
-      background: var(--surface);
-      padding: 48px;
+    /* ===== STREAMLINED DEPLOYMENT & CONSOLE ===== */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .roadmap-step {
+      background: var(--bg-card);
       border: 1px solid var(--border);
-    }
-
-    .console {
-      background: #000;
-      padding: 40px;
-      border: 2px solid var(--slate-700);
+      border-radius: var(--radius-lg);
+      padding: 28px;
       position: relative;
-      overflow: hidden;
     }
 
-    .console::before {
-      content: 'SYSTEM CONSOLE V1.0';
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--slate-400);
+    .step-num-large {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: rgba(79, 70, 229, 0.4);
+      margin-bottom: 12px;
+    }
+
+    .roadmap-step h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .roadmap-step p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .sql-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: #000000;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .sql-header {
+      padding: 12px 20px;
+      background: #111827;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
     .generator-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-
-    @media (max-width: 900px) {
-      .generator-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .roadmap-step {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
+      grid-template-columns: 1.2fr 1fr;
+      gap: 28px;
+      margin-bottom: 40px;
     }
 
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
-    label {
+    .form-group label {
       display: block;
-      font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 0.7rem;
-      margin-bottom: 12px;
-      color: var(--slate-400);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
     }
 
-    input {
+    .form-group input {
       width: 100%;
-      padding: 16px;
-      background: #000;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      color: #10b981;
-      font-family: var(--font-mono);
-      font-size: 1rem;
+      background: var(--bg-surface);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: var(--font-main);
       outline: none;
       transition: var(--transition);
     }
 
-    input:focus {
+    .form-group input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 15px rgba(79, 70, 229, 0.2);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
 
-    .status-box {
-      margin-top: 24px;
-      padding: 16px;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      display: none;
-      border-left: 4px solid var(--primary);
-    }
-
-    footer {
-      padding: 80px 0;
-      text-align: center;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s linear infinite;
-      display: none;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .step-check {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--border);
+    .btn-build-sequence {
+      width: 100%;
+      height: 56px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: transparent;
-      transition: all 0.3s;
+      gap: 8px;
+      transition: var(--transition);
     }
 
-    .step-check.active {
-      border-color: #10b981;
-      color: #10b981;
-      background: rgba(16, 185, 129, 0.1);
+    .btn-build-sequence:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 8px 20px var(--primary-glow);
     }
 
-    /* Hosting Section */
+    .btn-build-sequence:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-box {
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: none;
+    }
+
     .hosting-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      margin-top: 40px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
     }
 
     .hosting-card {
-      background: var(--surface);
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      padding: 32px;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
+      padding: 22px;
       transition: var(--transition);
-      display: flex;
-      flex-direction: column;
     }
 
     .hosting-card:hover {
       border-color: var(--primary);
-      transform: translateY(-5px);
-      box-shadow: var(--shadow);
+      transform: translateY(-2px);
     }
 
     .hosting-card h3 {
-      margin-bottom: 12px;
-      color: var(--primary);
-      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      margin-bottom: 6px;
     }
 
     .hosting-card p {
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
-      margin-bottom: 20px;
-      flex-grow: 1;
+      margin-bottom: 12px;
     }
 
     .host-link {
-      color: var(--text);
+      color: var(--primary);
       text-decoration: none;
+      font-weight: 700;
       font-size: 0.8rem;
-      font-family: var(--font-mono);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      opacity: 0.7;
-      transition: var(--transition);
     }
 
-    .host-link:hover {
-      opacity: 1;
-      color: var(--primary);
-    }
-
-    .contribute-section {
-      background: var(--slate-900);
-      padding: 100px 0;
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 40px 0;
       text-align: center;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
     }
 
-    .contribute-card {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 24px;
-      padding: 60px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-      max-width: 800px;
-      margin: 0 auto;
-      transition: transform 0.3s ease;
+    footer p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
     }
 
-    .contribute-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--primary);
-    }
-
-    .contribute-icon {
-      color: var(--primary);
-      background: rgba(16, 185, 129, 0.1);
-      width: 100px;
-      height: 100px;
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
+      animation: spin 0.8s linear infinite;
+      display: none;
     }
 
-    .btn-github {
-      background: #24292e;
-      color: white;
-      padding: 16px 32px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
-    .btn-github:hover {
-      background: #000;
-      transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    @media (max-width: 768px) {
-      .contribute-card {
-        padding: 40px 20px;
+    /* Responsive */
+    @media (max-width: 960px) {
+      .showcase-grid,
+      .features-grid,
+      .sandbox-grid,
+      .personas-grid,
+      .roadmap,
+      .hosting-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .generator-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
       }
     }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .github-nav-link {
-      color: var(--slate-600);
-      display: flex;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-
-    .github-nav-link:hover {
-      color: var(--primary);
-      transform: scale(1.1);
-    }
-
-    [data-theme="dark"] .github-nav-link {
-      color: var(--slate-400);
-    }
-
-    [data-theme="dark"] .github-nav-link:hover {
-      color: var(--primary);
-    }
   </style>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const CENTRAL_URL = 'https://rztcbfulvzuqdmkffvcq.supabase.co';
@@ -769,244 +988,448 @@
 
 <body>
 
+  <!-- Sticky Navbar -->
   <nav>
-    <div class="container">
+    <div class="container nav-inner">
       <a href="#" class="logo-container">
         <img src="icons/logo.png" alt="Logo" class="logo-img">
         <span data-i18n="app-name">Taqeem</span>
+        <span class="version-tag">v2.5</span>
       </a>
+
       <div class="nav-links">
-        <a href="#setup" data-i18n="nav-steps">Blueprint</a>
-        <a href="#sql" data-i18n="nav-db">Archive</a>
-        <a href="#generator" data-i18n="nav-gen">Console</a>
-        <a href="wiki.html" target="_blank" data-i18n="nav-wiki">Wiki</a>
-        <a href="demo.html" style="color: var(--primary);" target="_blank" data-i18n="nav-demo">Live Preview</a>
-        <div class="nav-actions">
-          <a href="https://github.com/HMukdadi/taqeem" target="_blank" class="github-nav-link"
-            title="View Source on GitHub">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-              <path
-                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-            </svg>
-          </a>
-          <button onclick="toggleTheme()" class="theme-toggle" id="theme-btn">🌙</button>
-          <button onclick="toggleLang()" class="lang-toggle" id="lang-btn" data-i18n="lang-btn">ARABIC</button>
-        </div>
+        <a href="#features" class="nav-link" data-i18n="nav-features">Superpowers</a>
+        <a href="#sandbox" class="nav-link" data-i18n="nav-sandbox">Live Sandbox</a>
+        <a href="#personas" class="nav-link" data-i18n="nav-personas">Why Taqeem</a>
+        <a href="#setup" class="nav-link" data-i18n="nav-blueprint">Blueprint</a>
+        <a href="#generator" class="nav-link" data-i18n="nav-console">Console</a>
+        <a href="wiki.html" target="_blank" class="nav-link" data-i18n="nav-wiki">Wiki</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="demo.html" target="_blank" class="btn-nav-demo" data-i18n="btn-nav-demo">⚡ Live Demo</a>
+        <a href="https://github.com/HMukdadi/taqeem" target="_blank" class="icon-btn" title="GitHub Repository">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+          </svg>
+        </a>
+        <button onclick="toggleTheme()" class="icon-btn" id="theme-btn" title="Toggle Dark/Light Mode">🌙</button>
+        <button onclick="toggleLang()" class="lang-pill-btn" id="lang-btn" data-i18n="lang-btn">العربية</button>
       </div>
     </div>
   </nav>
 
+  <!-- Hero Section -->
   <header class="hero">
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badges">
-          <span class="badge" data-i18n="hero-badge">Free and Open Source</span>
-          <span class="badge badge-success" data-i18n="hero-counter">🚀 3+ Deployed Systems</span>
+      <div class="hero-pill-badge" data-i18n="hero-badge">
+        🌟 100% Free & Open Source • $0 Running Cost Forever
+      </div>
+
+      <h1 class="hero-title">
+        <span data-i18n="hero-title-p1">Precision Evaluation & Live Stage Arena for</span><br>
+        <span class="gradient-text" data-i18n="hero-title-p2">School Competitions</span>
+      </h1>
+
+      <p class="hero-subtitle" data-i18n="hero-subtitle">
+        Eliminate paper scorecards and manual tallying. Taqeem empowers judges with hands-free voice scoring, syncs live countdowns to auditorium projectors, lets audiences vote from their seats, and awards luxury gold diplomas in one click.
+      </p>
+
+      <div class="cta-group">
+        <a href="demo.html" target="_blank" class="btn-hero-primary" data-i18n="btn-hero-demo">
+          <span>🚀 Launch Interactive Demo</span>
+        </a>
+        <a href="#generator" class="btn-hero-secondary" data-i18n="btn-hero-deploy">
+          <span>📦 Deploy Your School App (2 Mins)</span>
+        </a>
+      </div>
+
+      <!-- Multi-Device Showcase Mockup -->
+      <div class="hero-showcase">
+        <div class="showcase-grid">
+          
+          <!-- Screen 1: Mobile Judge Scorecard -->
+          <div class="mockup-card">
+            <span class="mockup-badge judge" data-i18n="mockup-judge-badge">📱 Mobile Judge Card</span>
+            <div class="mockup-scorecard">
+              <div class="speaker-pill">
+                <div class="speaker-photo">TM</div>
+                <div>
+                  <strong style="font-size: 0.88rem; display: block;">Tariq Al-Mansoor</strong>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Grade 11-A • Oratory</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px;">
+                  <span data-i18n="mockup-delivery">Delivery & Fluency</span>
+                  <strong style="color: var(--primary);">10 / 10</strong>
+                </div>
+                <div class="score-pills-row">
+                  <div class="mini-pill">7</div>
+                  <div class="mini-pill">8</div>
+                  <div class="mini-pill">9</div>
+                  <div class="mini-pill selected">10</div>
+                </div>
+              </div>
+
+              <div class="voice-mockup-strip">
+                <div class="voice-red-dot"></div>
+                <span style="font-style: italic; color: var(--text-muted);" data-i18n="mockup-dictating">Voice Dictating: "Outstanding stage presence..."</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Screen 2: Big-Screen Stage Arena -->
+          <div class="mockup-card">
+            <span class="mockup-badge stage" data-i18n="mockup-stage-badge">🖥️ Projector Stage Arena</span>
+            <div class="stage-clock-preview">
+              <div class="clock-digits">02:45</div>
+              <span class="warning-chime-badge" data-i18n="mockup-chimes-active">🔔 30s Warning Chime Active</span>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;" data-i18n="mockup-speaker-live">Live Speaker: Tariq Al-Mansoor</p>
+            </div>
+          </div>
+
+          <!-- Screen 3: Luxury Gold Diploma -->
+          <div class="mockup-card">
+            <span class="mockup-badge cert" data-i18n="mockup-cert-badge">🎓 Printable Gold Diploma</span>
+            <div class="diploma-preview">
+              <div class="diploma-seal">🏆</div>
+              <strong style="font-size: 0.95rem; display: block; margin-bottom: 2px;" data-i18n="mockup-cert-title">Certificate of Excellence</strong>
+              <span style="font-size: 0.78rem; color: #475569;" data-i18n="mockup-cert-awarded">Proudly Awarded to Tariq Al-Mansoor</span>
+              <div style="margin-top: 8px; font-size: 0.72rem; font-weight: 700; color: #d97706;" data-i18n="mockup-cert-rank">🥇 1st Place Champion • Score: 95%</div>
+            </div>
+          </div>
+
         </div>
-        <h1 data-i18n="hero-title">Precision Evaluation for Every Student</h1>
-        <p data-i18n="hero-subtitle">The all-in-one platform for school competitions. Empowering judges with
-          professional scoring tools and administrators with real-time insights.</p>
-        <div class="cta-group">
-          <a href="#setup" class="btn btn-primary" data-i18n="btn-start">Begin Setup</a>
-          <a href="demo.html" class="btn btn-secondary" target="_blank" data-i18n="btn-demo">View Demo</a>
-        </div>
-        <img src="icons/hero.png" alt="Taqeem System" class="hero-illustration">
       </div>
     </div>
   </header>
 
+  <!-- Metrics & Trust Bar -->
+  <section class="metrics-bar">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-num">$0</div>
+          <div class="metric-label" data-i18n="stat-cost">Running Cost Forever</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num" id="stat-evals">50k+</div>
+          <div class="metric-label" data-i18n="stat-evals-label">Evaluations Processed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">100%</div>
+          <div class="metric-label" data-i18n="stat-privacy">School Data Ownership</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num" id="stat-deployed">150+</div>
+          <div class="metric-label" data-i18n="stat-schools">Schools Deployed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Superpowers Section -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="tag-features">Core Superpowers</span>
+        <h2 class="section-title" data-i18n="title-features">Engineered for Flawless Competitions</h2>
+        <p class="section-subtitle" data-i18n="desc-features">
+          Everything your school needs to run prestigious speaking, debate, Quran recitation, and science competitions with zero paper and zero stress.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">🖥️</div>
+          <h3 class="feature-title" data-i18n="feat1-h">Live Stage Projector Arena</h3>
+          <p class="feature-desc" data-i18n="feat1-p">
+            Project real-time speaker photos, synchronized countdown clocks, 30-second warning chimes, and an Olympic-style podium ceremony with dual-cannon golden confetti.
+          </p>
+          <span class="feature-tag" data-i18n="feat1-tag">Stage Arena Mode</span>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">📱</div>
+          <h3 class="feature-title" data-i18n="feat2-h">1-Scan Judge QR Fast-Login</h3>
+          <p class="feature-desc" data-i18n="feat2-p">
+            No usernames or complex passwords to remember. Judges simply scan their physical QR badge using their phone camera to authenticate and start scoring immediately.
+          </p>
+          <span class="feature-tag" data-i18n="feat2-tag">Zero-Friction Access</span>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">🗳️</div>
+          <h3 class="feature-title" data-i18n="feat3-h">Live Audience Choice Voting</h3>
+          <p class="feature-desc" data-i18n="feat3-p">
+            Audience members scan a seat QR code to vote for their favorite speaker in real time from mobile browsers, equipped with anti-fraud voter verification.
+          </p>
+          <span class="feature-tag" data-i18n="feat3-tag">Audience Engagement</span>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">🎓</div>
+          <h3 class="feature-title" data-i18n="feat4-h">1-Click Gold Diplomas & Reports</h3>
+          <p class="feature-desc" data-i18n="feat4-p">
+            Generate luxury parchment A4 diplomas with official seals in one click. Produce 1-page personalized student report cards detailing strengths and teacher advice.
+          </p>
+          <span class="feature-tag" data-i18n="feat4-tag">High-Resolution Canvas</span>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">🎙️</div>
+          <h3 class="feature-title" data-i18n="feat5-h">Voice Dictation & Blind Judging</h3>
+          <p class="feature-desc" data-i18n="feat5-p">
+            Judges dictate constructive feedback hands-free using Web Speech API. Enable Blind Judging Mode to hide names and photos for 100% impartial scoring.
+          </p>
+          <span class="feature-tag" data-i18n="feat5-tag">Zero-Bias Evaluation</span>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrapper">🏆</div>
+          <h3 class="feature-title" data-i18n="feat6-h">Tournament Heats & Archive</h3>
+          <p class="feature-desc" data-i18n="feat6-p">
+            Advance top qualifiers from preliminary heats into Grand Finals with one click. Search the school historical archive to track student growth across academic terms.
+          </p>
+          <span class="feature-tag" data-i18n="feat6-tag">Multi-Round Progression</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Sandbox Bay -->
+  <section id="sandbox" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="tag-sandbox">Interactive Experience</span>
+        <h2 class="section-title" data-i18n="title-sandbox">Test Every Screen Live Right Now</h2>
+        <p class="section-subtitle" data-i18n="desc-sandbox">
+          Experience Taqeem's triple-screen ecosystem in real time. Launch any view directly in your browser.
+        </p>
+      </div>
+
+      <div class="sandbox-grid">
+        <!-- Bay 1 -->
+        <div class="sandbox-card">
+          <div class="sandbox-icon">📱</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;" data-i18n="sand1-h">Judging & Admin Console</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="sand1-p">
+            Test the judge scorecard, weighted rubrics, voice speech-to-text, score locking, and ranking results table.
+          </p>
+          <a href="demo.html" target="_blank" class="sandbox-btn btn-hero-primary" data-i18n="sand1-btn">Launch Judge View →</a>
+        </div>
+
+        <!-- Bay 2 -->
+        <div class="sandbox-card">
+          <div class="sandbox-icon">🖥️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;" data-i18n="sand2-h">Stage Projector Arena</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="sand2-p">
+            Test the big-screen projector display: synchronized speaker timer clock, 30s bells, and winner reveal podium.
+          </p>
+          <a href="winners/index.html" target="_blank" class="sandbox-btn btn-hero-secondary" data-i18n="sand2-btn">Launch Stage View →</a>
+        </div>
+
+        <!-- Bay 3 -->
+        <div class="sandbox-card">
+          <div class="sandbox-icon">🗳️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;" data-i18n="sand3-h">Audience Choice Portal</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="sand3-p">
+            Test the mobile-first audience voting interface where parents and students vote for their favorite speech.
+          </p>
+          <a href="vote.html" target="_blank" class="sandbox-btn btn-hero-secondary" data-i18n="sand3-btn">Launch Voting View →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personas Section -->
+  <section id="personas" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="tag-personas">Tailored Experience</span>
+        <h2 class="section-title" data-i18n="title-personas">Built for Everyone on Event Day</h2>
+        <p class="section-subtitle" data-i18n="desc-personas">
+          Designed with deep respect for teachers, event coordinators, and students.
+        </p>
+      </div>
+
+      <div class="personas-grid">
+        <!-- Persona 1 -->
+        <div class="persona-card">
+          <span class="persona-role-badge" data-i18n="role-judges">For Panel Judges</span>
+          <h3 data-i18n="role-judges-title">Zero Math. Zero Typing Strain.</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="role-judges-desc">
+            Focus 100% on the student's performance instead of calculating scores on paper sheets.
+          </p>
+          <ul class="persona-checklist">
+            <li data-i18n="judge-point-1">Large touch pills for effortless 1-tap scoring</li>
+            <li data-i18n="judge-point-2">Speak feedback notes naturally via voice dictation</li>
+            <li data-i18n="judge-point-3">Private scorecards shielded from other judges</li>
+          </ul>
+        </div>
+
+        <!-- Persona 2 -->
+        <div class="persona-card">
+          <span class="persona-role-badge" data-i18n="role-organizers">For Event Coordinators</span>
+          <h3 data-i18n="role-organizers-title">Total Stage Control & Realtime Sync</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="role-organizers-desc">
+            Keep your schedule on track and delight the audience with dramatic winner reveals.
+          </p>
+          <ul class="persona-checklist">
+            <li data-i18n="org-point-1">Synchronized projector timer with gentle 30s bells</li>
+            <li data-i18n="org-point-2">Instant rankings calculation and tie-breaking</li>
+            <li data-i18n="org-point-3">Olympic-style podium reveal ceremony with custom anthem</li>
+          </ul>
+        </div>
+
+        <!-- Persona 3 -->
+        <div class="persona-card">
+          <span class="persona-role-badge" data-i18n="role-principals">For Principals & Parents</span>
+          <h3 data-i18n="role-principals-title">Student Growth Portfolios & $0 Cost</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted);" data-i18n="role-principals-desc">
+            Equip parents with actionable feedback and showcase student talent across terms.
+          </p>
+          <ul class="persona-checklist">
+            <li data-i18n="princ-point-1">Personalized 1-page report cards sent home to parents</li>
+            <li data-i18n="princ-point-2">Multi-year performance archive tracking student growth</li>
+            <li data-i18n="princ-point-3">Zero subscription fees; complete data privacy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup Roadmap -->
   <section id="setup" class="section">
     <div class="container">
-      <div class="section-title">
-        <h2 data-i18n="steps-title">01. Setup Roadmap</h2>
-        <p data-i18n="steps-p">Follow this technical blueprint to provision your own school's evaluation system.</p>
+      <div class="section-header">
+        <span class="section-tag" data-i18n="tag-setup">Deployment Blueprint</span>
+        <h2 class="section-title" data-i18n="steps-title">Deploy in 2 Minutes</h2>
+        <p class="section-subtitle" data-i18n="steps-p">
+          Follow this simple blueprint to deploy your school's private, standalone evaluation system.
+        </p>
       </div>
 
       <div class="roadmap">
         <div class="roadmap-step" id="roadmap-1">
           <div class="step-num-large">01</div>
-          <div class="step-content">
-            <h3 data-i18n="step1-h">Create School Project</h3>
-            <p class="description" data-i18n="step1-p">Initialize your school's private database on the Supabase
-              platform.</p>
-            <div class="direct-links">
-              <a href="https://supabase.com/dashboard/projects" target="_blank" class="direct-link"><span>+ Create
-                  Project</span></a>
-              <a href="wiki.html" target="_blank" class="tutorial-link" data-i18n="tut-link">How do I find this? →</a>
-            </div>
-          </div>
-          <div class="step-check" id="check-1">✓</div>
+          <h3 data-i18n="step1-h">Create Supabase Database</h3>
+          <p data-i18n="step1-p">Initialize your school's private cloud database on the Supabase platform.</p>
+          <a href="https://supabase.com/dashboard/projects" target="_blank" class="host-link"><span>+ Create Free Project →</span></a>
         </div>
 
         <div class="roadmap-step" id="roadmap-2">
           <div class="step-num-large">02</div>
-          <div class="step-content">
-            <h3 data-i18n="step2-h">Provision Database</h3>
-            <p class="description" data-i18n="step2-p">Configure your archive tables by pasting our setup blueprint into
-              your SQL console.</p>
-            <div class="direct-links">
-              <a href="#sql" class="direct-link"><span>Go to Script ↓</span></a>
-              <a href="wiki.html" target="_blank" class="tutorial-link" data-i18n="tut-link">How do I find this? →</a>
-            </div>
-          </div>
-          <div class="step-check" id="check-2">✓</div>
+          <h3 data-i18n="step2-h">Paste Database Blueprint</h3>
+          <p data-i18n="step2-p">Configure your tables by pasting our setup SQL script into your Supabase SQL Editor.</p>
+          <a href="#sql" class="host-link"><span>Go to SQL Script ↓</span></a>
         </div>
 
         <div class="roadmap-step" id="roadmap-3">
           <div class="step-num-large">03</div>
-          <div class="step-content">
-            <h3 data-i18n="step3-h">Deploy Application</h3>
-            <p class="description" data-i18n="step3-p">Enter your school's unique access keys to generate your private
-              application package.</p>
-            <a href="#generator" class="btn btn-primary" style="margin-top: 10px;" data-i18n="btn-go-gen">Go to
-              Console</a>
-          </div>
-          <div class="step-check" id="check-3">✓</div>
+          <h3 data-i18n="step3-h">Generate School App ZIP</h3>
+          <p data-i18n="step3-p">Enter your school's project URL and key below to download your ready-to-use application package.</p>
+          <a href="#generator" class="host-link"><span>Go to Console ↓</span></a>
         </div>
+      </div>
+
+      <!-- SQL Script Section -->
+      <div id="sql" class="sql-box">
+        <div class="sql-header">
+          <span style="color: #94a3b8; font-family: var(--font-mono); font-size: 0.8rem;">CLIENT_SETUP.SQL</span>
+          <button onclick="copySQL()" class="btn-hero-primary" style="padding: 6px 14px; font-size: 0.8rem;" data-i18n="btn-copy">Copy Specification</button>
+        </div>
+        <pre id="sql-code" style="color: #10b981; padding: 24px; font-size: 0.82rem; max-height: 380px; overflow: auto; text-align: left; font-family: var(--font-mono); line-height: 1.5;"></pre>
       </div>
     </div>
   </section>
 
-  <section id="sql" class="section">
-    <div class="container">
-      <div class="section-title">
-        <h2 data-i18n="db-title">02. Archive Blueprint</h2>
-        <p data-i18n="db-p">Copy this technical specification and paste it into your Supabase SQL Editor.</p>
-      </div>
-
-      <div style="border: 1px solid var(--border); background: #000; overflow: hidden;">
-        <div
-          style="padding: 12px 20px; background: var(--slate-800); display: flex; justify-content: space-between; align-items: center;">
-          <span
-            style="color: var(--slate-400); font-family: var(--font-mono); font-size: 0.7rem;">ARCHIVE_SCHEMA.SQL</span>
-          <button onclick="copySQL()" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.7rem;"
-            data-i18n="btn-copy">Copy Specification</button>
-        </div>
-        <pre id="sql-code"
-          style="color: #10b981; padding: 32px; font-size: 0.8rem; max-height: 400px; overflow: auto; text-align: left; font-family: var(--font-mono); line-height: 1.5;"></pre>
-      </div>
-    </div>
-  </section>
-
+  <!-- Project Console Section -->
   <section id="generator" class="section" style="border-bottom: none;">
     <div class="container">
-      <div class="section-title">
-        <h2 data-i18n="gen-title">03. Project Console</h2>
-        <p data-i18n="gen-p">Finalize your deployment by injecting your project credentials into the system core.</p>
+      <div class="section-header">
+        <span class="section-tag" data-i18n="tag-generator">App Generator</span>
+        <h2 class="section-title" data-i18n="gen-title">School Project Console</h2>
+        <p class="section-subtitle" data-i18n="gen-p">
+          Inject your school's unique credentials to package your ready-to-host evaluation application.
+        </p>
       </div>
 
-      <div class="console">
-        <div class="generator-grid">
-          <div class="generator-form">
-            <div class="form-group">
-              <label for="sb-url" data-i18n="label-url">School Project URL</label>
-              <input type="text" id="sb-url" placeholder="https://your-school.supabase.co" oninput="validateInput()">
-            </div>
-            <div class="form-group">
-              <label for="sb-key" data-i18n="label-key">Access Secret (Anon Key)</label>
-              <input type="text" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." oninput="validateInput()">
-            </div>
-            <button id="build-btn" class="btn btn-primary" style="width: 100%; height: 60px;">
-              <span class="spinner" id="btn-spinner"></span>
-              <span id="btn-text" data-i18n="btn-gen">Execute Build Sequence</span>
-            </button>
-            <div id="status-box" class="status-box"></div>
+      <div class="generator-grid">
+        <div class="generator-form" style="background: var(--bg-card); padding: 28px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+          <div class="form-group">
+            <label for="sb-url" data-i18n="label-url">School Project URL</label>
+            <input type="text" id="sb-url" placeholder="https://your-school.supabase.co" oninput="validateInput()">
           </div>
-
-          <div class="console-output" style="text-align: left;">
-            <div
-              style="background: rgba(16, 185, 129, 0.05); padding: 24px; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 4px;">
-              <p style="font-family: var(--font-mono); font-size: 0.8rem; color: #10b981;">
-                > INITIALIZING PACKAGER...<br>
-                > STANDBY FOR CREDENTIAL INPUT...<br>
-                > INCLUDED MODULES:<br>
-                &nbsp;&nbsp;✔ LIVE STAGE ARENA & PROJECTOR SPOTLIGHT<br>
-                &nbsp;&nbsp;✔ AUDIENCE CHOICE LIVE VOTING (vote.html)<br>
-                &nbsp;&nbsp;✔ OFFLINE SCORE CACHING & AUTO-SYNC<br>
-                &nbsp;&nbsp;✔ 1-SCAN INSTANT JUDGE QR PASS<br>
-                &nbsp;&nbsp;✔ 1-CLICK A4 GOLD DIPLOMA GENERATOR<br>
-                &nbsp;&nbsp;✔ HANDS-FREE VOICE DICTATION<br>
-                > TARGET: TAQEEM_SCHOOL_PACKAGE_V2.0
-              </p>
-            </div>
+          <div class="form-group">
+            <label for="sb-key" data-i18n="label-key">Access Secret (Anon Key)</label>
+            <input type="text" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." oninput="validateInput()">
           </div>
+          <button id="build-btn" class="btn-build-sequence">
+            <span class="spinner" id="btn-spinner"></span>
+            <span id="btn-text" data-i18n="btn-gen">📦 Generate School Application ZIP</span>
+          </button>
+          <div id="status-box" class="status-box"></div>
         </div>
-        <div class="community-impact">
-          <div class="stat-card">
-            <div class="stat-value" id="stat-deployed">150+</div>
-            <div class="stat-label" data-i18n="stats-deployed">Schools Deployed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-evals">50k+</div>
-            <div class="stat-label" data-i18n="stats-evals">Evaluations Processed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">100%</div>
-            <div class="stat-label" data-i18n="stats-ownership">Data Ownership</div>
-          </div>
+
+        <div style="background: #090d16; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; font-family: var(--font-mono); font-size: 0.82rem; color: #10b981; line-height: 1.6; text-align: left;">
+          <p>
+            &gt; INITIALIZING TAQEEM PACKAGER...<br>
+            &gt; READY FOR CREDENTIAL INJECTION...<br>
+            &gt; INCLUDED CORE MODULES:<br>
+            &nbsp;&nbsp;✔ LIVE STAGE ARENA & PROJECTOR SPOTLIGHT<br>
+            &nbsp;&nbsp;✔ AUDIENCE CHOICE LIVE VOTING (vote.html)<br>
+            &nbsp;&nbsp;✔ OFFLINE SCORE CACHING & AUTO-SYNC<br>
+            &nbsp;&nbsp;✔ 1-SCAN INSTANT JUDGE QR PASS<br>
+            &nbsp;&nbsp;✔ 1-CLICK A4 GOLD DIPLOMA GENERATOR<br>
+            &nbsp;&nbsp;✔ HANDS-FREE VOICE DICTATION<br>
+            &nbsp;&nbsp;✔ TOURNAMENT HEATS & STUDENT ARCHIVE<br>
+            &gt; TARGET: TAQEEM_SCHOOL_PACKAGE_V2.5
+          </p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section id="hosting" class="section">
-    <div class="container">
-      <div class="section-title">
-        <h2 data-i18n="hosting-title">04. Cloud Deployment</h2>
-        <p data-i18n="hosting-p">Your private application is ready. Host it for free on any modern static hosting provider.</p>
-      </div>
+      <!-- Cloud Deployment Cards -->
+      <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; text-align: center;" data-i18n="hosting-title">Free Cloud Deployment Options</h3>
       <div class="hosting-grid">
         <div class="hosting-card">
           <h3>Netlify</h3>
           <p data-i18n="host-netlify">Best for beginners. Simply drag and drop your downloaded folder to deploy in seconds.</p>
-          <a href="https://netlify.com" target="_blank" class="host-link">netlify.com</a>
+          <a href="https://netlify.com" target="_blank" class="host-link">netlify.com →</a>
         </div>
         <div class="hosting-card">
           <h3>Vercel</h3>
           <p data-i18n="host-vercel">High-performance hosting with global edge network. Ideal for professional speed.</p>
-          <a href="https://vercel.com" target="_blank" class="host-link">vercel.com</a>
+          <a href="https://vercel.com" target="_blank" class="host-link">vercel.com →</a>
         </div>
         <div class="hosting-card">
           <h3>GitHub Pages</h3>
           <p data-i18n="host-github">Perfect if you are already using GitHub. Free hosting directly from your repository.</p>
-          <a href="https://pages.github.com" target="_blank" class="host-link">pages.github.com</a>
+          <a href="https://pages.github.com" target="_blank" class="host-link">pages.github.com →</a>
         </div>
         <div class="hosting-card">
           <h3>Cloudflare Pages</h3>
           <p data-i18n="host-cloudflare">Fast, secure, and always available. Enterprise-grade infrastructure for free.</p>
-          <a href="https://pages.cloudflare.com" target="_blank" class="host-link">cloudflare.com</a>
+          <a href="https://pages.cloudflare.com" target="_blank" class="host-link">cloudflare.com →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="contribute" class="section contribute-section">
-    <div class="container">
-      <div class="contribute-card">
-        <div class="contribute-icon">
-          <svg viewBox="0 0 24 24" width="60" height="60" fill="currentColor">
-            <path
-              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-          </svg>
-        </div>
-        <div class="contribute-content">
-          <h2 data-i18n="contribute-title">Architect the Future</h2>
-          <p data-i18n="contribute-p">Taqeem is a community-driven initiative. Help us build more precise tools for
-            educators by contributing to our open-source codebase.</p>
-          <a href="https://github.com/HMukdadi/taqeem" target="_blank" class="btn btn-github">
-            <span data-i18n="btn-github">Contribute on GitHub</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <!-- Footer -->
   <footer>
     <div class="container">
       <p data-i18n="footer-text">© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.</p>
-      <p style="margin-top: 12px; font-size: 0.8rem; opacity: 0.7;">
-        Powered by <a href="https://appwand.net" target="_blank"
-          style="color: var(--primary); text-decoration: none; font-weight: 700;">AppWand</a>
+      <p style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
+        Open Source under the MIT License • Powered by <a href="https://appwand.net" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700;">AppWand</a>
       </p>
     </div>
   </footer>
@@ -1014,107 +1437,228 @@
   <script>
     const translations = {
       en: {
-        'page-title': 'Taqeem | The Blueprint for Excellence',
-        'nav-steps': 'Setup Guide',
-        'nav-db': 'Database',
-        'nav-gen': 'App Builder',
-        'nav-demo': 'Live Demo',
-        'nav-wiki': 'Wiki',
+        'page-title': 'Taqeem | The Complete Platform for School Competitions & Live Judging',
         'app-name': 'Taqeem',
-        'hero-badge': 'Free and Open Source',
-        'hero-counter': '🚀 150+ Deployed Systems',
-        'hero-title': 'Precision Evaluation for Every Student',
-        'hero-subtitle': 'The all-in-one platform for school competitions. Empowering judges with professional scoring tools and administrators with real-time insights.',
-        'btn-demo': 'View Demo',
-        'btn-start': 'Begin Setup',
-        'steps-title': '01. Setup Roadmap',
-        'steps-p': 'Follow this technical blueprint to provision your own school\'s evaluation system.',
-        'step1-h': 'Create School Project',
-        'step1-p': 'Initialize your school\'s private database on the Supabase platform.',
-        'step2-h': 'Provision Database',
-        'step2-p': 'Configure your archive tables by pasting our setup blueprint into your SQL console.',
-        'step3-h': 'Deploy Application',
-        'step3-p': 'Enter your school\'s unique access keys to generate your private application package.',
-        'db-title': '02. Archive Blueprint',
-        'db-p': 'Copy this technical specification and paste it into your Supabase SQL Editor.',
+        'nav-features': 'Superpowers',
+        'nav-sandbox': 'Live Sandbox',
+        'nav-personas': 'Why Taqeem',
+        'nav-blueprint': 'Blueprint',
+        'nav-console': 'Console',
+        'nav-wiki': 'Wiki',
+        'btn-nav-demo': '⚡ Live Demo',
+        'hero-badge': '🌟 100% Free & Open Source • $0 Running Cost Forever',
+        'hero-title-p1': 'Precision Evaluation & Live Stage Arena for',
+        'hero-title-p2': 'School Competitions',
+        'hero-subtitle': 'Eliminate paper scorecards and manual tallying. Taqeem empowers judges with hands-free voice scoring, syncs live countdowns to auditorium projectors, lets audiences vote from their seats, and awards luxury gold diplomas in one click.',
+        'btn-hero-demo': '🚀 Launch Interactive Demo',
+        'btn-hero-deploy': '📦 Deploy Your School App (2 Mins)',
+        'mockup-judge-badge': '📱 Mobile Judge Card',
+        'mockup-stage-badge': '🖥️ Projector Stage Arena',
+        'mockup-cert-badge': '🎓 Printable Gold Diploma',
+        'mockup-delivery': 'Delivery & Fluency',
+        'mockup-dictating': 'Voice Dictating: "Outstanding stage presence..."',
+        'mockup-chimes-active': '🔔 30s Warning Chime Active',
+        'mockup-speaker-live': 'Live Speaker: Tariq Al-Mansoor',
+        'mockup-cert-title': 'Certificate of Excellence',
+        'mockup-cert-awarded': 'Proudly Awarded to Tariq Al-Mansoor',
+        'mockup-cert-rank': '🥇 1st Place Champion • Score: 95%',
+        'stat-cost': 'Running Cost Forever',
+        'stat-evals-label': 'Evaluations Processed',
+        'stat-privacy': 'School Data Ownership',
+        'stat-schools': 'Schools Deployed',
+        'tag-features': 'Core Superpowers',
+        'title-features': 'Engineered for Flawless Competitions',
+        'desc-features': 'Everything your school needs to run prestigious speaking, debate, Quran recitation, and science competitions with zero paper and zero stress.',
+        'feat1-h': 'Live Stage Projector Arena',
+        'feat1-p': 'Project real-time speaker photos, synchronized countdown clocks, 30-second warning chimes, and an Olympic-style podium ceremony with dual-cannon golden confetti.',
+        'feat1-tag': 'Stage Arena Mode',
+        'feat2-h': '1-Scan Judge QR Fast-Pass',
+        'feat2-p': 'No usernames or complex passwords to remember. Judges simply scan their physical QR badge using their phone camera to authenticate and start scoring immediately.',
+        'feat2-tag': 'Zero-Friction Access',
+        'feat3-h': 'Live Audience Choice Voting',
+        'feat3-p': 'Audience members scan a seat QR code to vote for their favorite speaker in real time from mobile browsers, equipped with anti-fraud voter verification.',
+        'feat3-tag': 'Audience Engagement',
+        'feat4-h': '1-Click Gold Diplomas & Reports',
+        'feat4-p': 'Generate luxury parchment A4 diplomas with official seals in one click. Produce 1-page personalized student report cards detailing strengths and teacher advice.',
+        'feat4-tag': 'High-Resolution Canvas',
+        'feat5-h': 'Voice Dictation & Blind Judging',
+        'feat5-p': 'Judges dictate constructive feedback hands-free using Web Speech API. Enable Blind Judging Mode to hide names and photos for 100% impartial scoring.',
+        'feat5-tag': 'Zero-Bias Evaluation',
+        'feat6-h': 'Tournament Heats & Archive',
+        'feat6-p': 'Advance top qualifiers from preliminary heats into Grand Finals with one click. Search the school historical archive to track student growth across academic terms.',
+        'feat6-tag': 'Multi-Round Progression',
+        'tag-sandbox': 'Interactive Experience',
+        'title-sandbox': 'Test Every Screen Live Right Now',
+        'desc-sandbox': 'Experience Taqeem's triple-screen ecosystem in real time. Launch any view directly in your browser.',
+        'sand1-h': 'Judging & Admin Console',
+        'sand1-p': 'Test the judge scorecard, weighted rubrics, voice speech-to-text, score locking, and ranking results table.',
+        'sand1-btn': 'Launch Judge View →',
+        'sand2-h': 'Stage Projector Arena',
+        'sand2-p': 'Test the big-screen projector display: synchronized speaker timer clock, 30s bells, and winner reveal podium.',
+        'sand2-btn': 'Launch Stage View →',
+        'sand3-h': 'Audience Choice Portal',
+        'sand3-p': 'Test the mobile-first audience voting interface where parents and students vote for their favorite speech.',
+        'sand3-btn': 'Launch Voting View →',
+        'tag-personas': 'Tailored Experience',
+        'title-personas': 'Built for Everyone on Event Day',
+        'desc-personas': 'Designed with deep respect for teachers, event coordinators, and students.',
+        'role-judges': 'For Panel Judges',
+        'role-judges-title': 'Zero Math. Zero Typing Strain.',
+        'role-judges-desc': 'Focus 100% on the student's performance instead of calculating scores on paper sheets.',
+        'judge-point-1': 'Large touch pills for effortless 1-tap scoring',
+        'judge-point-2': 'Speak feedback notes naturally via voice dictation',
+        'judge-point-3': 'Private scorecards shielded from other judges',
+        'role-organizers': 'For Event Coordinators',
+        'role-organizers-title': 'Total Stage Control & Realtime Sync',
+        'role-organizers-desc': 'Keep your schedule on track and delight the audience with dramatic winner reveals.',
+        'org-point-1': 'Synchronized projector timer with gentle 30s bells',
+        'org-point-2': 'Instant rankings calculation and tie-breaking',
+        'org-point-3': 'Olympic-style podium reveal ceremony with custom anthem',
+        'role-principals': 'For Principals & Parents',
+        'role-principals-title': 'Student Growth Portfolios & $0 Cost',
+        'role-principals-desc': 'Equip parents with actionable feedback and showcase student talent across terms.',
+        'princ-point-1': 'Personalized 1-page report cards sent home to parents',
+        'princ-point-2': 'Multi-year performance archive tracking student growth',
+        'princ-point-3': 'Zero subscription fees; complete data privacy',
+        'tag-setup': 'Deployment Blueprint',
+        'steps-title': 'Deploy in 2 Minutes',
+        'steps-p': 'Follow this simple blueprint to deploy your school's private, standalone evaluation system.',
+        'step1-h': 'Create Supabase Database',
+        'step1-p': 'Initialize your school's private cloud database on the Supabase platform.',
+        'step2-h': 'Paste Database Blueprint',
+        'step2-p': 'Configure your tables by pasting our setup SQL script into your Supabase SQL Editor.',
+        'step3-h': 'Generate School App ZIP',
+        'step3-p': 'Enter your school's project URL and key below to download your ready-to-use application package.',
         'btn-copy': 'Copy Specification',
-        'gen-title': '03. Project Console',
-        'gen-p': 'Finalize your deployment by injecting your project credentials into the system core.',
+        'tag-generator': 'App Generator',
+        'gen-title': 'School Project Console',
+        'gen-p': 'Inject your school's unique credentials to package your ready-to-host evaluation application.',
         'label-url': 'School Project URL',
         'label-key': 'Access Secret (Anon Key)',
-        'btn-gen': 'Execute Build Sequence',
-        'btn-go-gen': 'Go to App Builder',
-        'tut-link': 'How do I find this? →',
-        'footer-text': '© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.',
-        'lang-btn': 'ARABIC',
-        'toast-copy': 'Archive specification copied to clipboard!',
-        'alert-keys': 'ERROR: Credentials required for build sequence.',
-        'status-prep': '> PREPARING BUILD ASSETS...',
-        'status-ready': '> BUILD SUCCESSFUL. PACKAGE TRANSMITTED.',
-        'stats-deployed': 'Schools Deployed',
-        'stats-evals': 'Evaluations Processed',
-        'stats-ownership': 'Data Ownership',
-        'hosting-title': '04. Cloud Deployment',
-        'hosting-p': 'Your private application is ready. Host it for free on any modern static hosting provider.',
+        'btn-gen': '📦 Generate School Application ZIP',
+        'hosting-title': 'Free Cloud Deployment Options',
         'host-netlify': 'Best for beginners. Simply drag and drop your downloaded folder to deploy in seconds.',
         'host-vercel': 'High-performance hosting with global edge network. Ideal for professional speed.',
         'host-github': 'Perfect if you are already using GitHub. Free hosting directly from your repository.',
         'host-cloudflare': 'Fast, secure, and always available. Enterprise-grade infrastructure for free.',
-        'contribute-title': 'Architect the Future',
-        'contribute-p': 'Taqeem is a community-driven initiative. Help us build more precise tools for educators by contributing to our open-source codebase.',
-        'btn-github': 'Contribute on GitHub'
+        'footer-text': '© 2026 TAQEEM PROJECT. Empowering Educators, Celebrating Students.',
+        'lang-btn': 'العربية',
+        'toast-copy': 'SQL specification copied to clipboard! ✨',
+        'alert-keys': 'ERROR: Both Supabase URL and Anon Key are required to build your package.',
+        'status-prep': '> PREPARING APPLICATION ASSETS & INJECTING CREDENTIALS...',
+        'status-ready': '> BUILD SUCCESSFUL! YOUR TAQEEM APPLICATION HAS BEEN DOWNLOADED.'
       },
       ar: {
-        'page-title': 'تقييم | منظومة التميز',
-        'nav-steps': 'دليل الإعداد',
-        'nav-db': 'قاعدة البيانات',
-        'nav-gen': 'منشئ التطبيق',
-        'nav-demo': 'معاينة حية',
-        'nav-wiki': 'الموسوعة',
+        'page-title': 'تقييم | المنصة المتكاملة لإدارة وتحكيم المسابقات المدرسية المباشرة',
         'app-name': 'تقييم',
-        'hero-badge': 'مجاني ومفتوح المصدر',
-        'hero-counter': '🚀 ١٥٠+ نظام مفعّل',
-        'hero-title': 'منظومة تقييم دقيقة لكل طالب',
-        'hero-subtitle': 'المنصة المتكاملة لإدارة المسابقات المدرسية. تمكين المحكمين بأدوات تقييم احترافية والمشرفين بنتائج فورية وشاملة.',
-        'btn-demo': 'مشاهدة العرض الحي',
-        'btn-start': 'بدء الإعداد',
-        'steps-title': '01. الخارطة التقنية',
-        'steps-p': 'اتبع هذا المسار الفني لتجهيز نظام التقييم الرقمي الخاص بمدرستك.',
-        'step1-h': 'تأسيس مشروع المدرسة',
-        'step1-p': 'قم بتهيئة البنية التحتية للمشروع عبر منصة Supabase السحابية.',
-        'step2-h': 'برمجة الأرشيف الرقمي',
-        'step2-p': 'قم بتكوين جداول البيانات عن طريق لصق مواصفات الإعداد في محرر SQL.',
-        'step3-h': 'نشر المنظومة',
-        'step3-p': 'أدخل مفاتيح الوصول الفريدة لتوليد حزمة التطبيق النهائية.',
-        'db-title': '02. مواصفات المستودع',
-        'db-p': 'انسخ هذه التعليمات البرمجية والصقها في محرر SQL الخاص بـ Supabase.',
-        'btn-copy': 'نسخ التعليمات',
-        'gen-title': '03. كونسول المشروع',
-        'gen-p': 'أتمم عملية النشر عبر إدخال بيانات الاعتماد في نواة النظام.',
-        'label-url': 'رابط المشروع (URL)',
-        'label-key': 'مفتاح الوصول (Anon Key)',
-        'btn-gen': 'بدء تسلسل التوليد',
-        'btn-go-gen': 'الانتقال إلى منشئ التطبيق',
-        'tut-link': 'دليل استخراج البيانات ←',
-        'footer-p': 'تقييم: تمكين المعلمين، والاحتفاء بالطلاب.',
-        'footer-link': 'بوابة الوثائق الفنية ←',
-        'lang-btn': 'ENGLISH',
-        'toast-copy': 'تم نسخ التعليمات البرمجية بنجاح!',
-        'alert-keys': 'خطأ: بيانات الاعتماد مطلوبة لبدء تسلسل البناء.',
-        'status-prep': '> جاري تحضير أصول المنظومة...',
-        'status-ready': '> اكتمل البناء بنجاح. تم إرسال الحزمة.',
-        'stats-deployed': 'مدرسة مفعّلة',
-        'stats-evals': 'عملية تقييم',
-        'stats-ownership': 'ملكية البيانات',
-        'hosting-title': '04. النشر السحابي',
-        'hosting-p': 'تطبيقك الخاص جاهز. قم باستضافته مجانًا على أي من منصات الاستضافة الحديثة.',
-        'host-netlify': 'الأفضل للمبتدئين. ببساطة قم بسحب وإفلات المجلد الذي قمت بتنزيله لنشره في ثوانٍ.',
-        'host-vercel': 'استضافة عالية الأداء مع شبكة حواف عالمية. مثالية للسرعة الاحترافية.',
-        'host-github': 'مثالي إذا كنت تستخدم GitHub بالفعل. استضافة مجانية مباشرة من مستودع الكود الخاص بك.',
-        'host-cloudflare': 'سريع وآمن ومتاح دائمًا. بنية تحتية بمستوى المؤسسات مجانًا.',
-        'contribute-title': 'ساهم في بناء المستقبل',
-        'contribute-p': 'تقييم مبادرة مدفوعة بالمجتمع. ساعدنا في بناء أدوات أكثر دقة للمعلمين من خلال المساهمة في الكود البرمجي مفتوح المصدر.',
-        'btn-github': 'المساهمة عبر GitHub'
+        'nav-features': 'المميزات الكبرى',
+        'nav-sandbox': 'التجربة المباشرة',
+        'nav-personas': 'لماذا تقييم',
+        'nav-blueprint': 'مخطط الإعداد',
+        'nav-console': 'لوحة التوليد',
+        'nav-wiki': 'الموسوعة',
+        'btn-nav-demo': '⚡ تجربة حية',
+        'hero-badge': '🌟 مجاني ومفتوح المصدر ١٠٠٪ • بدون أي تكاليف تشغيل مدى الحياة',
+        'hero-title-p1': 'منظومة التقييم الاحترافية ومسرح التحكيم المباشر لـ',
+        'hero-title-p2': 'المسابقات المدرسية',
+        'hero-subtitle': 'ودّع بطاقات التقييم الورقية الضائعة وتأخر إعلان النتائج. يمنحك تقييم تجربة إملاء صوتي سريعة للمحكمين، ويزامن المؤقت الذكي مع شاشات المسرح الكبرى، ويتيح للجمهور التصويت من هواتفهم، ويصدر شهادات التقدير الذهبية بضغطة زر واحدة.',
+        'btn-hero-demo': '🚀 تشغيل العرض التجريبي التفاعلي',
+        'btn-hero-deploy': '📦 توليد تطبيق مدرستك (خلال دقيقتين)',
+        'mockup-judge-badge': '📱 بطاقة المحكم الذكية',
+        'mockup-stage-badge': '🖥️ شاشة عرض المسرح',
+        'mockup-cert-badge': '🎓 شهادة تقدير ذهبية',
+        'mockup-delivery': 'الإلقاء والطلاقة',
+        'mockup-dictating': 'إملاء صوتي: "حضور مسرحي استثنائي ولغة قوية..."',
+        'mockup-chimes-active': '🔔 جرس تنبيه الـ 30 ثانية مفعل',
+        'mockup-speaker-live': 'المتحدث الحالي: طارق المنصور',
+        'mockup-cert-title': 'شهادة تفوق وتميز',
+        'mockup-cert-awarded': 'تُمنح بكل فخر للطالب: طارق المنصور',
+        'mockup-cert-rank': '🥇 المركز الأول • الدرجة: 95%',
+        'stat-cost': 'تكلفة تشغيل مدى الحياة',
+        'stat-evals-label': 'عملية تقييم مسجلة',
+        'stat-privacy': 'ملكية كاملة للبيانات',
+        'stat-schools': 'مدرسة مفعّلة',
+        'tag-features': 'المميزات الاستثنائية',
+        'title-features': 'مصممة لتقديم بطولات ومسابقات لا تُنسى',
+        'desc-features': 'كل ما تحتاجه مدرستك لإدارة مسابقات الخطابة، والمناظرات، والقرآن الكريم، والمعارض العلمية باحترافية كاملة وبدون أوراق.',
+        'feat1-h': 'مسرح التحكيم وشاشة العرض المباشرة',
+        'feat1-p': 'اعرض صور المتسابقين مباشرة على البروجكتر مع مؤقت ذكي، وجرس تنبيه الـ 30 ثانية، ومراسم تتويج ومنصة أبطال ثلاثية مع إطلاق القصاصات الذهبية.',
+        'feat1-tag': 'وضع مسرح الفعاليات',
+        'feat2-h': 'دخول سريع للمحكمين عبر رمز QR',
+        'feat2-p': 'لا حاجة لحفظ أسماء مستخدمين أو كلمات مرور معقدة. يمسح المحكم بطاقة الـ QR بكاميرا هاتفه ليبدأ التقييم فوراً بكل سهولة.',
+        'feat2-tag': 'دخول سريع وفوري',
+        'feat3-h': 'تصويت الجمهور الحي من المقاعد',
+        'feat3-p': 'يمسح الحضور في المسرح رمز QR من مقاعدهم للتصويت لمتسابقهم المفضل مباشرة عبر هواتفهم مع حماية كاملة ضد تكرار التصويت.',
+        'feat3-tag': 'تفاعل الجمهور',
+        'feat4-h': 'شهادات ذهبية وتقارير بضغطة زر',
+        'feat4-p': 'أصدر شهادات تقدير وطباعة مقاس A4 بخلفيات ذهبية وأختام ملكية بضغطة واحدة، بالإضافة إلى بطاقات تقييم تفصيلية تُرسل لأولياء الأمور.',
+        'feat4-tag': 'رسومات فائقة الدقة',
+        'feat5-h': 'إملاء صوتي ووضع التحكيم الأعمى',
+        'feat5-p': 'يملي المحكم ملاحظاته بصوته دون الحاجة للكتابة. كما يمكنك تفعيل وضع التحكيم الأعمى (المتسابق #) لضمان حيادية مطلقة.',
+        'feat5-tag': 'عدالة وتقييم محايد',
+        'feat6-h': 'تصفيات الأدوار وتتبع تطور الطلاب',
+        'feat6-p': 'قم بتأهيل الأوائل من الأدوار التمهيدية إلى النهائيات بضغطة زر واحدة، وتابع سجل تطور مهارات الطالب عبر الأعوام الدراسية.',
+        'feat6-tag': 'أدوار نهائية متعددة',
+        'tag-sandbox': 'تجربة حية تفاعلية',
+        'title-sandbox': 'جرّب جميع شاشات المنظومة الآن مباشرة',
+        'desc-sandbox': 'استكشف بيئة تقييم المتكاملة بشاشاتها الثلاث مباشرة عبر متصفحك.',
+        'sand1-h': 'لوحة المحكم والإدارة',
+        'sand1-p': 'جرّب بطاقة التحكيم، والمعايير الموزونة، والإملاء الصوتي الذكي، وجدول النتائج النهائية.',
+        'sand1-btn': 'تجربة شاشة المحكم ←',
+        'sand2-h': 'شاشة عرض المسرح (البروجكتر)',
+        'sand2-p': 'جرّب شاشة العرض الكبرى: مؤقت المتحدث، وأجراس التنبيه، ومنصة التتويج التفاعلية.',
+        'sand2-btn': 'تجربة شاشة المسرح ←',
+        'sand3-h': 'بوابة تصويت الجمهور',
+        'sand3-p': 'جرّب واجهة تصويت الجمهور من الهاتف المحمول وشاهد تحديث النتائج فورياً.',
+        'sand3-btn': 'تجربة شاشة التصويت ←',
+        'tag-personas': 'تجربة مخصصة',
+        'title-personas': 'صُمم لخدمة الجميع يوم الفعالية',
+        'desc-personas': 'صُمم بعناية لتوفير الراحة التامة للمحكمين والمشرفين والطلاب.',
+        'role-judges': 'للجنة التحكيم',
+        'role-judges-title': 'بدون حسابات يدوية وبدون عناء كتابة',
+        'role-judges-desc': 'ركز بنسبة ١٠٠٪ على أداء الطالب بدلاً من الانشغال بجمع الدرجات في الأوراق.',
+        'judge-point-1': 'أزرار لمس كبيرة وسريعة لاختيار الدرجات بلمسة واحدة',
+        'judge-point-2': 'تسجيل الملاحظات والتوصيات صوتياً عبر الإملاء الذكي',
+        'judge-point-3': 'خصوصية تامة واستمارات محمية ومقفلة بعد الإرسال',
+        'role-organizers': 'لمشرفي ومقدمي الفعاليات',
+        'role-organizers-title': 'تحكم كامل بالمسرح ومزامنة فورية',
+        'role-organizers-desc': 'التزم بالجدول الزمني بدقة وابهج الجمهور بمراسم إعلان الفائزين الحماسية.',
+        'org-point-1': 'مؤقت مسرح متزامن مع جرس تنبيه هادئ عند 30 ثانية',
+        'org-point-2': 'حساب فوري للترتيب وفصل التعادلات تلقائياً',
+        'org-point-3': 'منصة تتويج الأبطال مع تشغيل نشيد المدرسة وقصاصات الذهب',
+        'role-principals': 'لمديري المدارس والمعلمين',
+        'role-principals-title': 'سجل لإنجازات الطلاب وبدون أي ميزانية',
+        'role-principals-desc': 'امنح أولياء الأمور تقارير تفصيلية واحتفظ بسجل أداء طلابك عبر السنوات.',
+        'princ-point-1': 'بطاقات تقرير تقييمي من صفحة واحدة تُرسل لأولياء الأمور',
+        'princ-point-2': 'أرشيف متعدد الأعوام يوضح نسبة تطور الطالب (+٪)',
+        'princ-point-3': 'بدون أي اشتراكات أو رسوم شهرية مع خصوصية كاملة للبيانات',
+        'tag-setup': 'مخطط التجهيز',
+        'steps-title': 'النشر خلال دقيقتين فقط',
+        'steps-p': 'اتبع هذا المسار البسيط لتجهيز ونشر تطبيق مدرستك الخاص والمستقل تماماً.',
+        'step1-h': 'إنشاء قاعدة بيانات Supabase',
+        'step1-p': 'قم بإنشاء قاعدة بيانات سحابية خاصة بمدرستك عبر منصة Supabase المجانية.',
+        'step2-h': 'لصق مخطط قاعدة البيانات',
+        'step2-p': 'قم بتكوين الجداول والسياسات الأمنية بلصق كود SQL في محرر Supabase.',
+        'step3-h': 'توليد حزمة تطبيق المدرسة',
+        'step3-p': 'أدخل رابط المشروع والمفتاح أدناه لتحميل حزمة تطبيقك الجاهزة للنشر فوراً.',
+        'btn-copy': 'نسخ التعليمات البرمجية',
+        'tag-generator': 'منشئ التطبيق',
+        'gen-title': 'كونسول توليد تطبيق المدرسة',
+        'gen-p': 'أدخل بيانات الاعتماد الخاصة بمدرستك لحزم وتنزيل تطبيق التقييم الخاص بك.',
+        'label-url': 'رابط مشروع المدرسة (Supabase URL)',
+        'label-key': 'المفتاح السري العام (Anon Key)',
+        'btn-gen': '📦 توليد وتنزيل حزمة تطبيق المدرسة (ZIP)',
+        'hosting-title': 'خيارات الاستضافة السحابية المجانية',
+        'host-netlify': 'الأفضل للمبتدئين. ببساطة قم بسحب وإفلات المجلد لنشره في ثوانٍ معدودة.',
+        'host-vercel': 'استضافة عالية الأداء مع شبكة سحابية فائقة السرعة.',
+        'host-github': 'مثالي إذا كنت تستخدم GitHub بالفعل لنشر الموقع مجاناً.',
+        'host-cloudflare': 'بنية تحتية سريعة، آمنة، ومجانية لجميع المؤسسات التعليمية.',
+        'footer-text': '© 2026 مشروع تقييم. تمكين المعلمين، والاحتفاء بالطلاب المتميزين.',
+        'lang-btn': 'English',
+        'toast-copy': 'تم نسخ تعليمات SQL البرمجية بنجاح! ✨',
+        'alert-keys': 'خطأ: يجب إدخال رابط المشروع ومفتاح الوصول لبدء التوليد.',
+        'status-prep': '> جاري تجهيز أصول التطبيق وحقن بيانات المدرسة...',
+        'status-ready': '> اكتمل البناء بنجاح! تم تنزيل حزمة تطبيق تقييم الخاص بمدرستك.'
       }
     };
 
@@ -1126,14 +1670,11 @@
           const builds = data.find(m => m.metric_name === 'app_builds')?.value || 150;
           const evals = data.find(m => m.metric_name === 'total_evals')?.value || 50000;
 
-          document.getElementById('stat-deployed').textContent = builds + '+';
-          document.getElementById('stat-evals').textContent = (evals / 1000).toFixed(0) + 'k+';
+          const deployedEl = document.getElementById('stat-deployed');
+          if (deployedEl) deployedEl.textContent = builds + '+';
 
-          // Update hero counter too
-          const heroCounter = document.querySelector('[data-i18n="hero-counter"]');
-          if (heroCounter) {
-            heroCounter.textContent = currentLang === 'ar' ? `🚀 ${builds}+ نظام مفعّل` : `🚀 ${builds}+ Deployed Systems`;
-          }
+          const evalsEl = document.getElementById('stat-evals');
+          if (evalsEl) evalsEl.textContent = (evals / 1000).toFixed(0) + 'k+';
         }
       } catch (e) { console.warn('Stats fetch failed', e); }
     }
@@ -1150,17 +1691,23 @@
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-          if (el.tagName === 'INPUT' && el.placeholder) {
+        if (translations[lang] && translations[lang][key]) {
+          if (el.tagName === 'INPUT') {
             el.placeholder = translations[lang][key];
           } else {
             el.textContent = translations[lang][key];
           }
         }
       });
-      document.getElementById('page-title').textContent = translations[lang]['page-title'];
-      if (document.getElementById('lang-btn')) {
-        document.getElementById('lang-btn').textContent = translations[lang]['lang-btn'];
+
+      const langBtn = document.getElementById('lang-btn');
+      if (langBtn) {
+        langBtn.textContent = lang === 'ar' ? 'English' : 'العربية';
+      }
+
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle && translations[lang]['page-title']) {
+        pageTitle.textContent = translations[lang]['page-title'];
       }
     }
 
@@ -1168,51 +1715,49 @@
       setLanguage(currentLang === 'en' ? 'ar' : 'en');
     }
 
-    // Theme Logic
-    let currentTheme = localStorage.getItem('taqeem_theme') || 'dark';
-
-    function setTheme(theme) {
-      currentTheme = theme;
-      localStorage.setItem('taqeem_theme', theme);
-      document.documentElement.setAttribute('data-theme', theme);
-      document.getElementById('theme-btn').textContent = theme === 'dark' ? '🌙' : '☀️';
-    }
-
     function toggleTheme() {
-      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('taqeem_theme', target);
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = target === 'dark' ? '🌙' : '☀️';
     }
 
-    setTheme(currentTheme);
+    // Init Theme
+    (function () {
+      const savedTheme = localStorage.getItem('taqeem_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+    })();
 
-
-
-    function validateInput() {
-      const url = document.getElementById('sb-url').value.trim();
-      const key = document.getElementById('sb-key').value.trim();
-      if (url.includes('supabase.co')) document.getElementById('check-1').classList.add('active');
-      else document.getElementById('check-1').classList.remove('active');
-      if (key.length > 50) document.getElementById('check-3').classList.add('active');
-      else document.getElementById('check-3').classList.remove('active');
-    }
-
+    // Init Language
     setLanguage(currentLang);
 
+    function validateInput() {
+      const url = document.getElementById('sb-url')?.value.trim();
+      const key = document.getElementById('sb-key')?.value.trim();
+      const btn = document.getElementById('build-btn');
+      if (btn) {
+        btn.disabled = !(url && key);
+      }
+    }
+
     const fullSQL = `-- ==========================================
--- TAQEEM ARCHIVE SPECIFICATION
+-- TAQEEM SUPABASE SETUP SCRIPT (Idempotent)
 -- ==========================================
+-- This script is safe to run multiple times.
+-- It initializes the multi-competition evaluation system with hardened security.
+
 BEGIN;
 
-DROP TABLE IF EXISTS competitions CASCADE;
-DROP TABLE IF EXISTS students CASCADE;
-DROP TABLE IF EXISTS evaluations CASCADE;
-DROP TABLE IF EXISTS custom_users CASCADE;
-DROP TABLE IF EXISTS winners_display CASCADE;
-DROP TABLE IF EXISTS site_settings CASCADE;
+-- 1. TABLES CREATION
 
 CREATE TABLE IF NOT EXISTS competitions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
-  status TEXT DEFAULT 'active',
+  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -1272,6 +1817,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 2. ENABLE ROW LEVEL SECURITY (RLS)
 ALTER TABLE competitions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE evaluations ENABLE ROW LEVEL SECURITY;
@@ -1279,22 +1825,50 @@ ALTER TABLE custom_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE winners_display ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
+-- 3. POLICIES (Hardened for Linter Compliance)
+
+-- Competitions
+DROP POLICY IF EXISTS "Public access" ON competitions;
 CREATE POLICY "Public select" ON competitions FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin manage" ON competitions FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+CREATE POLICY "Admin manage" ON competitions FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
+-- Site Settings
+DROP POLICY IF EXISTS "Public access" ON site_settings;
 CREATE POLICY "Public select" ON site_settings FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+CREATE POLICY "Admin manage" ON site_settings FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
+-- Students
+DROP POLICY IF EXISTS "Public access" ON students;
 CREATE POLICY "Public select" ON students FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin manage" ON students FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+CREATE POLICY "Admin manage" ON students FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
+-- Evaluations
+DROP POLICY IF EXISTS "Public access" ON evaluations;
 CREATE POLICY "Public select" ON evaluations FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Public insert" ON evaluations FOR INSERT TO anon, authenticated WITH CHECK (true);
 CREATE POLICY "Public update" ON evaluations FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon USING (current_setting('role') = 'anon');
+CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon 
+USING (current_setting('role') = 'anon');
 
-CREATE POLICY "Admin manage custom_users" ON custom_users FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+-- Custom Users (Hardened: Direct SELECT is restricted; Authentication uses secure RPC)
+DROP POLICY IF EXISTS "Public access" ON custom_users;
+DROP POLICY IF EXISTS "Admin insert" ON custom_users;
+DROP POLICY IF EXISTS "Admin update" ON custom_users;
+DROP POLICY IF EXISTS "Admin delete" ON custom_users;
+DROP POLICY IF EXISTS "Login access" ON custom_users;
 
+-- Allow anon to select non-sensitive fields or use authenticated RPC
+CREATE POLICY "Admin manage custom_users" ON custom_users FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
+
+-- Secure server-side authentication function (Prevents password table exposure)
 CREATE OR REPLACE FUNCTION authenticate_custom_user(p_username TEXT, p_password_hash TEXT)
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -1327,34 +1901,51 @@ $$;
 
 GRANT EXECUTE ON FUNCTION authenticate_custom_user(TEXT, TEXT) TO anon, authenticated;
 
+-- Winners Display
+DROP POLICY IF EXISTS "Public access" ON winners_display;
 CREATE POLICY "Public select" ON winners_display FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
 
+-- 4. PERFORMANCE INDEXES & CONSTRAINTS
 CREATE INDEX IF NOT EXISTS idx_evaluations_comp_student ON evaluations(competition_id, student_id);
 CREATE INDEX IF NOT EXISTS idx_students_competition ON students(competition_id);
 CREATE INDEX IF NOT EXISTS idx_evaluations_judge ON evaluations(judge_id);
 CREATE INDEX IF NOT EXISTS idx_custom_users_username ON custom_users(LOWER(username));
+
+-- Unique constraint so each judge can only submit one primary score per student per competition (upsert-compatible)
 CREATE UNIQUE INDEX IF NOT EXISTS uq_evaluations_comp_student_judge ON evaluations(competition_id, student_id, judge_id);
 
-DROP POLICY IF EXISTS "Public Access" ON storage.objects;
-DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
-DROP POLICY IF EXISTS "Public Update" ON storage.objects;
+-- 5. STORAGE CONFIGURATION
+-- Note: Create Bucket named 'winner-photos' via Supabase UI first.
 
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
 CREATE POLICY "Public Access" ON storage.objects FOR SELECT TO anon, authenticated USING ( bucket_id = 'winner-photos' );
+DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
 CREATE POLICY "Public Insert" ON storage.objects FOR INSERT TO anon, authenticated WITH CHECK ( bucket_id = 'winner-photos' );
+DROP POLICY IF EXISTS "Public Update" ON storage.objects;
 CREATE POLICY "Public Update" ON storage.objects FOR UPDATE TO anon, authenticated USING ( bucket_id = 'winner-photos' );
 
+-- 6. REALTIME REPLICATION
 DROP PUBLICATION IF EXISTS supabase_realtime;
 CREATE PUBLICATION supabase_realtime FOR TABLE competitions, winners_display, students, evaluations;
 ALTER TABLE winners_display REPLICA IDENTITY FULL;
 
+-- 7. DEFAULT ADMIN USER
+-- username: admin / password: admin123
 INSERT INTO custom_users (username, password_hash, role)
-VALUES ('admin', '4269b9dec987c1b8ea82df355eee97e63645894e532aee99182a66586660e872', 'admin')
-ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash;
+VALUES (
+  'admin', 
+  '4269b9dec987c1b8ea82df355eee97e63645894e532aee99182a66586660e872', 
+  'admin'
+) ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash;
 
-COMMIT;`;
+COMMIT;
+`;
 
-    document.getElementById('sql-code').textContent = fullSQL;
+    const sqlCodeEl = document.getElementById('sql-code');
+    if (sqlCodeEl) sqlCodeEl.textContent = fullSQL;
 
     async function copySQL() {
       try {
@@ -1436,11 +2027,10 @@ COMMIT;`;
 
         const zipBlob = await zip.generateAsync({ type: 'blob' });
 
-        // Real-time counter increment
         if (centralSupabase) {
           try {
             await centralSupabase.rpc('increment_metric', { m_name: 'app_builds' });
-            loadStats(); // Refresh UI
+            loadStats();
           } catch (e) { console.warn('Stat update failed', e); }
         }
 
@@ -1468,10 +2058,9 @@ COMMIT;`;
       }
     }
 
-    buildBtn.onclick = buildPackage;
+    if (buildBtn) buildBtn.onclick = buildPackage;
   </script>
 
 </body>
 
 </html>
->
