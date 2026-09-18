@@ -1121,6 +1121,29 @@
       color: var(--primary);
     }
 
+    .mobile-drawer-demo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      margin-top: 10px;
+      transition: var(--transition);
+    }
+
+    .mobile-drawer-demo-btn:hover,
+    .mobile-drawer-demo-btn:active {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1148,6 +1171,9 @@
       .mobile-menu-toggle {
         display: flex;
       }
+      .nav-actions .btn-nav-demo {
+        display: none;
+      }
     }
 
     /* Responsive: Mobile Breakpoint */
@@ -1164,10 +1190,6 @@
       }
       .version-tag {
         display: none;
-      }
-      .btn-nav-demo {
-        padding: 6px 12px;
-        font-size: 0.78rem;
       }
       .icon-btn {
         width: 34px;
@@ -1311,19 +1333,12 @@
       .nav-actions a.icon-btn[href*="github"] {
         display: none;
       }
-      .btn-nav-demo {
-        padding: 6px 10px;
-        font-size: 0.76rem;
-      }
     }
 
     /* Tiny Mobile: <= 380px */
     @media (max-width: 380px) {
       .nav-actions {
         gap: 4px;
-      }
-      .btn-nav-demo {
-        display: none;
       }
       .hero-title {
         font-size: 1.75rem;
@@ -1554,6 +1569,7 @@
       <a href="#setup" class="mobile-nav-link" onclick="closeMobileMenu()" data-i18n="nav-blueprint">Blueprint</a>
       <a href="#generator" class="mobile-nav-link" onclick="closeMobileMenu()" data-i18n="nav-console">Console</a>
       <a href="wiki.html" target="_blank" class="mobile-nav-link" onclick="closeMobileMenu()" data-i18n="nav-wiki">Wiki</a>
+      <a href="demo.html" target="_blank" class="mobile-drawer-demo-btn" onclick="closeMobileMenu()" data-i18n="btn-nav-demo">⚡ Live Demo</a>
     </div>
   </nav>
 
