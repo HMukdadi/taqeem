@@ -1,12 +1,23 @@
-const CACHE_NAME = 'taqeem-v1.0';
+const CACHE_NAME = 'taqeem-v2.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/demo.html',
+  '/vote.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
-  '/icons/logo.png'
+  '/lib/qrcode.js',
+  '/lib/supabase.js',
+  '/lib/confetti.js',
+  '/winners/index.html',
+  '/winners/style.css',
+  '/winners/app.js',
+  '/icons/logo.png',
+  '/icons/icon-192.png',
+  '/audio/drumroll.mp3',
+  '/audio/cheer.mp3',
+  '/audio/idle.mp3'
 ];
 
 self.addEventListener('install', event => {
@@ -14,7 +25,16 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Caching app assets');
-        return cache.addAll(ASSETS_TO_CACHE);
+        return Promise.allSettled(
+          ASSETS_TO_CACHE.map(url =>
+            fetch(url)
+              .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+                return cache.put(url, res);
+              })
+              .catch(err => console.warn(`Asset cache skipped: ${url}`, err))
+          )
+        );
       })
       .then(() => self.skipWaiting())
   );

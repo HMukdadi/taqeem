@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Taqeem | Audience Choice Voting</title>
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vote-hero {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(124, 58, 237, 0.08)), var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 20px 24px 20px;
+      text-align: center;
+    }
+
+    .vote-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #d97706;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .vote-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0 0 8px 0;
+    }
+
+    .vote-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .vote-search-bar {
+      max-width: 600px;
+      margin: 20px auto 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .vote-container {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 60px 16px;
+      flex: 1;
+    }
+
+    .student-vote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .student-vote-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .student-vote-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+    }
+
+    .vote-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--primary-light);
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .vote-btn-action {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .vote-btn-action:hover {
+      opacity: 0.92;
+    }
+
+    .vote-btn-action:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .voted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--success);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .vote-success-card {
+      background: var(--bg-card);
+      border: 2px solid var(--success);
+      border-radius: var(--radius-lg);
+      padding: 40px 24px;
+      text-align: center;
+      margin-top: 24px;
+      box-shadow: 0 12px 36px rgba(16, 185, 129, 0.15);
+      animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="navbar" style="border-bottom: 1px solid var(--border); padding: 12px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; width: 100%;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.4rem;">🏆</span>
+        <span style="font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: var(--primary);">Taqeem</span>
+      </div>
+      <button type="button" id="vote-lang-toggle" class="btn btn-logout" style="padding: 4px 12px; font-size: 0.85rem;" onclick="toggleVoteLanguage()">English</button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="vote-hero">
+    <div class="vote-badge">
+      <span>🌟</span>
+      <span id="hero-badge-text">تصويت الجمهور المباشر</span>
+    </div>
+    <h1 id="vote-comp-title" class="vote-title">جائزة اختيار الجمهور</h1>
+    <p id="vote-hero-desc" class="vote-subtitle">
+      صوّت لمتحدثك المفضل تقديراً لأدائه المتميز! (مسموح بصوت واحد لكل جهاز)
+    </p>
+
+    <div class="vote-search-bar">
+      <input type="text" id="vote-search" class="form-input" placeholder="ابحث باسم الطالب..." oninput="filterVoteStudents(this.value)">
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="vote-container">
+    <!-- Already Voted Confirmation Screen -->
+    <div id="voted-success-view" class="vote-success-card" hidden>
+      <div style="font-size: 3rem; margin-bottom: 12px;">🎉</div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 8px;" id="success-title">تم تسجيل صوتك بنجاح!</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;" id="success-desc">شكراً لمشاركتك في تشجيع المتسابقين.</p>
+      
+      <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(79, 70, 229, 0.08); padding: 12px 24px; border-radius: var(--radius-md); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <img id="voted-student-photo" src="" class="vote-avatar" style="width: 48px; height: 48px;" onerror="this.src='icons/icon.svg'">
+        <div style="text-align: right;">
+          <div id="voted-student-name" style="font-weight: 800; font-size: 1.1rem; color: var(--primary);">اسم الطالب</div>
+          <div id="voted-student-class" style="font-size: 0.85rem; color: var(--text-muted);">الصف</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student List View -->
+    <div id="vote-students-list-view">
+      <div id="vote-loading" style="text-align: center; padding: 40px; color: var(--text-muted);">
+        <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+        <p id="loading-text">جاري تحميل قائمة المتسابقين...</p>
+      </div>
+
+      <div id="vote-grid" class="student-vote-grid" hidden>
+        <!-- Cards inserted via JS -->
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 24px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border);">
+    &copy; 2026 Taqeem &bull; School Evaluation Platform
+  </footer>
+
+  <script src="lib/supabase.js"></script>
+  <script>
+    let currentVoteLang = 'ar';
+    let compId = new URLSearchParams(window.location.search).get('comp') || localStorage.getItem('currentCompetitionId');
+    let allVoteStudents = [];
+    let supabaseClient = null;
+
+    const voteTexts = {
+      ar: {
+        badge: 'تصويت الجمهور المباشر',
+        defaultTitle: 'جائزة اختيار الجمهور',
+        heroDesc: 'صوّت لمتحدثك المفضل تقديراً لأدائه المتميز! (مسموح بصوت واحد لكل جهاز)',
+        phSearch: 'ابحث باسم الطالب...',
+        btnVote: 'صوّت الآن 🗳️',
+        confirmTitle: 'تأكيد التصويت',
+        confirmText: 'هل أنت متأكد من التصويت للطالب/ـة:',
+        btnConfirm: 'نعم، تأكيد الصوت',
+        btnCancel: 'إلغاء',
+        successTitle: 'تم تسجيل صوتك بنجاح!',
+        successDesc: 'شكراً لمشاركتك في تشجيع المتسابقين.',
+        alreadyVoted: 'لقد قمت بالتصويت بالفعل',
+        langBtn: 'English',
+        dir: 'rtl'
+      },
+      en: {
+        badge: 'Live Audience Choice',
+        defaultTitle: 'Audience Choice Award',
+        heroDesc: 'Vote for your favorite presenter to honor their performance! (1 vote per device)',
+        phSearch: 'Search student by name...',
+        btnVote: 'Vote 🗳️',
+        confirmTitle: 'Confirm Vote',
+        confirmText: 'Are you sure you want to vote for:',
+        btnConfirm: 'Yes, Cast Vote',
+        btnCancel: 'Cancel',
+        successTitle: 'Your vote has been recorded!',
+        successDesc: 'Thank you for supporting and encouraging the participants.',
+        alreadyVoted: 'You have already voted',
+        langBtn: 'عربي',
+        dir: 'ltr'
+      }
+    };
+
+    function initSupabase() {
+      try {
+        const stored = localStorage.getItem('taqeem_settings');
+        if (stored) {
+          const s = JSON.parse(stored);
+          if (s.supabaseUrl && s.supabaseKey && window.supabase) {
+            supabaseClient = window.supabase.createClient(s.supabaseUrl, s.supabaseKey);
+          }
+        }
+      } catch (e) {
+        console.warn('Supabase init failed:', e);
+      }
+    }
+
+    async function loadVotePortal() {
+      initSupabase();
+      updateVoteLangUI();
+
+      // Check if already voted
+      const votedStudentId = localStorage.getItem('taqeem_vote_' + (compId || 'default'));
+      
+      await fetchStudents();
+
+      if (votedStudentId) {
+        showVotedSuccess(votedStudentId);
+      }
+    }
+
+    async function fetchStudents() {
+      const loadingEl = document.getElementById('vote-loading');
+      const gridEl = document.getElementById('vote-grid');
+
+      if (supabaseClient && compId) {
+        try {
+          const { data: comp } = await supabaseClient.from('competitions').select('name').eq('id', compId).maybeSingle();
+          if (comp && comp.name) {
+            document.getElementById('vote-comp-title').textContent = comp.name + ' - ' + voteTexts[currentVoteLang].defaultTitle;
+          }
+
+          const { data: students, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('competition_id', compId)
+            .order('number');
+
+          if (!error && students) {
+            allVoteStudents = students;
+          }
+        } catch (e) {
+          console.warn('Error fetching students for vote:', e);
+        }
+      }
+
+      // Fallback to local storage if offline or demo
+      if (allVoteStudents.length === 0) {
+        const stored = localStorage.getItem('studentRoster');
+        if (stored) {
+          try {
+            allVoteStudents = JSON.parse(stored);
+          } catch(e) {}
+        }
+      }
+
+      if (loadingEl) loadingEl.hidden = true;
+      if (gridEl) {
+        gridEl.hidden = false;
+        renderVoteGrid(allVoteStudents);
+      }
+    }
+
+    function renderVoteGrid(students) {
+      const grid = document.getElementById('vote-grid');
+      if (!grid) return;
+
+      const votedStudentId = localStorage.getItem('taqeem_vote_' + (compId || 'default'));
+
+      if (students.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--text-muted); padding:30px;">لا يوجد متسابقون متاحون للتصويت حالياً.</p>';
+        return;
+      }
+
+      grid.innerHTML = students.map(s => {
+        const isVoted = String(s.id) === String(votedStudentId);
+        return `
+          <div class="student-vote-card">
+            <img src="${s.photo_url || 'icons/icon.svg'}" class="vote-avatar" onerror="this.src='icons/icon.svg'">
+            <div style="flex: 1; min-width: 0;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0 0 4px 0; color: var(--text);">${escapeHtml(s.name)}</h3>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(s.class_name || '')} ${escapeHtml(s.section || '')}</div>
+            </div>
+            <div>
+              ${isVoted 
+                ? '<span class="voted-badge">✅ تم التصويت</span>'
+                : `<button type="button" class="vote-btn-action" onclick="confirmVote('${s.id}')">${voteTexts[currentVoteLang].btnVote}</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterVoteStudents(query) {
+      const q = (query || '').toLowerCase().trim();
+      const filtered = allVoteStudents.filter(s => 
+        (s.name || '').toLowerCase().includes(q) || 
+        (s.class_name || '').toLowerCase().includes(q)
+      );
+      renderVoteGrid(filtered);
+    }
+
+    function confirmVote(studentId) {
+      const student = allVoteStudents.find(s => String(s.id) === String(studentId));
+      if (!student) return;
+
+      const t = voteTexts[currentVoteLang];
+      const msg = `${t.confirmText} "${student.name}"؟`;
+      if (!confirm(msg)) return;
+
+      castVote(student);
+    }
+
+    async function castVote(student) {
+      const storageKey = 'taqeem_vote_' + (compId || 'default');
+      localStorage.setItem(storageKey, student.id);
+
+      // Broadcast vote to realtime channel if supabase is active
+      try {
+        if (supabaseClient && compId) {
+          const channel = supabaseClient.channel('winners-display-' + compId);
+          channel.subscribe(status => {
+            if (status === 'SUBSCRIBED') {
+              channel.send({
+                type: 'broadcast',
+                event: 'audience-vote-cast',
+                payload: {
+                  competitionId: compId,
+                  studentId: student.id,
+                  studentName: student.name
+                }
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Realtime vote broadcast failed:', err);
+      }
+
+      showVotedSuccess(student.id);
+    }
+
+    function showVotedSuccess(studentId) {
+      const student = allVoteStudents.find(s => String(s.id) === String(studentId));
+      const successView = document.getElementById('voted-success-view');
+      const listView = document.getElementById('vote-students-list-view');
+
+      if (student) {
+        document.getElementById('voted-student-name').textContent = student.name;
+        document.getElementById('voted-student-class').textContent = `${student.class_name || ''} ${student.section || ''}`.trim();
+        if (student.photo_url) {
+          document.getElementById('voted-student-photo').src = student.photo_url;
+        }
+      }
+
+      if (successView) successView.hidden = false;
+      if (listView) listView.hidden = true;
+    }
+
+    function toggleVoteLanguage() {
+      currentVoteLang = currentVoteLang === 'ar' ? 'en' : 'ar';
+      updateVoteLangUI();
+      renderVoteGrid(allVoteStudents);
+    }
+
+    function updateVoteLangUI() {
+      const t = voteTexts[currentVoteLang];
+      document.documentElement.dir = t.dir;
+      document.documentElement.lang = currentVoteLang;
+      document.getElementById('vote-lang-toggle').textContent = t.langBtn;
+      document.getElementById('hero-badge-text').textContent = t.badge;
+      document.getElementById('vote-hero-desc').textContent = t.heroDesc;
+      document.getElementById('vote-search').placeholder = t.phSearch;
+      document.getElementById('success-title').textContent = t.successTitle;
+      document.getElementById('success-desc').textContent = t.successDesc;
+      if (currentVoteLang === 'en' && document.getElementById('vote-comp-title').textContent.includes('اختيار الجمهور')) {
+        document.getElementById('vote-comp-title').textContent = t.defaultTitle;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    window.addEventListener('DOMContentLoaded', loadVotePortal);
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('Vote SW reg failed:', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

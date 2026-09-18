@@ -36,7 +36,7 @@
   <script>
     (function () {
       // Default to light theme. Only switch to dark if the user explicitly chose it.
-      const savedTheme = localStorage.getItem('tedtalk_theme') || localStorage.getItem('taqeem_theme');
+      const savedTheme = localStorage.getItem('taqeem_theme');
       const theme = savedTheme === 'dark' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', theme);
       
@@ -119,6 +119,11 @@
           </div>
         </div>
         <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+          <div id="sync-status-badge" class="sync-status-badge" title="Connection & Sync Status">
+            <span class="sync-dot"></span>
+            <span id="sync-status-text" class="sync-text">Connected</span>
+          </div>
+          <button id="install-pwa-btn" class="btn btn-logout" style="display: none; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; border-color: var(--primary); color: var(--primary);" title="Install Application">📲 <span data-i18n="btn-install-app">Install App</span></button>
           <button onclick="window.toggleLang()" class="btn btn-logout" style="padding: 8px 12px; font-weight: 700;" id="lang-btn-app">عربي</button>
           <button id="theme-toggle" class="btn btn-logout"
             style="width: 40px; height: 40px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;"
@@ -378,12 +383,113 @@
               <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;" data-i18n="hint-timer">Adjust the primary timer length
                 (e.g., set to 180 for 3 minutes). This affects all judges.</p>
             </div>
+            
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="cfg-timer-chimes" checked style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);">
+                <label for="cfg-timer-chimes" style="font-weight: 600; cursor: pointer; font-size: 0.9rem;" data-i18n="label-timer-chimes">🔔 Stage Warning Bells (30s Warning & Time's Up Bell)</label>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="cfg-judge-timer-chimes" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);">
+                <label for="cfg-judge-timer-chimes" style="font-weight: 600; cursor: pointer; font-size: 0.9rem;" data-i18n="label-judge-chimes">🔊 Also Play Chimes on Judge Device</label>
+              </div>
+            </div>
+
             <button id="save-settings-btn" class="btn btn-login" style="margin-top: 24px;" data-i18n="btn-apply">Apply Changes</button>
+          </div>
+
+          <!-- Certificate Settings Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-cert-settings">🎓 Certificate & Diploma Customization</h2>
+            
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-cert-org">School / Institution Name</label>
+              <input type="text" id="cfg-cert-org" class="form-input" placeholder="e.g. Al-Rowad International Academy" data-i18n="ph-cert-org">
+              <p class="bulk-import-hint" style="margin-top: 6px; font-style: italic;" data-i18n="hint-cert-org">Proudly printed at the top header of all certificates.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;" data-i18n="label-cert-sig1">Left Signatory Title</label>
+                <input type="text" id="cfg-cert-sig1" class="form-input" placeholder="e.g. Head of Judging Panel" data-i18n="ph-cert-sig1">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;" data-i18n="label-cert-sig2">Right Signatory Title</label>
+                <input type="text" id="cfg-cert-sig2" class="form-input" placeholder="e.g. School Principal" data-i18n="ph-cert-sig2">
+              </div>
+            </div>
+
+            <button id="save-cert-settings-btn" class="btn btn-login" style="margin-top: 20px; width: 100%;" onclick="saveCertificateSettings()" data-i18n="btn-save-cert-settings">💾 Save Certificate Settings</button>
+          </div>
+
+          <!-- Stage Audio & Celebration Music Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-audio-settings">🎵 Stage Music & Celebration Audio</h2>
+            
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;" data-i18n="label-anthem-upload">School Anthem / Custom Winner Celebration Audio (MP3)</label>
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <label for="cfg-anthem-upload" class="btn btn-logout" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;">
+                  <span data-i18n="btn-choose-audio">📂 Choose Audio File</span>
+                </label>
+                <input type="file" id="cfg-anthem-upload" accept="audio/*" style="display: none;" onchange="handleAnthemUpload(event)">
+                <button type="button" id="btn-preview-anthem" class="btn btn-secondary" style="padding: 10px 16px;" onclick="playAnthemPreview()" data-i18n="btn-preview-audio">▶ Play Preview</button>
+                <button type="button" id="btn-reset-anthem" class="btn btn-logout" style="padding: 10px 16px; color: var(--danger); border-color: var(--danger);" onclick="resetAnthemDefault()" data-i18n="btn-reset-audio">Reset Default Cheer</button>
+              </div>
+              <p id="cfg-anthem-status" class="bulk-import-hint" style="margin-top: 8px; font-style: italic;" data-i18n="hint-anthem-status">Default celebration sound is currently active.</p>
+            </div>
+          </div>
+
+          <!-- Fair Judging & Privacy Card -->
+          <div class="setup-card" style="margin-bottom: 24px;">
+            <h2 class="section-title" data-i18n="title-fairness-settings">⚖️ Fair Judging & Privacy Controls</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 14px;">
+              <!-- Blind Judging Mode -->
+              <div style="display: flex; align-items: flex-start; gap: 12px; background: rgba(79, 70, 229, 0.04); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <input type="checkbox" id="cfg-blind-judging" style="width: 20px; height: 20px; margin-top: 2px; cursor: pointer; accent-color: var(--primary);">
+                <div style="flex: 1;">
+                  <label for="cfg-blind-judging" style="font-weight: 700; cursor: pointer; display: block;" data-i18n="label-blind-judging">🎭 Blind Judging Mode (Zero Bias)</label>
+                  <p class="bulk-import-hint" style="margin-top: 4px;" data-i18n="hint-blind-judging">Hides student names, schools, and photos on judge scorecards, showing only Contestant # to ensure 100% impartial scoring.</p>
+                </div>
+              </div>
+
+              <!-- Score Locking -->
+              <div style="display: flex; align-items: flex-start; gap: 12px; background: rgba(79, 70, 229, 0.04); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <input type="checkbox" id="cfg-score-locking" style="width: 20px; height: 20px; margin-top: 2px; cursor: pointer; accent-color: var(--primary);">
+                <div style="flex: 1;">
+                  <label for="cfg-score-locking" style="font-weight: 700; cursor: pointer; display: block;" data-i18n="label-score-locking">🔒 Score Lock & Peer Privacy</label>
+                  <p class="bulk-import-hint" style="margin-top: 4px;" data-i18n="hint-score-locking">Locks scorecards once submitted to prevent accidental tampering and shields peer judge marks during live judging.</p>
+                </div>
+              </div>
+            </div>
+
+            <button id="save-fairness-settings-btn" class="btn btn-login" style="margin-top: 20px; width: 100%;" onclick="saveFairnessSettings()" data-i18n="btn-save-fairness">💾 Save Fairness Settings</button>
           </div>
 
           <!-- Criteria Manager Card -->
           <div class="setup-card" style="margin-bottom: 24px;">
-            <h2 class="section-title" data-i18n="title-criteria">📊 Evaluation Criteria</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+              <h2 class="section-title" style="margin: 0;" data-i18n="title-criteria">📊 Evaluation Criteria</h2>
+              <span id="rubric-weight-total-badge" class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">Total Weight: 100%</span>
+            </div>
+
+            <!-- Rubric Presets Dropdown -->
+            <div class="form-group" style="margin-bottom: 20px; background: rgba(79, 70, 229, 0.04); padding: 14px; border-radius: var(--radius-sm); border: 1px dashed var(--primary-light);">
+              <label class="form-label" style="font-weight: 600; font-size: 0.85rem; color: var(--primary);" data-i18n="label-rubric-preset">⚡ Rubric Presets (1-Click Templates)</label>
+              <div style="display: flex; gap: 10px; margin-top: 6px;">
+                <select id="rubric-preset-select" class="form-input" style="flex: 1;">
+                  <option value="custom" data-i18n="opt-preset-custom">Custom Criteria / معايير مخصصة</option>
+                  <option value="public_speaking">🎤 Public Speaking & Oratory / خطابة وإلقاء</option>
+                  <option value="debate">⚖️ Debate & Argumentation / مناظرات وحوار</option>
+                  <option value="science_fair">🔬 Science Fair & STEM / معرض العلوم والابتكار</option>
+                  <option value="quran">📖 Quran Recitation & Tajweed / تلاوة وتجويد</option>
+                  <option value="storytelling">🎭 Storytelling & Drama / قصة وإلقاء مسرحي</option>
+                </select>
+                <button type="button" id="apply-rubric-preset-btn" class="btn btn-login" style="white-space: nowrap; padding: 8px 16px;" onclick="applyRubricPreset()" data-i18n="btn-apply-preset">Apply Preset</button>
+              </div>
+            </div>
+
             <div id="cfg-criteria-list" style="margin-bottom: 20px;">
               <!-- Dynamic Criteria List -->
             </div>
@@ -391,7 +497,7 @@
               <input type="text" id="cfg-new-criterion-label" class="form-input" placeholder="e.g. Stage Presence" data-i18n="ph-new-criterion">
               <button id="cfg-add-criterion-btn" class="btn btn-login" style="white-space: nowrap;" data-i18n="btn-add-criterion">➕ Add Criterion</button>
             </div>
-            <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;" data-i18n="hint-criteria">Each criterion is scored from 1 to 10. Changes affect the total possible score.</p>
+            <p class="bulk-import-hint" style="margin-top: 12px; font-style: italic;" data-i18n="hint-criteria">Each criterion is scored from 1 to 10. Percentage weights calculate final normalized scores.</p>
           </div>
 
 
@@ -450,7 +556,13 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 24px;">
-                  <label class="form-label" data-i18n="label-comments">Judge Comments</label>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="form-label" style="margin-bottom: 0;" data-i18n="label-comments">Judge Comments</label>
+                    <button type="button" id="voice-dictate-btn" class="voice-btn" title="Speak to dictate feedback">
+                      <span class="voice-mic-icon">🎙️</span>
+                      <span id="voice-dictate-label" class="voice-label" data-i18n="btn-voice-dictate">Voice Dictation</span>
+                    </button>
+                  </div>
                   <textarea id="evaluation-comments" class="form-input" placeholder="Enter feedback for the student..."
                     style="min-height: 100px;" data-i18n="ph-comments"></textarea>
                 </div>
@@ -488,6 +600,12 @@
             <button id="clear-results-filters" class="btn btn-logout"
               style="padding-inline-start: 16px; padding-inline-end: 16px;" title="Reset Filters"><span data-i18n="btn-reset-filters">↺ Reset</span></button>
             <button id="export-csv-btn" class="btn btn-logout" style="min-width: 120px;" data-i18n="btn-export">Export CSV</button>
+            <button type="button" id="batch-cert-btn" class="btn btn-secondary" style="min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="generateBatchCertificates()" data-i18n="btn-batch-certs">🎓 Batch Certificates</button>
+            <button type="button" id="batch-reports-btn" class="btn btn-secondary" style="min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="generateBatchReportCards()" data-i18n="btn-batch-reports">📄 Batch Reports</button>
+            <button type="button" id="matrix-export-btn" class="btn btn-secondary" style="min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="exportDetailedMatrixCSV()" data-i18n="btn-matrix-export">📊 Detailed Matrix</button>
+            <button type="button" id="analytics-modal-btn" class="btn btn-secondary" style="min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: #3b82f6; color: #2563eb;" onclick="openCompetitionAnalytics()" data-i18n="btn-analytics">📈 Analytics</button>
+            <button type="button" id="advance-qualifiers-btn" class="btn btn-secondary" style="min-width: 150px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: #f59e0b; color: #d97706;" onclick="openQualifiersModal()" data-i18n="btn-advance-qualifiers">🏆 Advance Qualifiers</button>
+            <button type="button" id="btn-open-archive" class="btn btn-secondary" style="min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: #8b5cf6; color: #7c3aed;" onclick="openArchiveModal()" data-i18n="btn-open-archive">📜 School Archive</button>
           </div>
         </div>
         <div class="table-card">
@@ -545,11 +663,20 @@
           </div>
 
           <!-- Action Buttons -->
-          <div style="display: flex; gap: 12px; margin-top: 20px;">
-            <button type="button" id="push-winner-btn" class="btn btn-login" style="flex: 2; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-size: 1rem;" data-i18n="btn-push-winner">
+          <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+            <button type="button" id="push-winner-btn" class="btn btn-login" style="flex: 2; min-width: 180px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-size: 1rem;" data-i18n="btn-push-winner">
               🏅 Push to Winner Screen
             </button>
-            <button type="button" id="clear-winner-btn" class="btn btn-logout" style="flex: 1; color: var(--danger); border-color: var(--danger);" data-i18n="btn-clear-screen">
+            <button type="button" id="push-podium-btn" class="btn btn-secondary" style="flex: 2; min-width: 180px; font-size: 1rem; border-color: #f59e0b; color: #d97706;" onclick="pushTop3Podium()" data-i18n="btn-push-podium">
+              🏆 Reveal Top 3 Podium
+            </button>
+            <button type="button" id="push-audience-vote-btn" class="btn btn-secondary" style="flex: 2; min-width: 180px; font-size: 1rem; border-color: #8b5cf6; color: #7c3aed;" onclick="pushAudienceVotingToStage()" data-i18n="btn-push-audience-vote">
+              🗳️ Display Audience Voting
+            </button>
+            <button type="button" id="reveal-audience-fav-btn" class="btn btn-secondary" style="flex: 2; min-width: 180px; font-size: 1rem; border-color: #ec4899; color: #db2777;" onclick="revealAudienceFavoriteOnStage()" data-i18n="btn-reveal-audience-fav">
+              🌟 Reveal Fan Favorite
+            </button>
+            <button type="button" id="clear-winner-btn" class="btn btn-logout" style="flex: 1; min-width: 120px; color: var(--danger); border-color: var(--danger);" data-i18n="btn-clear-screen">
               Clear Screen
             </button>
           </div>
@@ -597,7 +724,222 @@
       </div>
     </div>
   </div>
+  <!-- Certificate Modal -->
+  <div id="certificate-modal" class="login-view" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 880px; width: 95%; padding: 24px; text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin: 0;" data-i18n="title-cert-preview">Award Certificate Preview</h2>
+        <button type="button" class="btn btn-logout" style="padding: 4px 10px; font-weight: 700;" onclick="closeCertificateModal()">✕</button>
+      </div>
+      <div id="certificate-canvas-container" style="overflow: auto; max-height: 65vh; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 16px; background: #ffffff; display: flex; justify-content: center; align-items: center; padding: 12px;">
+        <canvas id="certificate-canvas" style="max-width: 100%; height: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-radius: 4px;"></canvas>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" id="download-cert-png-btn" class="btn btn-login" style="padding: 10px 20px;" onclick="downloadCertificatePNG()">📥 Download Certificate</button>
+        <button type="button" id="print-cert-btn" class="btn btn-secondary" style="padding: 10px 20px;" onclick="printCertificate()">🖨️ Print Certificate</button>
+        <button type="button" class="btn btn-logout" style="padding: 10px 20px;" onclick="closeCertificateModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Report Card Modal -->
+  <div id="report-card-modal" class="login-view" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 880px; width: 95%; padding: 24px; text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin: 0;" data-i18n="title-report-preview">📄 Student Evaluation Report Card</h2>
+        <button type="button" class="btn btn-logout" style="padding: 4px 10px; font-weight: 700;" onclick="closeReportCardModal()">✕</button>
+      </div>
+      <div id="report-card-canvas-container" style="overflow: auto; max-height: 68vh; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 16px; background: #ffffff; display: flex; justify-content: center; align-items: center; padding: 12px;">
+        <canvas id="report-card-canvas" style="max-width: 100%; height: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-radius: 4px;"></canvas>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" id="download-report-png-btn" class="btn btn-login" style="padding: 10px 20px;" onclick="downloadReportCardPNG()" data-i18n="btn-download-report">📥 Download Report Card</button>
+        <button type="button" id="print-report-btn" class="btn btn-secondary" style="padding: 10px 20px;" onclick="printReportCard()" data-i18n="btn-print-report">🖨️ Print Report Card</button>
+        <button type="button" class="btn btn-logout" style="padding: 10px 20px;" onclick="closeReportCardModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Judge QR Pass Modal -->
+  <div id="qr-pass-modal" class="login-view" style="background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 440px; width: 92%; padding: 26px; text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin: 0;" data-i18n="title-qr-pass">📱 Judge Quick Access Pass</h2>
+        <button type="button" class="btn btn-logout" style="padding: 4px 10px; font-weight: 700;" onclick="closeJudgeQrPassModal()">✕</button>
+      </div>
+      
+      <div id="judge-pass-card" style="background: #ffffff; color: #0f172a; padding: 22px; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.25); border: 2px solid #e2e8f0; margin-bottom: 20px;">
+        <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 4px;" id="qr-pass-comp-name">Competition Name</div>
+        <h3 id="qr-pass-judge-name" style="font-size: 1.35rem; font-weight: 800; color: #1e293b; margin: 0 0 6px 0;">Judge Name</h3>
+        <span class="role-badge judge" style="font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; background: #e0e7ff; color: #4338ca; font-weight: 700;">OFFICIAL JUDGE PASS</span>
+        
+        <div style="margin: 18px auto 14px auto; display: flex; justify-content: center;">
+          <canvas id="judge-qr-canvas" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></canvas>
+        </div>
+        
+        <p style="font-size: 0.82rem; color: #64748b; margin: 0;" data-i18n="hint-scan-pass">Scan with phone camera to log in and judge instantly.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-login" style="flex: 1; padding: 10px;" onclick="printJudgePass()" data-i18n="btn-print-pass">🖨️ Print Badge</button>
+        <button type="button" class="btn btn-secondary" style="flex: 1; padding: 10px;" onclick="copyJudgePassLink()" data-i18n="btn-copy-link">📋 Copy Link</button>
+        <button type="button" class="btn btn-logout" style="padding: 10px 16px;" onclick="closeJudgeQrPassModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competition Performance & Analytics Modal -->
+  <div id="analytics-modal" class="login-view" style="background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 780px; width: 94%; max-height: 90vh; overflow-y: auto; padding: 28px; text-align: start;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.35rem; margin: 0;" data-i18n="title-analytics">📊 Competition Insights & Judge Analytics</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;" data-i18n="sub-analytics">Overview of scoring consistency and student performance breakdown.</p>
+        </div>
+        <button type="button" class="btn btn-logout" style="padding: 4px 12px; font-weight: 700; font-size: 1.1rem;" onclick="closeCompetitionAnalytics()">✕</button>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px;">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;" data-i18n="lbl-total-evals">Evaluations</div>
+          <div id="analytics-total-evals" style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">0</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;" data-i18n="lbl-comp-avg">Competition Avg</div>
+          <div id="analytics-comp-avg" style="font-size: 1.6rem; font-weight: 800; color: var(--success, #10b981);">0%</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;" data-i18n="lbl-highest-score">Top Score</div>
+          <div id="analytics-highest-score" style="font-size: 1.6rem; font-weight: 800; color: #f59e0b;">0%</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;" data-i18n="lbl-active-judges">Judges</div>
+          <div id="analytics-active-judges" style="font-size: 1.6rem; font-weight: 800; color: #8b5cf6;">0</div>
+        </div>
+      </div>
+
+      <!-- Criterion Performance Breakdown -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 24px;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;" data-i18n="title-criterion-breakdown">
+          🎯 Criterion Performance Breakdown
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;" data-i18n="desc-criterion-breakdown">
+          School-wide average achievement percentage per rubric criterion.
+        </p>
+        <div id="analytics-criteria-bars" style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Judge Variance & Consistency Matrix -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 20px;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;" data-i18n="title-judge-variance">
+          ⚖️ Judge Scoring Consistency & Variance
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;" data-i18n="desc-judge-variance">
+          Compares each judge's average against the panel median to spot strict or lenient outliers.
+        </p>
+        <div id="analytics-judge-table-wrapper" style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--border); text-align: start;">
+                <th style="padding: 8px 10px;" data-i18n="th-judge">Judge</th>
+                <th style="padding: 8px 10px; text-align: center;" data-i18n="th-eval-count">Evaluations</th>
+                <th style="padding: 8px 10px; text-align: center;" data-i18n="th-judge-avg">Average Score</th>
+                <th style="padding: 8px 10px; text-align: center;" data-i18n="th-variance">Variance</th>
+                <th style="padding: 8px 10px; text-align: center;" data-i18n="th-consistency">Rating</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-judge-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-logout" style="padding: 10px 24px;" onclick="closeCompetitionAnalytics()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Tournament Advancement / Qualifiers Modal -->
+  <div id="qualifiers-modal" class="login-view" style="background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 680px; width: 95%; padding: 26px; text-align: start;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin: 0;" data-i18n="title-advance-qualifiers">🏆 Advance Qualifiers to Finals</h2>
+        <button type="button" class="btn btn-logout" style="padding: 4px 10px; font-weight: 700;" onclick="closeQualifiersModal()">✕</button>
+      </div>
+
+      <p class="bulk-import-hint" style="margin-bottom: 18px;" data-i18n="desc-advance-qualifiers">
+        Select the top-scoring contestants from this preliminary round to advance into the Grand Finals round. A new competition stage will be created automatically with their profiles and photos.
+      </p>
+
+      <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
+        <label class="form-label" style="font-weight: 600; margin: 0;" data-i18n="label-qualifier-count">Advance Top:</label>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary qualifier-pill active" onclick="setQualifierCount(3)">Top 3</button>
+          <button type="button" class="btn btn-secondary qualifier-pill" onclick="setQualifierCount(5)">Top 5</button>
+          <button type="button" class="btn btn-secondary qualifier-pill" onclick="setQualifierCount(10)">Top 10</button>
+          <button type="button" class="btn btn-secondary qualifier-pill" onclick="setQualifierCount('all')">All Evaluated</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label class="form-label" style="font-weight: 600;" data-i18n="label-target-finals-name">Finals Competition Name</label>
+        <input type="text" id="target-finals-name" class="form-input" placeholder="e.g. Oratory 2026 - Grand Finals">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label class="form-label" style="font-weight: 600; margin-bottom: 8px; display: block;" data-i18n="label-qualifiers-preview">Advancing Contestants Preview</label>
+        <div id="qualifiers-preview-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px; background: rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 8px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+        <button type="button" id="confirm-advance-btn" class="btn btn-login" style="padding: 10px 22px; background: #d97706; border-color: #d97706;" onclick="advanceStudentsToFinals()" data-i18n="btn-confirm-advance">🚀 Create Finals & Transfer</button>
+        <button type="button" class="btn btn-logout" style="padding: 10px 18px;" onclick="closeQualifiersModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Archive & Student Growth Modal -->
+  <div id="archive-modal" class="login-view" style="background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000;" hidden>
+    <div class="login-container glass" style="max-width: 820px; width: 95%; padding: 26px; text-align: start;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin: 0;" data-i18n="title-archive">📜 School Historical Archive & Student Portfolio</h2>
+        <button type="button" class="btn btn-logout" style="padding: 4px 10px; font-weight: 700;" onclick="closeArchiveModal()">✕</button>
+      </div>
+
+      <!-- Student Growth Search -->
+      <div style="background: rgba(79, 70, 229, 0.05); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 22px;">
+        <h3 style="margin: 0 0 8px 0; font-size: 1rem; color: var(--primary);" data-i18n="title-student-growth-tracker">📈 Student Multi-Competition Growth Tracker</h3>
+        <p class="bulk-import-hint" style="margin-bottom: 12px;" data-i18n="desc-student-growth">Search any student to review their scores across all events and academic terms.</p>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="student-history-search" class="form-input" placeholder="Enter student name or number..." oninput="searchStudentHistoricalProgress(this.value)" data-i18n="ph-search-student-history">
+        </div>
+        <div id="student-growth-results" style="margin-top: 14px; min-height: 40px;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin: 0;" data-i18n="hint-search-student">Type a student's name above to see their historical performance trajectory.</p>
+        </div>
+      </div>
+
+      <!-- Historical Competitions Timeline -->
+      <h3 style="margin: 0 0 12px 0; font-size: 1rem;" data-i18n="title-past-competitions">🏛️ Past Competitions Timeline</h3>
+      <div id="competitions-archive-timeline" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-inline-end: 6px;">
+        <!-- Dynamically rendered -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn btn-logout" style="padding: 10px 20px;" onclick="closeArchiveModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast-container" class="toast-container"></div>
+  <script src="lib/qrcode.js"></script>
   <script src="app.js?v=3.9"></script>
   <script>
     if ('serviceWorker' in navigator) {

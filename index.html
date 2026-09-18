@@ -919,8 +919,14 @@
               <p style="font-family: var(--font-mono); font-size: 0.8rem; color: #10b981;">
                 > INITIALIZING PACKAGER...<br>
                 > STANDBY FOR CREDENTIAL INPUT...<br>
-                > ENCRYPTION PROTOCOL: ACTIVE<br>
-                > TARGET: CLIENT_ZIP_V1.0
+                > INCLUDED MODULES:<br>
+                &nbsp;&nbsp;✔ LIVE STAGE ARENA & PROJECTOR SPOTLIGHT<br>
+                &nbsp;&nbsp;✔ AUDIENCE CHOICE LIVE VOTING (vote.html)<br>
+                &nbsp;&nbsp;✔ OFFLINE SCORE CACHING & AUTO-SYNC<br>
+                &nbsp;&nbsp;✔ 1-SCAN INSTANT JUDGE QR PASS<br>
+                &nbsp;&nbsp;✔ 1-CLICK A4 GOLD DIPLOMA GENERATOR<br>
+                &nbsp;&nbsp;✔ HANDS-FREE VOICE DICTATION<br>
+                > TARGET: TAQEEM_SCHOOL_PACKAGE_V2.0
               </p>
             </div>
           </div>
@@ -1284,15 +1290,51 @@ CREATE POLICY "Admin manage" ON students FOR ALL TO anon USING (current_setting(
 
 CREATE POLICY "Public select" ON evaluations FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Public insert" ON evaluations FOR INSERT TO anon, authenticated WITH CHECK (true);
+CREATE POLICY "Public update" ON evaluations FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon USING (current_setting('role') = 'anon');
 
-CREATE POLICY "Login access" ON custom_users FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (current_setting('role') = 'anon');
-CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (current_setting('role') = 'anon');
+CREATE POLICY "Admin manage custom_users" ON custom_users FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
+CREATE OR REPLACE FUNCTION authenticate_custom_user(p_username TEXT, p_password_hash TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_user RECORD;
+BEGIN
+  SELECT id, username, role, competition_id
+  INTO v_user
+  FROM custom_users
+  WHERE LOWER(username) = LOWER(p_username) AND password_hash = p_password_hash;
+  
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'error', 'Invalid username or password');
+  END IF;
+  
+  RETURN jsonb_build_object(
+    'success', true,
+    'user', jsonb_build_object(
+      'id', v_user.id,
+      'username', v_user.username,
+      'role', v_user.role,
+      'competition_id', v_user.competition_id
+    )
+  );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION authenticate_custom_user(TEXT, TEXT) TO anon, authenticated;
 
 CREATE POLICY "Public select" ON winners_display FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon USING (current_setting('role') = 'anon') WITH CHECK (current_setting('role') = 'anon');
+
+CREATE INDEX IF NOT EXISTS idx_evaluations_comp_student ON evaluations(competition_id, student_id);
+CREATE INDEX IF NOT EXISTS idx_students_competition ON students(competition_id);
+CREATE INDEX IF NOT EXISTS idx_evaluations_judge ON evaluations(judge_id);
+CREATE INDEX IF NOT EXISTS idx_custom_users_username ON custom_users(LOWER(username));
+CREATE UNIQUE INDEX IF NOT EXISTS uq_evaluations_comp_student_judge ON evaluations(competition_id, student_id, judge_id);
 
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
 DROP POLICY IF EXISTS "Public Insert" ON storage.objects;
@@ -1330,6 +1372,7 @@ COMMIT;`;
 
     const filesToInclude = [
       { path: 'demo.html', targetPath: 'index.html', type: 'text' },
+      { path: 'vote.html', type: 'text' },
       { path: 'app.js', type: 'text' },
       { path: 'styles.css', type: 'text' },
       { path: 'sw.js', type: 'text' },
@@ -1337,6 +1380,7 @@ COMMIT;`;
       { path: 'students_template.csv', type: 'text' },
       { path: 'client_setup.sql', type: 'text' },
       { path: 'lib/supabase.js', type: 'blob' },
+      { path: 'lib/qrcode.js', type: 'text' },
       { path: 'lib/confetti.js', type: 'blob' },
       { path: 'audio/cheer.mp3', type: 'blob' },
       { path: 'audio/drumroll.mp3', type: 'blob' },
@@ -1377,7 +1421,7 @@ COMMIT;`;
           let content;
           const targetPath = file.targetPath || file.path;
 
-          if (targetPath === 'index.html' || targetPath === 'winners/index.html') {
+          if (targetPath === 'index.html' || targetPath === 'winners/index.html' || targetPath === 'vote.html') {
             content = await response.text();
             content = content.replace(/const SUPABASE_URL = '.*?';/, `const SUPABASE_URL = '${url}';`);
             content = content.replace(/const SUPABASE_ANON_KEY = '.*?';/, `const SUPABASE_ANON_KEY = '${key}';`);

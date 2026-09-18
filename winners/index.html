@@ -29,6 +29,11 @@
 </head>
 <body>
 
+  <!-- Floating Stage Audio Mute/Unmute Toggle -->
+  <button id="stage-audio-toggle" class="stage-audio-toggle" onclick="toggleStageAudio()" title="Mute / Unmute Stage Audio">
+    <span id="stage-audio-icon">🔊</span>
+  </button>
+
   <!-- Idle / Waiting State -->
   <div id="idle-screen" class="idle-screen">
     <div class="idle-content">
@@ -86,6 +91,89 @@
     <div class="particles" id="particles"></div>
   </div>
 
+  <!-- Live Speaker & Stage Timer Screen -->
+  <div id="live-speaker-screen" class="live-speaker-screen" hidden>
+    <div class="speaker-spotlight-card">
+      <div class="speaker-tag" data-i18n="stage-now-speaking">🎤 NOW SPEAKING</div>
+      <div class="speaker-avatar-frame">
+        <img id="live-speaker-photo" src="../icons/logo.png" alt="Speaker" class="speaker-photo">
+      </div>
+      <h1 id="live-speaker-name" class="live-speaker-name">Student Name</h1>
+      <p id="live-speaker-meta" class="live-speaker-meta">Class & Section</p>
+      <div class="stage-timer-clock" id="stage-timer-clock">03:00</div>
+    </div>
+  </div>
+
+  <!-- Podium Top 3 Ceremony Screen -->
+  <div id="podium-screen" class="podium-screen" hidden>
+    <div class="podium-container">
+      <h1 class="podium-title" data-i18n="podium-title">🏆 TOP 3 HONORS</h1>
+      <p class="podium-subtitle" id="podium-comp-title">Competition Awards</p>
+      
+      <div class="podium-stage">
+        <!-- 2nd Place -->
+        <div class="podium-column rank-2" id="podium-rank-2">
+          <div class="podium-card">
+            <div class="podium-medal">🥈 2nd</div>
+            <div class="podium-photo-frame">
+              <img id="podium-photo-2" src="../icons/logo.png" alt="">
+            </div>
+            <h3 id="podium-name-2" class="podium-name">Name</h3>
+            <p id="podium-class-2" class="podium-class">Class</p>
+          </div>
+          <div class="podium-block block-2">2</div>
+        </div>
+
+        <!-- 1st Place -->
+        <div class="podium-column rank-1" id="podium-rank-1">
+          <div class="podium-card">
+            <div class="podium-crown">👑</div>
+            <div class="podium-medal">🥇 1st</div>
+            <div class="podium-photo-frame">
+              <img id="podium-photo-1" src="../icons/logo.png" alt="">
+            </div>
+            <h3 id="podium-name-1" class="podium-name">Name</h3>
+            <p id="podium-class-1" class="podium-class">Class</p>
+          </div>
+          <div class="podium-block block-1">1</div>
+        </div>
+
+        <!-- 3rd Place -->
+        <div class="podium-column rank-3" id="podium-rank-3">
+          <div class="podium-card">
+            <div class="podium-medal">🥉 3rd</div>
+            <div class="podium-photo-frame">
+              <img id="podium-photo-3" src="../icons/logo.png" alt="">
+            </div>
+            <h3 id="podium-name-3" class="podium-name">Name</h3>
+            <p id="podium-class-3" class="podium-class">Class</p>
+          </div>
+          <div class="podium-block block-3">3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Audience Choice Voting Screen -->
+  <div id="audience-vote-screen" class="audience-vote-screen" hidden>
+    <div class="audience-vote-container">
+      <div class="speaker-tag" style="background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.4); color: #c4b5fd;">
+        <span>🗳️ AUDIENCE CHOICE AWARD • جائزة تصويت الجمهور</span>
+      </div>
+      <h1 class="audience-vote-title">Scan to Vote for Your Favorite!</h1>
+      <p class="audience-vote-subtitle" id="audience-vote-comp-title">Open camera on your smartphone and point at the QR code below</p>
+      
+      <div class="audience-qr-wrapper">
+        <canvas id="stage-audience-qr" style="border-radius: 16px; box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);"></canvas>
+      </div>
+
+      <div class="live-vote-tally">
+        <span class="live-vote-count-dot"></span>
+        <span id="live-vote-counter-text">Votes Cast: 0</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden audio elements (Local Files) -->
   <audio id="idle-audio" preload="auto" loop>
     <source src="../audio/idle.mp3" type="audio/mpeg">
@@ -97,6 +185,7 @@
     <source src="../audio/drumroll.mp3" type="audio/mpeg">
   </audio>
 
+  <script src="../lib/qrcode.js"></script>
   <script src="app.js?v=2.0.2"></script>
 </body>
 </html>

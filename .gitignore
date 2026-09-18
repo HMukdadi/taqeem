@@ -15,3 +15,6 @@ node_modules/
 dist/
 build/
 .env
+.temp_debug/
+scratch/
+taqeem_obsidian/

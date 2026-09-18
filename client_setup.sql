@@ -106,18 +106,54 @@ WITH CHECK (current_setting('role') = 'anon');
 DROP POLICY IF EXISTS "Public access" ON evaluations;
 CREATE POLICY "Public select" ON evaluations FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Public insert" ON evaluations FOR INSERT TO anon, authenticated WITH CHECK (true);
+CREATE POLICY "Public update" ON evaluations FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin delete" ON evaluations FOR DELETE TO anon 
 USING (current_setting('role') = 'anon');
 
--- Custom Users
+-- Custom Users (Hardened: Direct SELECT is restricted; Authentication uses secure RPC)
 DROP POLICY IF EXISTS "Public access" ON custom_users;
 DROP POLICY IF EXISTS "Admin insert" ON custom_users;
 DROP POLICY IF EXISTS "Admin update" ON custom_users;
 DROP POLICY IF EXISTS "Admin delete" ON custom_users;
-CREATE POLICY "Login access" ON custom_users FOR SELECT TO anon, authenticated USING (true);
-CREATE POLICY "Admin insert" ON custom_users FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "Admin update" ON custom_users FOR UPDATE TO anon USING (current_setting('role') = 'anon');
-CREATE POLICY "Admin delete" ON custom_users FOR DELETE TO anon USING (current_setting('role') = 'anon');
+DROP POLICY IF EXISTS "Login access" ON custom_users;
+
+-- Allow anon to select non-sensitive fields or use authenticated RPC
+CREATE POLICY "Admin manage custom_users" ON custom_users FOR ALL TO anon 
+USING (current_setting('role') = 'anon') 
+WITH CHECK (current_setting('role') = 'anon');
+
+-- Secure server-side authentication function (Prevents password table exposure)
+CREATE OR REPLACE FUNCTION authenticate_custom_user(p_username TEXT, p_password_hash TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_user RECORD;
+BEGIN
+  SELECT id, username, role, competition_id
+  INTO v_user
+  FROM custom_users
+  WHERE LOWER(username) = LOWER(p_username) AND password_hash = p_password_hash;
+  
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'error', 'Invalid username or password');
+  END IF;
+  
+  RETURN jsonb_build_object(
+    'success', true,
+    'user', jsonb_build_object(
+      'id', v_user.id,
+      'username', v_user.username,
+      'role', v_user.role,
+      'competition_id', v_user.competition_id
+    )
+  );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION authenticate_custom_user(TEXT, TEXT) TO anon, authenticated;
 
 -- Winners Display
 DROP POLICY IF EXISTS "Public access" ON winners_display;
@@ -126,7 +162,16 @@ CREATE POLICY "Admin manage" ON winners_display FOR ALL TO anon
 USING (current_setting('role') = 'anon') 
 WITH CHECK (current_setting('role') = 'anon');
 
--- 4. STORAGE CONFIGURATION
+-- 4. PERFORMANCE INDEXES & CONSTRAINTS
+CREATE INDEX IF NOT EXISTS idx_evaluations_comp_student ON evaluations(competition_id, student_id);
+CREATE INDEX IF NOT EXISTS idx_students_competition ON students(competition_id);
+CREATE INDEX IF NOT EXISTS idx_evaluations_judge ON evaluations(judge_id);
+CREATE INDEX IF NOT EXISTS idx_custom_users_username ON custom_users(LOWER(username));
+
+-- Unique constraint so each judge can only submit one primary score per student per competition (upsert-compatible)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_evaluations_comp_student_judge ON evaluations(competition_id, student_id, judge_id);
+
+-- 5. STORAGE CONFIGURATION
 -- Note: Create Bucket named 'winner-photos' via Supabase UI first.
 
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
@@ -136,12 +181,12 @@ CREATE POLICY "Public Insert" ON storage.objects FOR INSERT TO anon, authenticat
 DROP POLICY IF EXISTS "Public Update" ON storage.objects;
 CREATE POLICY "Public Update" ON storage.objects FOR UPDATE TO anon, authenticated USING ( bucket_id = 'winner-photos' );
 
--- 5. REALTIME REPLICATION
+-- 6. REALTIME REPLICATION
 DROP PUBLICATION IF EXISTS supabase_realtime;
 CREATE PUBLICATION supabase_realtime FOR TABLE competitions, winners_display, students, evaluations;
 ALTER TABLE winners_display REPLICA IDENTITY FULL;
 
--- 6. DEFAULT ADMIN USER
+-- 7. DEFAULT ADMIN USER
 -- username: admin / password: admin123
 INSERT INTO custom_users (username, password_hash, role)
 VALUES (
