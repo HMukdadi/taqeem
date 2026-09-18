@@ -125,15 +125,19 @@ body {
   object-fit: contain;
   margin: 0 auto 20px;
   display: block;
+  background: #ffffff !important;
+  padding: 8px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
   filter: drop-shadow(0 8px 12px rgba(0,0,0,0.08));
 }
 
 .header-logo-img {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   border-radius: 8px;
-  background: white;
+  background: #ffffff !important;
   padding: 2px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
@@ -207,6 +211,115 @@ body {
 
 .login-theme-toggle:active {
   transform: scale(0.95);
+}
+
+.login-top-actions {
+  position: fixed;
+  top: 20px;
+  inset-inline-end: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1001;
+}
+
+.login-top-actions .login-theme-toggle {
+  position: static;
+  width: 42px;
+  height: 42px;
+}
+
+.login-top-actions #lang-btn-login {
+  width: auto;
+  min-width: 54px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Quick Demo Roles */
+.demo-quick-login {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.demo-quick-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.demo-quick-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-quick-badge {
+  font-size: 0.68rem;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.demo-roles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-demo-role {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.btn-demo-role:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.18);
+}
+
+.btn-demo-role:active {
+  transform: translateY(0);
+}
+
+.demo-role-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.demo-role-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.demo-role-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono, monospace);
+  line-height: 1.2;
 }
 
 /* App Layout */
@@ -844,6 +957,39 @@ input[type="range"]::-webkit-slider-thumb:hover {
   .actions-dashboard {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 32px 20px;
+    width: calc(100% - 24px);
+    margin: 12px;
+  }
+  .login-top-actions {
+    top: 12px;
+    inset-inline-end: 12px;
+    gap: 8px;
+  }
+  .login-top-actions .login-theme-toggle {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .demo-roles-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .btn-demo-role {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 14px;
+    gap: 12px;
+    text-align: start;
+  }
+  .demo-role-icon {
+    font-size: 1.4rem;
   }
 }
 

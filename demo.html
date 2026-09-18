@@ -75,10 +75,30 @@
         <button type="submit" id="login-btn" class="btn btn-login" data-i18n="btn-signin">Sign In</button>
       </form>
 
+      <!-- 1-Click Quick Demo Roles -->
+      <div class="demo-quick-login">
+        <div class="demo-quick-header">
+          <span class="demo-quick-title" data-i18n="demo-roles-title">⚡ Instant Demo Roles</span>
+          <span class="demo-quick-badge" data-i18n="demo-roles-badge">1-Click Fill</span>
+        </div>
+        <div class="demo-roles-grid">
+          <button type="button" class="btn-demo-role" onclick="quickFillRole('admin', 'admin123')" title="Sign in as Competition Admin / Head Organizer">
+            <span class="demo-role-icon">👑</span>
+            <span class="demo-role-name" data-i18n="role-admin-title">Admin / Head</span>
+            <span class="demo-role-sub">admin / admin123</span>
+          </button>
+          <button type="button" class="btn-demo-role" onclick="quickFillRole('judge1', 'judge1')" title="Sign in as Evaluation Panel Judge">
+            <span class="demo-role-icon">⚖️</span>
+            <span class="demo-role-name" data-i18n="role-judge-title">Panel Judge</span>
+            <span class="demo-role-sub">judge1 / judge1</span>
+          </button>
+        </div>
+      </div>
+
     </div>
-    <div style="position: fixed; top: 24px; inset-inline-end: 80px; display: flex; gap: 12px; z-index: 1001;">
-      <button type="button" onclick="window.toggleLang()" class="login-theme-toggle" style="position: static; font-size: 0.85rem; font-weight: 700;" id="lang-btn-login">عربي</button>
-      <button type="button" id="theme-toggle-login" class="login-theme-toggle" style="position: static;" title="Toggle Theme">
+    <div class="login-top-actions">
+      <button type="button" onclick="window.toggleLang()" class="login-theme-toggle" id="lang-btn-login">عربي</button>
+      <button type="button" id="theme-toggle-login" class="login-theme-toggle" title="Toggle Theme">
         <span id="theme-icon-login">🌙</span>
       </button>
     </div>

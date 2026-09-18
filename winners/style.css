@@ -432,12 +432,53 @@ html, body {
   .winner-details { font-size: 1rem; }
   .congrats-banner { font-size: 0.85rem; padding: 12px 28px; letter-spacing: 0.2em; }
   .trophy-icon { font-size: 3.5rem; }
+
+  /* Podium Responsive */
+  .podium-title { font-size: 1.8rem; }
+  .podium-subtitle { font-size: 0.95rem; margin-bottom: 24px; }
+  .podium-stage { gap: 10px; width: 100%; }
+  .podium-column { max-width: 130px; }
+  .podium-card { padding: 12px 6px; border-radius: 12px 12px 0 0; }
+  .podium-photo-frame { width: 52px; height: 52px; margin-bottom: 8px; }
+  .podium-name { font-size: 0.82rem; }
+  .podium-class { font-size: 0.68rem; }
+  .podium-medal { font-size: 0.72rem; padding: 2px 6px; }
+  .podium-crown { font-size: 1.4rem; }
+  .podium-block { font-size: 1.6rem; border-radius: 0 0 10px 10px; }
+  .block-1 { height: 100px; }
+  .block-2 { height: 75px; }
+  .block-3 { height: 55px; }
+
+  /* Audience Vote Responsive */
+  .audience-vote-title { font-size: 1.5rem; }
+  .audience-vote-subtitle { font-size: 0.9rem; }
+  .audience-qr-wrapper canvas { width: 180px !important; height: 180px !important; }
 }
 
 @media (max-width: 480px) {
   .winner-name { font-size: 1.8rem; }
   .photo-frame { width: 130px; height: 130px; }
   .photo-frame.no-photo::after { font-size: 3rem; }
+
+  .podium-stage { gap: 6px; }
+  .podium-column { max-width: 105px; }
+  .podium-card { padding: 8px 4px; }
+  .podium-photo-frame { width: 42px; height: 42px; }
+  .podium-name { font-size: 0.72rem; }
+  .podium-class { font-size: 0.62rem; }
+  .podium-crown { font-size: 1.1rem; }
+  .podium-block { font-size: 1.3rem; }
+  .block-1 { height: 80px; }
+  .block-2 { height: 60px; }
+  .block-3 { height: 45px; }
+
+  .stage-audio-toggle {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
 }
 
 
@@ -526,21 +567,22 @@ html, body {
 
 .live-speaker-name {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
   font-weight: 900;
   color: #ffffff;
   margin-bottom: 8px;
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  word-break: break-word;
 }
 
 .live-speaker-meta {
-  font-size: 1.25rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.25rem);
   color: var(--text-secondary);
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .stage-timer-clock {
-  font-size: 5.5rem;
+  font-size: clamp(3rem, 11vw, 5.5rem);
   font-weight: 900;
   font-family: monospace;
   color: var(--gold);

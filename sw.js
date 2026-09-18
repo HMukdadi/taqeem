@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taqeem-v2.0';
+const CACHE_NAME = 'taqeem-v2.0-rev4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

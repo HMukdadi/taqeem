@@ -103,6 +103,10 @@ const translations = {
         'ph-username': 'Enter your username',
         'ph-password': 'Enter your password',
         'btn-signin': 'Sign In',
+        'demo-roles-title': '⚡ Instant Demo Roles',
+        'demo-roles-badge': '1-Click Fill',
+        'role-admin-title': 'Admin / Head',
+        'role-judge-title': 'Panel Judge',
         'btn-logout': 'Logout',
         'btn-switch-comp': 'Switch Competition',
         'tab-admin': 'Admin',
@@ -428,6 +432,10 @@ const translations = {
         'ph-username': 'أدخل اسم المستخدم الخاص بك',
         'ph-password': 'أدخل كلمة المرور الخاصة بك',
         'btn-signin': 'تسجيل الدخول',
+        'demo-roles-title': '⚡ أدوار العرض التجريبي',
+        'demo-roles-badge': 'دخول بضغطة زر',
+        'role-admin-title': 'مدير الفعالية',
+        'role-judge-title': 'عضو لجنة التحكيم',
         'btn-logout': 'تسجيل الخروج',
         'btn-switch-comp': 'تغيير المسابقة',
         'tab-admin': 'الإدارة',
@@ -1057,7 +1065,7 @@ async function checkAuthState() {
     } else {
       // Judge must have competition ID
       if (!currentCompetitionId) {
-        alert("Judge account error: No competition assigned.");
+        showToast(currentLang === 'ar' ? 'خطأ في حساب المحكّم: لم يتم تعيين مسابقة.' : 'Judge account error: No competition assigned.', 'error');
         handleLogout();
         return;
       }
@@ -1352,6 +1360,30 @@ async function handleLogin() {
   }
 }
 
+function quickFillRole(username, password) {
+  const userInput = document.getElementById('login-email');
+  const passInput = document.getElementById('login-password');
+  const errorEl = document.getElementById('login-error');
+  if (errorEl) errorEl.hidden = true;
+  
+  if (userInput && passInput) {
+    userInput.value = username;
+    passInput.value = password;
+    
+    userInput.style.transition = 'border-color 0.3s ease';
+    passInput.style.transition = 'border-color 0.3s ease';
+    userInput.style.borderColor = 'var(--primary)';
+    passInput.style.borderColor = 'var(--primary)';
+    setTimeout(() => {
+      userInput.style.borderColor = '';
+      passInput.style.borderColor = '';
+    }, 400);
+
+    handleLogin();
+  }
+}
+window.quickFillRole = quickFillRole;
+
 async function setAndInitSession(id, username, role, compId, compName) {
   currentUserId = id;
   userRole = role;
@@ -1365,7 +1397,7 @@ async function setAndInitSession(id, username, role, compId, compName) {
     await loadCompetitions();
   } else {
     if (!compId) {
-      alert("Judge account is not assigned to any competition.");
+      showToast(currentLang === 'ar' ? 'حساب المحكّم غير مرتبط بأي مسابقة.' : 'Judge account is not assigned to any competition.', 'error');
       return;
     }
     selectCompetition(compId, compName || 'Competition');
@@ -1528,7 +1560,7 @@ window.deleteCompetition = async function(id, name) {
     }
   } catch (err) {
     console.error('Error deleting competition:', err);
-    alert('Failed to delete competition: ' + err.message);
+    showToast((currentLang === 'ar' ? 'فشل حذف المسابقة: ' : 'Failed to delete competition: ') + err.message, 'error');
   }
 }
 
