@@ -1,0 +1,21 @@
+# GitHub Linguist language overrides for Taqeem
+
+# 1. Vendored third-party libraries (do not count external dependencies)
+lib/** linguist-vendored
+
+# 2. Database setup scripts (exclude so PLpgSQL is not listed as a project language)
+*.sql linguist-detectable=false
+sql/** linguist-detectable=false
+client_setup.sql linguist-detectable=false
+winners/*.sql linguist-detectable=false
+
+# 3. Documentation & guides
+wiki/** linguist-documentation
+wiki.html linguist-documentation
+
+# 4. Test suites
+tests/** linguist-documentation
+
+# 5. Data templates and legal
+*.csv linguist-documentation
+LICENSE linguist-documentation

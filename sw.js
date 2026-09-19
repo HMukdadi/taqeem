@@ -1,7 +1,8 @@
-const CACHE_NAME = 'taqeem-v2.0-rev4';
+const CACHE_NAME = 'taqeem-v2.0-rev5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/landing.css',
   '/demo.html',
   '/vote.html',
   '/styles.css',
